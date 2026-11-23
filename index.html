@@ -262,7 +262,7 @@
 
 <section id="tab-services" hidden>
   <div id="svc-topo" class="card panel">
-    <div class="cytool"><span class="cyleg"><span class="ld ok"></span>up <span class="ld er"></span>down · 🐳 docker · drag · scroll to zoom · click for detail</span><button class="refresh" id="cy-fit">⤢ Fit</button></div>
+    <div class="cytool"><span class="cyleg"><b style="color:var(--dim);font-weight:600">Service dependencies</b> · <span class="ld ok"></span>up <span class="ld er"></span>down · 🐳 docker · arrows = "depends on" · drag · zoom · click</span><button class="refresh" id="cy-fit">⤢ Fit</button></div>
     <div id="cy"></div></div>
   <div id="svc-list" style="margin-top:20px"></div>
 </section>
@@ -402,15 +402,15 @@ function renderMetrics(d){
 }
 
 /* ---- services render + topology ---- */
-let cyG=null,cySig='';
+let cyG=null,cySig='',cyESig='';
 function cyColors(){const cs=getComputedStyle(document.documentElement),g=v=>cs.getPropertyValue(v).trim();
   return{s3:g('--surface3'),b2:g('--border2'),tx:g('--text'),dm:g('--dim2'),ok:g('--ok'),er:g('--err'),erb:g('--errbg'),ac:g('--accent')};}
 function cyStyle(c){return[
-  {selector:'node',style:{'background-color':c.s3,'border-color':c.b2,'border-width':1.6,'shape':'round-rectangle','label':'data(label)','text-wrap':'wrap','text-max-width':150,'text-valign':'center','text-halign':'center','color':c.tx,'font-size':10.5,'font-family':'-apple-system,system-ui,sans-serif','font-weight':600,'width':170,'height':46}},
-  {selector:'node:parent',style:{'background-color':c.ac,'background-opacity':0.05,'border-style':'dashed','border-color':c.b2,'border-width':1.3,'text-valign':'top','color':c.dm,'font-size':10,'font-weight':700,'padding':'16px'}},
+  {selector:'node',style:{'background-color':c.s3,'border-color':c.b2,'border-width':1.8,'shape':'round-rectangle','label':'data(label)','text-wrap':'wrap','text-max-width':165,'text-valign':'center','text-halign':'center','color':c.tx,'font-size':11.5,'font-family':'-apple-system,system-ui,sans-serif','font-weight':600,'width':188,'height':54}},
   {selector:'node.up',style:{'border-color':c.ok}},
   {selector:'node.down',style:{'border-color':c.er,'background-color':c.erb}},
-  {selector:'node:selected',style:{'border-width':2.6,'border-color':c.ac}},
+  {selector:'node:selected',style:{'border-width':2.8,'border-color':c.ac}},
+  {selector:'edge',style:{'width':2,'line-color':c.ac,'opacity':0.85,'target-arrow-color':c.ac,'target-arrow-shape':'triangle','arrow-scale':1,'curve-style':'taxi','taxi-direction':'rightward','taxi-turn':'45%','taxi-turn-min-distance':14}},
 ];}
 function slug(g){return 'g_'+g.replace(/[^a-z0-9]/gi,'_');}
 function svcLabel(s){
@@ -420,29 +420,46 @@ function svcLabel(s){
   if(nm.length>20)nm=nm.slice(0,19)+'…';
   return (s.kind==='docker'?'🐳 ':'')+nm+(s.port?'\n:'+s.port:'');
 }
-function cyElements(){
-  const svs=(S.services||[]),groups=[...new Set(svs.map(s=>s.group))],els=[];
-  groups.forEach(g=>els.push({data:{id:slug(g),label:g.toUpperCase()}}));
-  svs.forEach(s=>els.push({data:{id:'n_'+s.id,sid:s.id,parent:slug(s.group),label:svcLabel(s)},classes:s.up?'up':'down'}));
-  return els;
+function edgeEls(){
+  const ids=new Set((S.services||[]).map(s=>s.id));
+  return (S.edges||[]).filter(e=>ids.has(e[0])&&ids.has(e[1])).map(e=>({data:{id:'e_'+e[0]+'_'+e[1],source:'n_'+e[0],target:'n_'+e[1]}}));
 }
-function cySignature(){return (S.services||[]).map(s=>s.id).sort().join('|');}
+function connectedIds(){
+  const ids=new Set((S.services||[]).map(s=>s.id)),c=new Set();
+  (S.edges||[]).forEach(e=>{if(ids.has(e[0])&&ids.has(e[1])){c.add(e[0]);c.add(e[1]);}});
+  return c;
+}
+function cyElements(){
+  const c=connectedIds(),els=[];
+  (S.services||[]).filter(s=>c.has(s.id)).forEach(s=>els.push({data:{id:'n_'+s.id,sid:s.id,label:svcLabel(s)},classes:s.up?'up':'down'}));
+  return els.concat(edgeEls());
+}
+function cySignature(){return [...connectedIds()].sort().join('|');}
+function edgeSignature(){return (S.edges||[]).map(e=>e[0]+'>'+e[1]).sort().join('|');}
+function updateEdges(){if(!cyG)return;cyG.edges().remove();cyG.add(edgeEls());}
 function cyRunLayout(){
-  const perRow=5,colW=205,rowH=70,gpad=46,x0=40;let y=40;
-  cyG.batch(()=>{cyG.nodes(':parent').forEach(p=>{
-    const kids=p.children();kids.forEach((n,i)=>n.position({x:x0+(i%perRow)*colW+colW/2,y:y+Math.floor(i/perRow)*rowH+rowH/2}));
-    const rows=Math.max(1,Math.ceil(kids.length/perRow));y+=rows*rowH+gpad;});});
-  cyG.fit(null,18);
+  if(typeof dagre==='undefined'){cyG.layout({name:'grid',fit:true,padding:20,avoidOverlap:true}).run();return;}
+  const g=new dagre.graphlib.Graph();
+  g.setGraph({rankdir:'LR',nodesep:42,ranksep:100,marginx:26,marginy:26});
+  g.setDefaultEdgeLabel(()=>({}));
+  cyG.nodes().forEach(n=>{const bb=n.boundingBox();g.setNode(n.id(),{width:bb.w||188,height:bb.h||54});});
+  cyG.edges().forEach(e=>g.setEdge(e.source().id(),e.target().id()));
+  dagre.layout(g);
+  cyG.batch(()=>cyG.nodes().forEach(n=>{const p=g.node(n.id());if(p)n.position({x:p.x,y:p.y});}));
+  cyG.fit(null,22);
 }
 function initCy(){
   const el=document.getElementById('cy');if(!el)return;
   if(typeof cytoscape==='undefined'){el.innerHTML='<div class="empty">Diagram library did not load (offline?). The list below has everything.</div>';return;}
   cyG=cytoscape({container:el,elements:cyElements(),style:cyStyle(cyColors()),minZoom:0.3,maxZoom:2.5,wheelSensitivity:0.22});
-  cySig=cySignature();cyRunLayout();
+  cySig=cySignature();cyESig=edgeSignature();cyRunLayout();
   cyG.on('tap','node',e=>{const sid=e.target.data('sid');if(sid)openDrawer(sid);});
 }
-function rebuildCy(){if(!cyG)return;cyG.json({elements:cyElements()});cySig=cySignature();cyRunLayout();}
-function syncCy(){if(!cyG)return;if(cySignature()!==cySig)rebuildCy();else updateCyStatus();}
+function rebuildCy(){if(!cyG)return;cyG.json({elements:cyElements()});cySig=cySignature();cyESig=edgeSignature();cyRunLayout();}
+function syncCy(){if(!cyG)return;
+  if(cySignature()!==cySig){rebuildCy();return;}
+  if(edgeSignature()!==cyESig){updateEdges();cyESig=edgeSignature();}
+  updateCyStatus();}
 function updateCyStatus(){if(!cyG)return;const map=Object.fromEntries((S.services||[]).map(s=>[s.id,s]));cyG.nodes().forEach(n=>{const sid=n.data('sid');if(!sid)return;const s=map[sid];n.removeClass('up down');n.addClass(s&&s.up?'up':'down');});}
 function restyleCy(){if(cyG)cyG.style(cyStyle(cyColors()));}
 function renderServices(d){

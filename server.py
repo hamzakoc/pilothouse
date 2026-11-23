@@ -222,11 +222,94 @@ def discover_services():
 BY_ID = {}
 
 
+def established():
+    """local TCP connections -> (pid, local_port, remote_port)."""
+    out = []
+    r = sh(["lsof", "-nP", "-iTCP", "-sTCP:ESTABLISHED"]) if (IS_MAC or which("lsof")) else sh("ss -tnpH state established 2>/dev/null")
+    if not r:
+        return out
+    for line in r.stdout.splitlines():
+        if "127.0.0.1" not in line and "[::1]" not in line and "localhost" not in line:
+            continue
+        m = re.search(r":(\d+)->(?:127\.0\.0\.1|\[::1\]|localhost):(\d+)", line)
+        if not m:
+            continue
+        pid = 0
+        if IS_MAC:
+            f = line.split()
+            if len(f) > 1 and f[1].isdigit():
+                pid = int(f[1])
+        else:
+            mp = re.search(r"pid=(\d+)", line)
+            if mp:
+                pid = int(mp.group(1))
+        out.append((pid, int(m.group(1)), int(m.group(2))))
+    return out
+
+
+_ddet = dict(ts=0, data=[])
+
+
+def docker_details():
+    """per-container {name, networks, env} - cached (these rarely change)."""
+    if _ddet["data"] and time.time() - _ddet["ts"] < 30:
+        return _ddet["data"]
+    names = [c["name"] for c in docker_ps()]
+    data = []
+    if names:
+        r = sh(["docker", "inspect"] + names, 12)
+        if r and r.stdout:
+            try:
+                for j in json.loads(r.stdout):
+                    data.append(dict(
+                        name=j["Name"].lstrip("/"),
+                        networks=list((j.get("NetworkSettings", {}).get("Networks") or {}).keys()),
+                        env=[e for e in (j.get("Config", {}).get("Env") or []) if not re.search(r"KEY|SECRET|TOKEN|PASS|JWT|CRYPT", e, re.I)]))
+            except Exception:
+                pass
+    _ddet.update(ts=time.time(), data=data)
+    return data
+
+
+def discover_edges(svcs):
+    port2id, pid2id, name2id = {}, {}, {}
+    for s in svcs:
+        if s.get("pid"):
+            pid2id[s["pid"]] = s["id"]
+        if s.get("docker"):
+            name2id[s["docker"]] = s["id"]
+        for p in (s.get("ports") or ([s["port"]] if s.get("port") else [])):
+            port2id.setdefault(p, s["id"])
+    edges = set()
+    # 1. live established TCP connections between services
+    for pid, lport, rport in established():
+        if rport in port2id:
+            src = pid2id.get(pid) or port2id.get(lport)
+            dst = port2id[rport]
+            if src and dst and src != dst:
+                edges.add((src, dst))
+    # 2. docker containers: references to other services in their env (DATABASE_URL, *_URL, host:port)
+    for c in docker_details():
+        sid = name2id.get(c["name"])
+        if not sid:
+            continue
+        for e in c["env"]:
+            val = e.split("=", 1)[1] if "=" in e else e
+            for host, p in re.findall(r"(?://|@|\b)([A-Za-z0-9][\w.-]+):(\d+)", val):
+                dst = name2id.get(host) or (port2id.get(int(p)) if host in ("localhost", "127.0.0.1", "0.0.0.0", "host.docker.internal") else None)
+                if dst and dst != sid:
+                    edges.add((sid, dst))
+            for host in re.findall(r"//([A-Za-z0-9][\w.-]+)", val):
+                if host in name2id and name2id[host] != sid:
+                    edges.add((sid, name2id[host]))
+    return [list(e) for e in sorted(edges)][:80]
+
+
 def status():
     svcs = discover_services()
     global BY_ID
     BY_ID = {s["id"]: s for s in svcs}
-    return dict(ts=int(time.time()), services=svcs)
+    return dict(ts=int(time.time()), services=svcs, edges=discover_edges(svcs))
 
 
 # ---- metrics (cross-platform) ------------------------------------------------
