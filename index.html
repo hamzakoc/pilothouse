@@ -430,22 +430,30 @@ function connectedIds(){
   return c;
 }
 function cyElements(){
-  const c=connectedIds(),els=[];
-  (S.services||[]).filter(s=>c.has(s.id)).forEach(s=>els.push({data:{id:'n_'+s.id,sid:s.id,label:svcLabel(s)},classes:s.up?'up':'down'}));
+  const els=[];
+  (S.services||[]).forEach(s=>els.push({data:{id:'n_'+s.id,sid:s.id,label:svcLabel(s)},classes:s.up?'up':'down'}));
   return els.concat(edgeEls());
 }
-function cySignature(){return [...connectedIds()].sort().join('|');}
+function cySignature(){return (S.services||[]).map(s=>s.id).sort().join('|');}
 function edgeSignature(){return (S.edges||[]).map(e=>e[0]+'>'+e[1]).sort().join('|');}
 function updateEdges(){if(!cyG)return;cyG.edges().remove();cyG.add(edgeEls());}
 function cyRunLayout(){
-  if(typeof dagre==='undefined'){cyG.layout({name:'grid',fit:true,padding:20,avoidOverlap:true}).run();return;}
-  const g=new dagre.graphlib.Graph();
-  g.setGraph({rankdir:'LR',nodesep:42,ranksep:100,marginx:26,marginy:26});
-  g.setDefaultEdgeLabel(()=>({}));
-  cyG.nodes().forEach(n=>{const bb=n.boundingBox();g.setNode(n.id(),{width:bb.w||188,height:bb.h||54});});
-  cyG.edges().forEach(e=>g.setEdge(e.source().id(),e.target().id()));
-  dagre.layout(g);
-  cyG.batch(()=>cyG.nodes().forEach(n=>{const p=g.node(n.id());if(p)n.position({x:p.x,y:p.y});}));
+  const conn=connectedIds();
+  let flowBottom=30,flowRight=760,placed=false;
+  // 1) connected services -> dagre dependency flow (left-to-right)
+  if(typeof dagre!=='undefined' && conn.size){
+    const g=new dagre.graphlib.Graph();
+    g.setGraph({rankdir:'LR',nodesep:42,ranksep:100,marginx:26,marginy:26});
+    g.setDefaultEdgeLabel(()=>({}));
+    cyG.nodes().forEach(n=>{if(conn.has(n.data('sid'))){const bb=n.boundingBox();g.setNode(n.id(),{width:bb.w||188,height:bb.h||54});}});
+    cyG.edges().forEach(e=>g.setEdge(e.source().id(),e.target().id()));
+    dagre.layout(g);
+    cyG.batch(()=>cyG.nodes().forEach(n=>{const p=g.node(n.id());if(p){n.position({x:p.x,y:p.y});flowBottom=Math.max(flowBottom,p.y);flowRight=Math.max(flowRight,p.x);placed=true;}}));
+  }
+  // 2) everything else -> tidy grid below the flow (so all services are visible)
+  const rest=cyG.nodes().filter(n=>!conn.has(n.data('sid')));
+  const perRow=Math.max(4,Math.round((flowRight+120)/212)),colW=212,rowH=74,y0=(placed?flowBottom+150:40);
+  cyG.batch(()=>rest.forEach((n,i)=>n.position({x:40+(i%perRow)*colW+colW/2,y:y0+Math.floor(i/perRow)*rowH})));
   cyG.fit(null,22);
 }
 function initCy(){
