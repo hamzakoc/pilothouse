@@ -1,0 +1,6 @@
+# runtime / local state
+.webui_secret_key
+*.log
+__pycache__/
+# dev evidence screenshots (not part of the app)
+evidence/
