@@ -33,7 +33,7 @@ output into a bug report; it contains tool names and counts, not your data.
 
 | Missing | Why | Do |
 |---|---|---|
-| Docker containers | The `docker` command is not on `PATH`, the daemon is not running, or your user cannot talk to it. | `docker ps` must work in the same terminal. On Linux add yourself to the `docker` group. |
+| Docker containers | The `docker` command is not on `PATH`, the engine behind it is not running, or your user cannot talk to it. | The Docker tab says which: when it shows "Colima is not running" (or Docker Desktop, OrbStack, Podman), press **Start** there. Otherwise `docker ps` must work in the same terminal. On Linux add yourself to the `docker` group. |
 | A service that is running | It does not listen on a TCP port, it belongs to another user (Linux cannot attribute those without root), or its process name is in the noise list. | Check `--doctor`. Processes still show under Overview, "Memory by app". |
 | A link on the map | Links need evidence: a live connection, a container's configuration naming the other one, or compose `depends_on`. | See [ARCHITECTURE.md](ARCHITECTURE.md#how-the-map-decides-what-talks-to-what). |
 | An AI tool | It is not in the built-in list. | Add it to `agents.json`: [CONFIGURATION.md](CONFIGURATION.md#agentsjson-teach-it-an-ai-tool-it-does-not-know). |

@@ -132,7 +132,8 @@ line per request:
 Containers grouped by compose project, with the images they start from and the
 volumes that hold their data. The tiles at the top say how much disk can be freed
 safely. Whole-stack buttons (**Restart all**, **Stop all**) sit on each group.
-Clean-up never touches volumes in bulk; a single volume can only be removed when
+If the engine behind Docker is not running, the tab says which one and offers to start
+it. Clean-up never touches volumes in bulk; a single volume can only be removed when
 Docker reports it unused.
 
 ## Repos

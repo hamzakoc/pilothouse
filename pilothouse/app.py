@@ -54,12 +54,12 @@ DATA_DIR = os.environ.get("DASH_DATA") or (
 _hung = {}   # program -> when it last timed out
 
 
-def sh(cmd, t=6):
+def sh(cmd, t=6, force=False):
     """run a command, never raise: None when it is missing or times out (every caller treats that as 'no data').
     A docker CLI whose daemon is gone (the VM was quit) hangs instead of failing: after one timeout it is left
     alone for 30 s, so a dead Docker cannot stall every refresh."""
     prog = cmd[0] if isinstance(cmd, list) and cmd else None
-    if prog == "docker" and time.time() - _hung.get(prog, 0) < 30:
+    if prog == "docker" and not force and time.time() - _hung.get(prog, 0) < 30:
         return None
     try:
         return subprocess.run(cmd, shell=isinstance(cmd, str), capture_output=True, text=True, timeout=t, errors="replace",
@@ -2170,6 +2170,65 @@ def inv_repos():
     return repos
 
 
+ENGINES = ((r"\.colima/", "Colima"), (r"\.orbstack/", "OrbStack"), (r"\.rd/", "Rancher Desktop"), (r"podman", "Podman"),
+           (r"\.docker/(run|desktop)/|dockerDesktop|docker_engine", "Docker Desktop"))
+
+
+def engine_name(host):
+    """which Docker engine a socket address belongs to."""
+    return next((n for p, n in ENGINES if re.search(p, host or "")), None) or ("Docker Desktop" if IS_MAC or IS_WIN else "Docker Engine")
+
+
+def docker_engine():
+    """the engine the docker CLI points at -> (name, command that starts it without root or None, what to tell the user)."""
+    r = sh(["docker", "context", "inspect", "--format", "{{.Endpoints.docker.Host}}"], 5, force=True)   # reads a file, never hangs
+    name = engine_name((r.stdout.strip() if r and r.returncode == 0 else "") or os.environ.get("DOCKER_HOST", ""))
+    cmd = None
+    if name == "Colima":
+        hint = "colima start"
+        if which("colima"):
+            cmd = ["brew", "services", "restart", "colima"] if brew_services().get("colima") else ["colima", "start"]
+    elif name == "Podman":
+        hint = "podman machine start"
+        if which("podman"): cmd = ["podman", "machine", "start"]
+    elif IS_MAC:
+        app = "Docker" if name == "Docker Desktop" else name
+        hint = "open the %s app" % name
+        if os.path.isdir("/Applications/%s.app" % app): cmd = ["open", "-a", app]
+    elif IS_WIN:
+        hint = "start %s from the Start menu" % name
+    else:
+        hint = "sudo systemctl start docker"   # needs root, so it is only shown
+    return name, cmd, hint
+
+
+def docker_down():
+    """why the Docker tab is empty: None when docker is not installed, else which engine is silent and how to start it."""
+    if not which("docker"):
+        return None
+    name, cmd, hint = docker_engine()
+    return dict(engine=name, canStart=bool(cmd), hint=hint)
+
+
+def start_engine():
+    r = sh(["docker", "version", "--format", "{{.Server.Version}}"], 8, force=True)
+    if r and r.returncode == 0 and r.stdout.strip():
+        _inv["ts"] = 0
+        return True, "Docker is already running"
+    name, cmd, hint = docker_engine()
+    if not cmd:
+        return False, "Pilothouse cannot start %s by itself. To start it: %s" % (name, hint)
+
+    def go():
+        r = sh(cmd, 300)
+        if not (r and r.returncode == 0):
+            event("alert", "Could not start %s. Try: %s" % (name, hint))
+        _hung.pop("docker", None); _inv["ts"] = 0; _wake.set()
+    threading.Thread(target=go, daemon=True).start()
+    event("action", "You started %s" % name)
+    return True, "Starting %s. Containers come back in about a minute." % name
+
+
 def inv_docker():
     """disk usage, containers, images and volumes (`docker system df`)."""
     r = sh(["docker", "system", "df", "-v", "--format", "{{json .}}"], 25) if which("docker") else None
@@ -2285,7 +2344,8 @@ def _inventory():
             for m in re.finditer(r"account (\S+).*?Active account: (true|false)", r.stdout + r.stderr, re.S):
                 accounts.append(dict(login=m.group(1), active=m.group(2) == "true"))
     ed = next(((n, b) for n, b in EDITORS if which(b)), None)
-    data = dict(ts=int(time.time()), agents=inv_agents(), models=inv_models(), docker=inv_docker(),
+    dk = inv_docker()
+    data = dict(ts=int(time.time()), agents=inv_agents(), models=inv_models(), docker=dk, dockerDown=None if dk else docker_down(),
                 tools=dict(editor=ed[0] if ed else None, opener=IS_MAC or IS_WIN or which("xdg-open"),
                            terminal=IS_MAC or IS_WIN or bool(terminal_cmd()), platform=PLATFORM),
                 github=dict(accounts=accounts, repos=inv_repos()))
@@ -3312,6 +3372,8 @@ def docker_action(act, target=""):
              "prune-cache": ["docker", "builder", "prune", "-f"],
              "prune-containers": ["docker", "container", "prune", "-f"]}  # stopped containers
     cmd = fixed.get(act)
+    if act == "start-engine":
+        return start_engine() if which("docker") else (False, "Docker is not installed")
     if act in ("rmi", "rmvol", "pull"):
         inv = inv_docker() or {}
         if act == "rmi" and any(i["name"] == target and not i["used"] for i in inv.get("images", [])):
@@ -3678,7 +3740,17 @@ def migrate_data():
             pass
 
 
+def _test_engine():
+    assert engine_name("unix:///Users/x/.colima/default/docker.sock") == "Colima"
+    assert engine_name("unix:///Users/x/.orbstack/run/docker.sock") == "OrbStack"
+    assert engine_name("unix:///Users/x/.docker/run/docker.sock") == "Docker Desktop"
+    assert engine_name("npipe:////./pipe/dockerDesktopLinuxEngine") == "Docker Desktop"
+    assert engine_name("unix:///run/user/1000/podman/podman.sock") == "Podman"
+    assert engine_name("unix:///var/run/docker.sock") in ("Docker Desktop", "Docker Engine")
+
+
 def selftest():
+    _test_engine()
     """python3 server.py --selftest : the parsers and guards that everything else leans on."""
     # the per-OS parsers are checked on every OS, from captured output
     li, es = parse_netstat("  Proto  Local Address   Foreign Address  State  PID\n  TCP  0.0.0.0:135  0.0.0.0:0  LISTENING  1128\n"

@@ -13,6 +13,9 @@ than `/api/health` and `/metrics` may change between minor versions.
 - Demo mode: made-up sample data, nothing on the machine is read or changed.
 - Doctor: prints what can and cannot be detected on this machine.
 - `GET /api/health` and Prometheus `GET /metrics`.
+- Docker tab: when Docker is installed but its engine (Colima, Docker Desktop, OrbStack,
+  Podman) is not running, it says so and offers to start it. Quitting the Docker
+  virtual machine from "What is using memory" now warns that every container stops.
 - "Sign in this browser" button on the key screen: one click opens the signed-in
   page in your default browser, no key to copy.
 - Access key, on by default: a random key in the data folder (or `DASH_TOKEN`) is

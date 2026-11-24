@@ -769,7 +769,7 @@ function renderMetrics(d){
     (dk.length?dk.map(c=>{const sv=S.services.find(x=>x.docker===c.name),id='dk:'+c.name,r=x=>`<td class="num" style="text-align:right">${x}</td>`;
       return `<tr class="click" onclick="openDrawer(${jq(id)})"><td class="nmc"><b>${esc(sv?sv.name:c.name)}</b> <span class="muted" style="font-size:12px">${esc(c.name)}</span></td>${r(esc(c.cpu))}${r(u(c.mem).split(' / ')[0])}${r(esc(c.memPct))}${r(u(c.net))}${r(u(c.block))}${r(esc(c.pids))}
         <td style="white-space:nowrap;text-align:right" onclick="event.stopPropagation()"><button class="tbtn" onclick="doAct(${jq(id)},'restart')">⟳ Restart</button><button class="tbtn" onclick="openDrawer(${jq(id)},'logs')">Logs</button></td></tr>`;}).join('')
-      :'<tr><td colspan="8" class="empty">No running containers</td></tr>')+`</tbody>`;
+      :`<tr><td colspan="8" class="empty">${INV&&INV.dockerDown?dockerDownHtml(false):'No running containers'}</td></tr>`)+`</tbody>`;
   renderMem(d);renderProcs();
 }
 const MPARTS=[['app','Apps (in RAM)','var(--accent2)'],['wired','Locked by system and AI models','var(--accent)'],['compressed','Compressed','var(--warn)'],['cached','Cached files','var(--idle)'],['other','Other','var(--border2)'],['free','Free','var(--surface3)']];
@@ -811,7 +811,9 @@ function killProc(pid,name){
 }
 function quitApp(i){
   const a=(MET.apps||[])[i];if(!a)return;
-  askConfirm(`Quit ${a.name}?`,`Asks all ${a.n} process${a.n>1?'es':''} of ${a.name} to quit (${fmtMB(a.memMB)} freed). Anything unsaved is lost.`,()=>post('/api/app',{name:a.name},'quit '+a.name));
+  const vm=/^Virtual machine/.test(a.name),run=(S.services||[]).filter(s=>s.kind==='docker'&&s.up).length;
+  askConfirm(`Quit ${a.name}?`,vm?`This is the virtual machine Docker runs in. Quitting it stops Docker and every container${run?' ('+run+' running now)':''}. They stay down until you start Docker again from the Docker tab. ${fmtMB(a.memMB)} freed.`
+    :`Asks all ${a.n} process${a.n>1?'es':''} of ${a.name} to quit (${fmtMB(a.memMB)} freed). Anything unsaved is lost.`,()=>post('/api/app',{name:a.name},'quit '+a.name));
 }
 
 /* ---- services render + topology ---- */
@@ -1161,8 +1163,27 @@ function foldOff(cs,gi,rowf){   // running containers, then the stopped ones beh
   const on=cs.filter(c=>c.state==='running'||c.state==='paused'),off=cs.filter(c=>!on.includes(c)),o=dkOff[gi];
   return on.map(rowf).join('')+(off.length?`<div class="sfold" onclick="dkOff[${gi}]=!dkOff[${gi}];renderDockerInv(window._dk)">${o?'▾':'▸'} <b>${off.length} stopped</b>${o?'':' · click to show'}</div>`+(o?off.map(rowf).join(''):''):'');
 }
+/* Docker tab and Overview card when Docker has nothing to say: not installed, or installed and its engine is not running */
+function dockerDownHtml(big){
+  const d=INV&&INV.dockerDown;
+  if(!INV)return '<div class="sec empty">Looking for Docker...</div>';
+  if(!d)return `<div class="sec empty">Docker is not installed on this machine. Install Docker Desktop, Colima, OrbStack or Podman and its containers show up here.</div>`;
+  const btn=d.canStart?`<button class="btn" id="dk-start" onclick="startDocker()" style="background:var(--accent);color:var(--bg);font-weight:700;border-color:transparent">▶ Start ${esc(d.engine)}</button>`
+    :`<span>To start it: <code>${esc(d.hint)}</code></span>`;
+  return big?`<div class="sec" style="padding:26px 28px;border-left:3px solid var(--warn)">
+      <div style="font-size:17px;font-weight:700;margin-bottom:8px">${esc(d.engine)} is not running</div>
+      <div style="color:var(--dim);line-height:1.55;max-width:760px;margin-bottom:16px">Docker is installed, but the engine behind it is not answering, so no container, image or volume can be read. Everything that runs in Docker is down until it is started again.</div>
+      ${btn} <span id="dk-start-m" style="color:var(--dim);margin-left:10px"></span></div>`
+    :`<div class="empty">${esc(d.engine)} is not running, so there are no containers. ${btn}</div>`;
+}
+let dkWait=0;
+async function startDocker(){
+  const j=await post('/api/docker',{action:'start-engine'},'start Docker');if(!j||!j.ok)return;
+  const m=$('#dk-start-m');if(m)m.textContent='Starting. This takes about a minute...';
+  clearInterval(dkWait);let n=0;dkWait=setInterval(async()=>{await loadInv(true);if((INV&&INV.docker)||++n>18)clearInterval(dkWait);},10000);
+}
 function renderDockerOne(k){
-  if(!k){$('#b-dk').textContent='—';$('#dk-sub').textContent='';$('#dk-hint').textContent='';$('#dk-stats').innerHTML='';$('#dk-body').innerHTML='<div class="sec empty">Docker is not running or not installed.</div>';return;}
+  if(!k){$('#b-dk').textContent='—';$('#dk-sub').textContent='';$('#dk-hint').textContent='';$('#dk-stats').innerHTML='';$('#dk-body').innerHTML=dockerDownHtml(true);return;}
   window._dk=k;const T=k.totals||{},t=n=>T[n]||{},run=k.containers.filter(c=>c.state==='running').length;
   $('#b-dk').textContent=run+'/'+k.containers.length;$('#dk-sub').textContent=`${run} of ${k.containers.length} containers running`;
   $('#dk-stats').innerHTML=[['Containers',run+' running',k.stopped?k.stopped+' stopped':'none stopped'],
