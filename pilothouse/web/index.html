@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Local AI Control</title>
+<title>Pilothouse</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3 29 16 16 29 3 16z' fill='%233bc6f0'/%3E%3Cpath d='M16 10 22 16 16 22 10 16z' fill='%230a0d12'/%3E%3C/svg%3E">
 <style>
   :root{
     --bg:#0a0d12; --surface:#111722; --surface2:#171f2c; --surface3:#1e2735;
@@ -459,7 +460,7 @@
 </head>
 <body>
 <header>
-  <h1><span class="lg">◈</span> Local AI Control</h1>
+  <h1><span class="lg">◈</span> Pilothouse</h1>
   <div class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>
     <input id="q" placeholder="Filter…" aria-label="Filter"><kbd>⌘K</kbd></div>
   <div class="health"><span class="pulse" id="pulse"></span><span class="big" id="hcount">—</span></div>
@@ -591,19 +592,52 @@
 <div id="confirm"><div class="cbox"><h3 id="c-title"></h3><p id="c-msg"></p><label class="cforce" id="c-forcerow"><input type="checkbox" id="c-force"> Force (SIGKILL) - use only if it ignores a normal stop</label><div class="row"><button class="act" id="c-cancel">Cancel</button><button class="act danger" id="c-ok">Confirm</button></div></div></div>
 <div id="toasts"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.30.2/cytoscape.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/dagre/0.8.5/dagre.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape-dagre/2.5.0/cytoscape-dagre.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.30.2/cytoscape.min.js" integrity="sha512-EY3U1MWdgKx0P1dqTE4inlKz2cpXtWpsR1YUyD855Hs6RL/A0cyvrKh60EpE8wDZ814cTe1KgRK+sG0Rn792vQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dagre/0.8.5/dagre.min.js" integrity="sha512-psLUZfcgPmi012lcpVHkWoOqyztollwCGu4w/mXijFMK/YcdUdP06voJNVOJ7f/dUIlO2tGlDLuypRyXX2lcvQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
-const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)], esc=s=>(s==null?'':String(s)).replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)], esc=s=>(s==null?'':String(s)).replace(/[<>&"'`]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;','`':'&#96;'}[c]));
+/* Everything shown here came from the machine (names, paths, titles, log lines) and may be hostile.
+   esc(v): for text and for attribute values.  jq(v): a JS string literal for an inline handler, e.g. onclick="go(${jq(id)})".
+   The browser un-escapes HTML before it runs a handler, so esc() alone is NOT enough inside one.  url(v): http(s) links only. */
+const jq=v=>esc(JSON.stringify(v==null?'':String(v))), url=v=>/^https?:\/\//i.test(v||'')?esc(v):'#';
 let CORES=navigator.hardwareConcurrency||8;
 let S={services:[],alerts:[],events:[]}, MET=null, INV=null, paused=false, lastTs=0;
 const ls=k=>{try{return localStorage.getItem(k)}catch(e){return null}}, lset=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+(()=>{const take=()=>{const m=/[#&]t=([^&]+)/.exec(location.hash);if(!m)return false;
+    lset('ph-token',decodeURIComponent(m[1]));history.replaceState(null,'',location.pathname+location.search);return true;};
+  take();window.addEventListener('hashchange',()=>{if(take())location.reload();});   // the link opened in a tab that already shows the page
+  window.addEventListener('storage',e=>{if(e.key==='ph-token'&&e.newValue&&$('#gate'))location.reload();});   // another tab just signed in
+  const f=window.fetch.bind(window);
+  window.fetch=async(u,o={})=>{const t=ls('ph-token'),r=await f(u,t?{...o,headers:{...(o.headers||{}),Authorization:'Bearer '+t}}:o);
+    if(r.status===401)needToken();return r;};})();
+function needToken(){
+  if($('#gate'))return;const g=document.createElement('div');g.id='gate';
+  g.style.cssText='position:fixed;inset:0;z-index:200;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px';
+  g.innerHTML=`<div style="max-width:560px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px 30px;box-shadow:var(--sh)">
+    <div style="font-size:19px;font-weight:700;margin-bottom:10px">This browser needs the access key</div>
+    <div style="color:var(--dim);line-height:1.55;font-size:14px">Any program on this computer can reach this address, so Pilothouse only answers a browser that holds its key. You do this once per browser.</div>
+    <button class="btn" id="gate-b" type="button" style="margin-top:18px;font-size:14.5px;padding:10px 16px;background:var(--accent);color:var(--bg);font-weight:700;border-color:transparent">Sign in this browser</button>
+    <div id="gate-m" style="color:var(--dim);font-size:13px;margin-top:10px;min-height:18px"></div>
+    <div style="margin:14px 0 0;padding-top:16px;border-top:1px solid var(--border);color:var(--dim);font-size:13px">Another browser, or the button did not work? Do it by hand:</div>
+    <div style="margin:12px 0 6px;font-weight:600;font-size:14px">1. In the Pilothouse folder, run</div>
+    <pre style="margin:0;background:var(--surface3);border-radius:8px;padding:10px 12px;font-size:13.5px;user-select:all">python3 server.py --link</pre>
+    <div style="margin:16px 0 6px;font-weight:600;font-size:14px">2. Open the address it prints, or paste it (or just the key) here</div>
+    <form id="gate-f" style="display:flex;gap:8px"><input id="gate-i" autocomplete="off" spellcheck="false" placeholder="http://localhost:7777/#t=…" style="flex:1;min-width:0;background:var(--surface2);color:var(--text);border:1px solid var(--border2);border-radius:8px;padding:9px 11px;font-size:14px">
+      <button class="btn" type="submit">Continue</button></form></div>`;
+  document.body.appendChild(g);$('#gate-i').focus();
+  $('#gate-f').onsubmit=e=>{e.preventDefault();const v=$('#gate-i').value.trim(),t=(/[#&]t=([^&\s]+)/.exec(v)||[0,v])[1];
+    if(!t){$('#gate-m').textContent='Paste the address or the key first.';return;}
+    lset('ph-token',t);location.reload();};
+  $('#gate-b').onclick=async()=>{const m=$('#gate-m');m.textContent='Opening...';
+    try{const r=await fetch('/api/pair',{method:'POST',headers:{'X-Dash':'1'}}),j=await r.json();m.textContent=j.msg||'';}
+    catch(e){m.textContent='Pilothouse is not answering. Is it running?';}};
+  if(ls('ph-token'))$('#gate-m').textContent='The key saved in this browser does not match any more. Sign in again.';
+}
 const fmtMB=mb=>mb>=1024?(mb/1024).toFixed(1)+' GB':Math.round(mb||0)+' MB';
 const ACT={restart:['⟳','Restart'],stop:['■','Stop'],start:['▶','Start'],pause:['⏸','Pause'],unpause:['▶','Resume'],kill:['✕','Force kill'],unload:['⏏','Stop and keep stopped'],remove:['🗑','Remove container']};
 const DANGER={stop:1,kill:1,unload:1,remove:1};
-const up=t=>{const m=/^(?:(\d+)-)?(?:(\d+):)?(\d+):(\d+)$/.exec(t||'');if(!m)return t||'';const d=+(m[1]||0),h=+(m[2]||0),mi=+m[3];return d?d+'d '+h+'h':h?h+'h '+mi+'m':mi?mi+'m':m[4]+'s';};
-const u=t=>(t||'').replace(/([\d.]+)\s*([kKMGT])i?B/g,(_,n,x)=>(+n>=100?Math.round(+n):Math.round(+n*10)/10)+' '+x.toUpperCase()+'B');
+const up=t=>{const m=/^(?:(\d+)-)?(?:(\d+):)?(\d+):(\d+)$/.exec(t||'');if(!m)return esc(t||'');const d=+(m[1]||0),h=+(m[2]||0),mi=+m[3];return d?d+'d '+h+'h':h?h+'h '+mi+'m':mi?mi+'m':m[4]+'s';};
+const u=t=>esc(t||'').replace(/([\d.]+)\s*([kKMGT])i?B/g,(_,n,x)=>(+n>=100?Math.round(+n):Math.round(+n*10)/10)+' '+x.toUpperCase()+'B');
 const hhmm=ts=>{const d=new Date(ts*1000),t=d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});return d.toDateString()===new Date().toDateString()?t:d.toLocaleDateString([],{weekday:'short'})+' '+t;};
 const dur=s=>s<90?Math.round(s)+'s':s<5400?Math.round(s/60)+'m':s<172800?(s/3600).toFixed(1)+'h':Math.round(s/86400)+'d';
 /* segmented controls: <span class="seg" id=..> with data-v buttons */
@@ -676,7 +710,7 @@ function chart(H){
   return`<svg class="hchart" viewBox="0 0 ${w} ${vh}">${grid}${paths}${xax}</svg>`;
 }
 function renderHleg(d){if(!d)return;window._Hd=d;
-  $('#hist-leg').innerHTML='<span class="hleg">'+HSERIES.map(([k,lab,c])=>{const cur=k==='load'?d.load[0].toFixed(1):k==='disk'?((d.disk[0]?.pct??0)+'%'):((k==='mem'?d.memPct:d[k])+'%');return `<span class="lchip ${hVis[k]?'':'off'}" onclick="toggleSeries('${k}')"><i style="background:${c}"></i>${lab} <b>${hVis[k]?cur:''}</b></span>`;}).join('')+'</span>';}
+  $('#hist-leg').innerHTML='<span class="hleg">'+HSERIES.map(([k,lab,c])=>{const cur=k==='load'?d.load[0].toFixed(1):k==='disk'?((d.disk[0]?.pct??0)+'%'):((k==='mem'?d.memPct:d[k])+'%');return `<span class="lchip ${hVis[k]?'':'off'}" onclick="toggleSeries(${jq(k)})"><i style="background:${c}"></i>${lab} <b>${hVis[k]?cur:''}</b></span>`;}).join('')+'</span>';}
 let hoverWired=false,isHover=false;
 function renderHistory(H){
   const el=$('#histchart');if(!el)return;window._H=H;
@@ -733,8 +767,8 @@ function renderMetrics(d){
   $('#dk-ct').textContent=dk.length+' running';
   $('#docker').innerHTML=`<thead><tr><th>Container</th><th style="text-align:right">CPU</th><th style="text-align:right">Memory</th><th style="text-align:right">Of its limit</th><th style="text-align:right">Network in / out</th><th style="text-align:right">Disk read / write</th><th style="text-align:right">Processes</th><th></th></tr></thead><tbody>`+
     (dk.length?dk.map(c=>{const sv=S.services.find(x=>x.docker===c.name),id='dk:'+c.name,r=x=>`<td class="num" style="text-align:right">${x}</td>`;
-      return `<tr class="click" onclick="openDrawer('${id}')"><td class="nmc"><b>${esc(sv?sv.name:c.name)}</b> <span class="muted" style="font-size:12px">${esc(c.name)}</span></td>${r(esc(c.cpu))}${r(u(c.mem).split(' / ')[0])}${r(esc(c.memPct))}${r(u(c.net))}${r(u(c.block))}${r(esc(c.pids))}
-        <td style="white-space:nowrap;text-align:right" onclick="event.stopPropagation()"><button class="tbtn" onclick="doAct('${id}','restart')">⟳ Restart</button><button class="tbtn" onclick="openDrawer('${id}','logs')">Logs</button></td></tr>`;}).join('')
+      return `<tr class="click" onclick="openDrawer(${jq(id)})"><td class="nmc"><b>${esc(sv?sv.name:c.name)}</b> <span class="muted" style="font-size:12px">${esc(c.name)}</span></td>${r(esc(c.cpu))}${r(u(c.mem).split(' / ')[0])}${r(esc(c.memPct))}${r(u(c.net))}${r(u(c.block))}${r(esc(c.pids))}
+        <td style="white-space:nowrap;text-align:right" onclick="event.stopPropagation()"><button class="tbtn" onclick="doAct(${jq(id)},'restart')">⟳ Restart</button><button class="tbtn" onclick="openDrawer(${jq(id)},'logs')">Logs</button></td></tr>`;}).join('')
       :'<tr><td colspan="8" class="empty">No running containers</td></tr>')+`</tbody>`;
   renderMem(d);renderProcs();
 }
@@ -749,7 +783,7 @@ function renderMem(d){
   $('#apps').innerHTML=apps.map((a,i)=>{const open=appOpen.has(a.name);return `<div class="brow" onclick="toggleApp(${i})" title="${a.n>1?'show its processes':''}"><span class="bn"><i>${open?'▾':'▸'}</i>${esc(a.name)}<small>${a.n>1?a.n+' processes':''}${a.swapMB>200?' · '+fmtMB(a.swapMB)+' squeezed or on disk':''}</small></span>
     <span class="bb"><i style="width:${Math.min(100,a.memMB/totMB*100).toFixed(1)}%"></i></span><span class="bv">${fmtMB(a.memMB)}</span><span class="bc">${a.cpu.toFixed(0)}%</span>
     <button class="xbtn" ${a.mine?'':'disabled'} title="${a.mine?'Quit '+esc(a.name):'system or other user: cannot quit'}" onclick="event.stopPropagation();quitApp(${i})">✕</button></div>`
-    +(open?`<div class="bprocs"><div class="bproc" style="color:var(--dim2)"><span style="text-align:left">PID</span><b style="color:var(--dim2)">process</b><span>memory</span><span>CPU</span><span>running</span><span></span></div>${a.procs.map(q=>`<div class="bproc"><span style="text-align:left">${q.pid}</span><b title="${esc(q.name)}">${esc(q.name)}</b><span>${fmtMB(q.rssMB)}</span><span>${q.cpu.toFixed(0)}%</span><span>${up(q.up)}</span><button class="xbtn" ${q.mine?'':'disabled'} title="Stop this process" onclick="event.stopPropagation();killProc(${q.pid},'${esc(q.name).replace(/'/g,'')}')">✕</button></div>`).join('')}${a.n>a.procs.length?`<div class="bproc" style="color:var(--dim2)"><span></span><b style="color:var(--dim2)">+ ${a.n-a.procs.length} smaller</b></div>`:''}<div class="apphist" data-app="${esc(a.name)}">${appHist[a.name]||''}</div></div>`:'');}).join('')||'<div class="empty">no data yet</div>';
+    +(open?`<div class="bprocs"><div class="bproc" style="color:var(--dim2)"><span style="text-align:left">PID</span><b style="color:var(--dim2)">process</b><span>memory</span><span>CPU</span><span>running</span><span></span></div>${a.procs.map(q=>`<div class="bproc"><span style="text-align:left">${q.pid}</span><b title="${esc(q.name)}">${esc(q.name)}</b><span>${fmtMB(q.rssMB)}</span><span>${q.cpu.toFixed(0)}%</span><span>${up(q.up)}</span><button class="xbtn" ${q.mine?'':'disabled'} title="Stop this process" onclick="event.stopPropagation();killProc(${q.pid},${jq(q.name)})">✕</button></div>`).join('')}${a.n>a.procs.length?`<div class="bproc" style="color:var(--dim2)"><span></span><b style="color:var(--dim2)">+ ${a.n-a.procs.length} smaller</b></div>`:''}<div class="apphist" data-app="${esc(a.name)}">${appHist[a.name]||''}</div></div>`:'');}).join('')||'<div class="empty">no data yet</div>';
 }
 let appsAll=true;$('#apps-more').onclick=()=>{appsAll=!appsAll;renderMem(MET);};
 const appOpen=new Set();
@@ -858,7 +892,7 @@ function cardHTML(s,pos){
   const chips=s.up?`${s.memMB?`<span>${fmtMB(s.memMB)}</span>`:''}<span>${(s.cpuN||0).toFixed(1)}% CPU</span>${s.port?`<span class="port">port ${s.port}</span>`:''}`
     :`<span class="${st==='err'?'bad':'off'}">${st==='err'?'DOWN':'stopped'}</span>${s.port?`<span class="port">:${s.port}</span>`:''}`;
   return `<div class="nd ${st}" data-n="${esc(s.id)}" style="--g:${GCOL(s.group)};left:${pos.x-NW/2}px;top:${pos.y-NH/2}px">
-    <div class="nd-h"><span class="dot" style="background:${SCOL[st]}"></span><b>${s.kind==='docker'?'🐳 ':''}${esc(nm)}</b><span style="flex:1"></span><button class="nd-k" title="actions" onclick="event.stopPropagation();menu(event,'${s.id}')">⋯</button></div>
+    <div class="nd-h"><span class="dot" style="background:${SCOL[st]}"></span><b>${s.kind==='docker'?'🐳 ':''}${esc(nm)}</b><span style="flex:1"></span><button class="nd-k" title="actions" onclick="event.stopPropagation();menu(event,${jq(s.id)})">⋯</button></div>
     <div class="nd-d">${q.length?`<i>${esc(q.join(' · '))}</i>${s.desc?' · ':''}`:''}${esc(s.desc||(s.kind==='docker'?s.where:''))}</div><div class="nd-m">${chips}</div></div>`;
 }
 function sectHead(t){   // title + count + the buttons that act on the whole section
@@ -918,10 +952,10 @@ function renderServices(d){
   const lv=al.some(a=>a.level==='err')||down?'err':al.length?'warn':'';
   const big=((MET&&MET.apps)||[]).slice(0,2).map(a=>`${a.name} ${fmtMB(a.memMB)}`).join(', ');
   const fix=a=>{const sv=a.id&&d.services.find(x=>x.id===a.id),act=sv&&['start','restart'].find(x=>(sv.actions||[]).includes(x));
-    if(act)return `<button class="btn sm" onclick="doAct('${a.id}','${act}')">${ACT[act][0]} ${ACT[act][1]} it</button><button class="btn sm" onclick="openDrawer('${a.id}','logs')">See its logs</button>`;
+    if(act)return `<button class="btn sm" onclick="doAct(${jq(a.id)},${jq(act)})">${ACT[act][0]} ${ACT[act][1]} it</button><button class="btn sm" onclick="openDrawer(${jq(a.id)},'logs')">See its logs</button>`;
     if(a.key==='mem'||a.key==='pressure')return ((MET&&MET.llm)||[]).slice(0,2).map((m,i)=>`<button class="btn sm" onclick="doModelName(MET.llm[${i}].name,'stop')">Unload ${esc(m.name)} (${esc(m.size)})</button>`).join('')+`<button class="btn sm" onclick="$('#memsec').scrollIntoView({behavior:'smooth',block:'center'})">See what uses it</button>`;
     if((a.key||'').startsWith('budget'))return `<button class="btn sm" onclick="showTab('usage')">See usage</button>`;
-    return a.id?`<button class="btn sm" onclick="openDrawer('${a.id}')">Open it</button>`:'';};
+    return a.id?`<button class="btn sm" onclick="openDrawer(${jq(a.id)})">Open it</button>`:'';};
   const seen=new Set(),lines=al.filter(a=>{const k=(a.key==='pressure'&&al.some(x=>x.key==='mem'))?'skip':a.key;if(k==='skip'||seen.has(k))return false;seen.add(k);return true;});
   $('#hero').innerHTML=`<div class="hero ${lv}"><div class="hleft"><div class="hb">${down?`${down} service${down>1?'s are':' is'} down`:al.length?'Everything is running, but something needs attention':'Everything is running'}</div>
     <div class="hs">${up} services running${idle?', '+idle+' stopped on purpose':''}, using ${fmtMB(d.services.reduce((a,s)=>a+(s.up?s.memMB||0:0),0))} of memory between them</div>
@@ -936,16 +970,16 @@ function renderServices(d){
 }
 function srow(s){
   const st=svcState(s),on=s.up&&st!=='paused';
-  const open=s.url?`<a class="srowlink" href="${s.url}" target="_blank" rel="noopener" title="open in browser" onclick="event.stopPropagation()">↗</a>`:'';
-  const quick=(s.actions||[]).filter(a=>['restart','start','unpause','stop'].includes(a)).slice(0,2).map(a=>`<button class="tbtn ${DANGER[a]?'danger':''}" onclick="event.stopPropagation();doAct('${s.id}','${a}')">${ACT[a][0]} ${ACT[a][1]}</button>`).join('');
-  return `<div class="srow sgrid" data-id="${s.id}" onclick="openDrawer('${s.id}')" tabindex="0" role="button" aria-label="${esc(s.name)}, ${SWORD[st]}">
+  const open=s.url?`<a class="srowlink" href="${url(s.url)}" target="_blank" rel="noopener" title="open in browser" onclick="event.stopPropagation()">↗</a>`:'';
+  const quick=(s.actions||[]).filter(a=>['restart','start','unpause','stop'].includes(a)).slice(0,2).map(a=>`<button class="tbtn ${DANGER[a]?'danger':''}" onclick="event.stopPropagation();doAct(${jq(s.id)},${jq(a)})">${ACT[a][0]} ${ACT[a][1]}</button>`).join('');
+  return `<div class="srow sgrid" data-id="${esc(s.id)}" onclick="openDrawer(${jq(s.id)})" tabindex="0" role="button" aria-label="${esc(s.name)}, ${SWORD[st]}">
     <span class="sdot" style="background:${SCOL[st]}" aria-hidden="true"></span>
     <span class="sname"><span class="snm">${esc(s.name)}</span>${s.desc?`<span class="sdesc">${esc(s.desc)}</span>`:''}</span>
     <span>${on?mini(s.hist&&s.hist.mem,70,18):''}</span>
     <span class="r">${on?(s.memMB?`<b class="smem" style="width:auto">${fmtMB(s.memMB)}</b>`:'—'):`<span class="sstate ${st}">${SWORD[st]}</span>`}</span>
     <span class="r">${on?(s.cpuN||0).toFixed(1)+'%':''}</span>
     <span class="r" style="color:var(--dim)">${s.port||''}</span>
-    <span class="sact">${open}${quick}<button class="srowk" title="more actions" onclick="event.stopPropagation();menu(event,'${s.id}')">⋯</button></span></div>`;
+    <span class="sact">${open}${quick}<button class="srowk" title="more actions" onclick="event.stopPropagation();menu(event,${jq(s.id)})">⋯</button></span></div>`;
 }
 const SHEAD=`<div class="sgrid shead"><span></span><span>Service</span><span>Trend</span><span class="r">Memory</span><span class="r">CPU</span><span class="r">Port</span><span></span></div>`;
 let svcCollapsed={};try{svcCollapsed=JSON.parse(localStorage.getItem('svccol'))||{}}catch(e){}
@@ -985,7 +1019,7 @@ function toggleOff(i){const g=(window._sgorder||[])[i];if(g==null)return;offOpen
 /* ---- alerts + events ---- */
 const EK={wait:['◷','warn'],up:['▲','ok'],down:['▼','err'],new:['+','ok'],gone:['−','warn'],action:['⚙','dim'],alert:['!','err'],resolved:['✓','ok']};
 const etime=ts=>{const d=Math.floor(Date.now()/1000)-ts;return hhmm(ts)+' · '+dur(d)+' ago';};
-function evrow(e){const k=EK[e.kind]||EK.action;return `<div class="evrow" ${e.id?`data-id="${esc(e.id)}" onclick="openDrawer('${esc(e.id)}')"`:''}><span class="evi ${k[1]}">${k[0]}</span><span>${esc(e.msg)}${e.times>1?` <span class="muted">· ${e.times} times since ${hhmm(e.first)}</span>`:''}</span><span class="evt">${etime(e.ts)}</span></div>`;}
+function evrow(e){const k=EK[e.kind]||EK.action;return `<div class="evrow" ${e.id?`data-id="${esc(e.id)}" onclick="openDrawer(${jq(e.id)})"`:''}><span class="evi ${k[1]}">${k[0]}</span><span>${esc(e.msg)}${e.times>1?` <span class="muted">· ${e.times} times since ${hhmm(e.first)}</span>`:''}</span><span class="evt">${etime(e.ts)}</span></div>`;}
 /* "what happened while I was away": events + peaks since a moment, from the on-disk history */
 async function showSince(ts,manual){
   let d;try{d=await (await fetch('/api/since?ts='+Math.floor(ts))).json();}catch(e){return;}
@@ -1008,7 +1042,7 @@ function touchSeen(){   // first poll after an absence shows the summary; after 
 }
 function renderAlerts(){
   const al=S.alerts||[];
-  const html=al.map(a=>`<div class="alert ${a.level}" onclick="${a.id?`openDrawer('${esc(a.id)}')`:`showTab('overview')`}"><b>${a.level==='err'?'●':'▲'}</b>${esc(a.msg)}${(()=>{const sv=a.id&&S.services.find(x=>x.id===a.id),act=sv&&['start','restart'].find(x=>(sv.actions||[]).includes(x));return act?`<button class="tbtn" onclick="event.stopPropagation();doAct('${a.id}','${act}')">${ACT[act][0]} ${ACT[act][1]} now</button>`:'';})()}<span class="go">${a.id?'inspect ›':''}</span></div>`).join('');
+  const html=al.map(a=>`<div class="alert ${a.level}" onclick="${a.id?`openDrawer(${jq(a.id)})`:`showTab('overview')`}"><b>${a.level==='err'?'●':'▲'}</b>${esc(a.msg)}${(()=>{const sv=a.id&&S.services.find(x=>x.id===a.id),act=sv&&['start','restart'].find(x=>(sv.actions||[]).includes(x));return act?`<button class="tbtn" onclick="event.stopPropagation();doAct(${jq(a.id)},${jq(act)})">${ACT[act][0]} ${ACT[act][1]} now</button>`:'';})()}<span class="go">${a.id?'inspect ›':''}</span></div>`).join('');
   $('#alerts').innerHTML='';   // the Overview headline states each alert once, with its fix
   $('#al-list').innerHTML=html?`<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px">${html}</div>`:'<div class="sec" style="--g:var(--ok);color:var(--dim)">✓ Nothing needs attention right now.</div>';
   $('#al-sub').textContent=al.length?al.length+' alert'+(al.length>1?'s':'')+' active':'all clear';
@@ -1032,7 +1066,7 @@ function renderEvents(){
   const top=ev.length?ev[0].n:0;
   if(lastEvN!==null)ev.filter(e=>e.n>lastEvN&&e.kind!=='action'&&e.kind!=='new').reverse().forEach(e=>{
     const bad=e.kind==='down'||e.kind==='alert'||e.kind==='gone';toast(bad?'err':'ok',e.msg,'');
-    if((bad||e.kind==='wait')&&notifyOn&&window.Notification&&Notification.permission==='granted')new Notification('Local AI Control',{body:e.msg});});
+    if((bad||e.kind==='wait')&&notifyOn&&window.Notification&&Notification.permission==='granted')new Notification('Pilothouse',{body:e.msg});});
   lastEvN=top;
 }
 function paintNotify(){$('#notify').textContent=(notifyOn?'🔔 Notifications on':'🔕 Notifications off');}
@@ -1044,7 +1078,7 @@ paintNotify();
 $('#bell').onclick=()=>showTab('activity');
 function exportSnap(){
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({exported:new Date().toISOString(),status:S,metrics:MET,inventory:INV},null,1)],{type:'application/json'}));
-  a.download='local-ai-control-'+new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')+'.json';a.click();URL.revokeObjectURL(a.href);
+  a.download='pilothouse-'+new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')+'.json';a.click();URL.revokeObjectURL(a.href);
 }
 $('#cy-fit').onclick=()=>{if(cyG)cyG.fit(null,16);};
 const cyZoom=f=>{if(cyG)cyG.zoom({level:cyG.zoom()*f,renderedPosition:{x:$('#cy').clientWidth/2,y:$('#cy').clientHeight/2}});};
@@ -1058,7 +1092,7 @@ function renderInv(v){
   $('#agents').innerHTML='<div class="srows">'+v.agents.map(a=>{
     const dot=a.running?'var(--ok)':(a.installed?'var(--idle)':'var(--err)');
     const meta=(a.running?`<b class="smem" style="width:auto">${fmtMB(a.memMB)}</b> · ${a.procs} process${a.procs>1?'es':''}`:'not running')+((a.facts||{}).size?' · '+esc(a.facts.size)+' of data':'')+(a.version?' · v'+esc(a.version):'');
-    return `<div class="srow" data-id="${a.id}" onclick="selectAgent('${a.id}')" tabindex="0" role="button" aria-label="${esc(a.name)}">
+    return `<div class="srow" data-id="${esc(a.id)}" onclick="selectAgent(${jq(a.id)})" tabindex="0" role="button" aria-label="${esc(a.name)}">
       <span class="sdot" style="background:${dot}"></span>
       <span class="snm">${esc(a.name)}</span>
       <span class="sright"><span class="smeta">${meta}</span></span></div>`;}).join('')+'</div>';
@@ -1077,21 +1111,21 @@ function renderRepos(){
   const owners={};rp.forEach(r=>owners[r.owner]=(owners[r.owner]||0)+1);
   const list=rp.filter(r=>repoOwner==='all'||r.owner===repoOwner).sort(repoSort==='name'?(a,b)=>a.nm.localeCompare(b.nm):repoSort==='changes'?(a,b)=>(b.dirty+b.ahead)-(a.dirty+a.ahead):(a,b)=>b.lastTs-a.lastTs);
   const dirty=rp.filter(r=>r.dirty).length,push=rp.filter(r=>r.ahead).length;
-  const fb=(k,l)=>`<button class="btn sm ${repoOwner===k?'on':''}" onclick="repoOwner='${k}';renderRepos()">${l}</button>`,sb=(k,l)=>`<button class="btn sm ${repoSort===k?'on':''}" onclick="repoSort='${k}';lset('reposort','${k}');renderRepos()">${l}</button>`;
+  const fb=(k,l)=>`<button class="btn sm ${repoOwner===k?'on':''}" onclick="repoOwner=${jq(k)};renderRepos()">${l}</button>`,sb=(k,l)=>`<button class="btn sm ${repoSort===k?'on':''}" onclick="repoSort=${jq(k)};lset('reposort',${jq(k)});renderRepos()">${l}</button>`;
   $('#repos').innerHTML=`<div class="rows"><div class="rh"><b>${list.length} repositor${list.length===1?'y':'ies'}</b><small>${dirty} with uncommitted changes · ${push} with commits not pushed</small><span class="sp"></span>
       <span class="fbar"><span class="muted" style="font-size:12px">Sort</span>${sb('recent','Last changed')}${sb('changes','Most to do')}${sb('name','Name')}</span></div>
     <div class="rh" style="background:none"><span class="fbar">${fb('all','All '+rp.length)}${Object.keys(owners).sort((a,b)=>a===''?1:b===''?-1:owners[b]-owners[a]).map(o=>fb(o,(o?esc(o):'Only on this machine')+' '+owners[o])).join('')}</span></div>
     <div class="rgrid h"><span>Repository · click the path to open the folder</span><span class="c2">Branch and state</span><span class="c3">Last commit</span><span>Open in</span></div>`
     +list.map(r=>{const dir=r.path.slice(0,r.path.length-r.nm.length-1),k=`INV.github.repos[${r.i}].path`;
-      return `<div class="rgrid" data-id="rp-${esc(r.path)}"><div style="min-width:0"><div class="nm">${esc(r.nm)}${r.web?`<a href="${esc(r.web)}" target="_blank" rel="noopener">${esc(r.web.replace('https://github.com/',''))} ↗</a>`:'<span class="muted" style="font-weight:500;font-size:12.5px;margin-left:8px">not pushed anywhere</span>'}</div>
+      return `<div class="rgrid" data-id="rp-${esc(r.path)}"><div style="min-width:0"><div class="nm">${esc(r.nm)}${r.web?`<a href="${url(r.web)}" target="_blank" rel="noopener">${esc(r.web.replace('https://github.com/',''))} ↗</a>`:'<span class="muted" style="font-weight:500;font-size:12.5px;margin-left:8px">not pushed anywhere</span>'}</div>
         <div class="one"><a class="path" title="open this folder" onclick="openPath('repo',${k})">${esc(r.path)}</a></div></div>
-      <div class="c2 rchips"><span class="chipn">⎇ ${esc(r.branch)}</span>${r.dirty?`<span class="chipn warnc" title="files changed but not committed">${r.dirty} uncommitted</span>`:'<span class="chipn ok">clean</span>'}${r.ahead?`<span class="chipn warnc" title="commits that exist only on this machine">${r.ahead} to push</span>`:''}${r.behind?`<span class="chipn" title="commits on the remote you do not have yet">${r.behind} to pull</span>`:''}${r.web&&!r.tracking&&r.branch!=='detached'?'<span class="chipn dimc" title="this branch does not follow a remote branch">branch not on remote</span>':''}</div>
+      <div class="c2 rchips"><span class="chipn">⎇ ${esc(r.branch)}</span>${r.checked===false?`<span class="chipn dimc" title="${esc(r.note||'')}">${r.note&&r.note.startsWith('git is not')?'git not installed':'status not read'}</span>`:`${r.dirty?`<span class="chipn warnc" title="files changed but not committed">${r.dirty} uncommitted</span>`:'<span class="chipn ok">clean</span>'}${r.ahead?`<span class="chipn warnc" title="commits that exist only on this machine">${r.ahead} to push</span>`:''}${r.behind?`<span class="chipn" title="commits on the remote you do not have yet">${r.behind} to pull</span>`:''}${r.web&&!r.tracking&&r.branch!=='detached'?'<span class="chipn dimc" title="this branch does not follow a remote branch">branch not on remote</span>':''}`}</div>
       <div class="c3" style="min-width:0"><div style="font-size:13px">${esc(r.last||'no commits yet')}</div><div class="one" title="${esc(r.subject||'')}">${esc(r.subject||'')}</div></div>
       <div class="acts" style="display:flex;gap:6px"><button class="btn sm" onclick="openPath('repo',${k})">Folder</button>${T.editor?`<button class="btn sm" onclick="openPath('repo',${k},'editor')">${esc(T.editor)}</button>`:''}${T.terminal?`<button class="btn sm" onclick="openPath('repo',${k},'terminal')">Terminal</button>`:''}<button class="btn sm" title="copy the path" onclick="copyText(${k})">Copy</button></div></div>`;}).join('')+'</div>';
 }
 const gbOf=t=>{const m=/([\d.]+)\s*(GB|MB)/i.exec(t||'');return m?(+m[1])*(m[2].toUpperCase()==='GB'?1:1/1024):0;};
-const keep=t=>t==='Forever'?'until you unload it':t==='its process runs'?'while its server runs':'for '+t;
-const ctxk=c=>c?(+c>=1000?Math.round(+c/1024)+'k':c)+' tokens of context':'';
+const keep=t=>t==='Forever'?'until you unload it':t==='its process runs'?'while its server runs':'for '+esc(t);
+const ctxk=c=>c?(+c>=1000?Math.round(+c/1024)+'k':esc(c))+' tokens of context':'';
 function renderModels(v){
   const ms=v.models.map((m,i)=>({...m,i})),on=ms.filter(m=>m.loaded),tot=l=>{const b=l.reduce((a,m)=>a+(m.bytes||gbOf(m.size)*1e9),0);return b>=1e9?(b/1e9).toFixed(0)+' GB':Math.round(b/1e6)+' MB';};
   const up=ms.some(m=>m.ollamaUp),olSvc=S.services.find(x=>!x.up&&x.name.startsWith('Ollama')&&(x.actions||[]).includes('start'));
@@ -1100,7 +1134,7 @@ function renderModels(v){
   const row=m=>`<div class="r2 ${m.ollama&&up?'click':''}" data-id="md-${esc(m.name)}" ${m.ollama&&up?`onclick="openModel(${m.i})"`:''}>
     <span class="dot" style="background:${m.loaded?'var(--ok)':'var(--idle)'}"></span>
     <div class="tx"><div class="nm">${esc(m.name)}</div>
-      <div class="sb">${m.loaded?[m.ollama?'held by Ollama':'held by '+esc(m.proc||'a running server'),m.ollama?m.proc:'',ctxk(m.ctx),m.until?'stays loaded '+keep(m.until):''].filter(Boolean).join(' · ')+' · ':''}${esc(m.runtime)} · ${where(m)}${m.modified?' · changed '+esc(m.modified):''}</div></div>
+      <div class="sb">${m.loaded?[m.ollama?'held by Ollama':'held by '+esc(m.proc||'a running server'),m.ollama?esc(m.proc):'',ctxk(m.ctx),m.until?'stays loaded '+keep(m.until):''].filter(Boolean).join(' · ')+' · ':''}${esc(m.runtime)} · ${where(m)}${m.modified?' · changed '+esc(m.modified):''}</div></div>
     <span class="cn">${esc(m.size)}</span>
     <div class="acts" style="width:250px;justify-content:flex-end" onclick="event.stopPropagation()">${m.ollama?(up?(m.loaded?`<button class="btn sm" onclick="doModel(${m.i},'stop')">Unload</button>`:`<button class="btn sm" onclick="doModel(${m.i},'load')">▶ Load</button>`)
         +`<button class="btn sm" onclick="openModel(${m.i})">Details</button><button class="btn sm danger" onclick="doModel(${m.i},'delete')">Delete</button>`:'<span class="muted" style="font-size:12px">start Ollama to load or delete</span>')
@@ -1109,7 +1143,7 @@ function renderModels(v){
   const off=k=>ms.filter(m=>!m.loaded&&m.kind===k);
   $('#models').innerHTML=grp('In memory now',`${on.length} model${on.length===1?'':'s'} · about ${tot(on)} of RAM · unload what you are not using`,on)
     +grp('Ollama models',`${off('ollama').length} on disk · ${tot(off('ollama'))}`+(up?' · Load puts one in memory':' · Ollama is not running, so these cannot be loaded right now'),off('ollama'),
-        !up&&olSvc?`<button class="btn sm" onclick="doAct('${olSvc.id}','start')">▶ Start Ollama</button>`:'')
+        !up&&olSvc?`<button class="btn sm" onclick="doAct(${jq(olSvc.id)},'start')">▶ Start Ollama</button>`:'')
     +grp('Model files',`${off('file').length} files found on this machine (GGUF, safetensors, ONNX …) · ${tot(off('file'))}`,off('file'))
     +grp('Hugging Face downloads',`${off('hf').length} in the Hugging Face cache · ${tot(off('hf'))} · used by Python tools (transformers, MLX, sentence-transformers)`,off('hf'))
     ||'<div class="sec empty">No models found. Pull one with Ollama or drop a .gguf into ~/models.</div>';
@@ -1145,11 +1179,11 @@ function renderDockerOne(k){
         ${r?`<button class="btn sm" onclick="stackAct(${gi},'restart')">⟳ Restart all</button><button class="btn sm danger" onclick="stackAct(${gi},'stop')">■ Stop all</button>`:''}${r<cs.length?`<button class="btn sm" onclick="stackAct(${gi},'start')">▶ Start stopped</button>`:''}</div>
         <div class="rcols"><span style="width:10px"></span><span class="tx">Container</span><span class="cn">Memory</span><span class="cn">CPU</span><span class="cn p">Port</span><span class="cn">Disk</span><span class="acts" style="width:330px"></span></div>`
       +foldOff(cs,gi,c=>{const sv=S.services.find(x=>x.docker===c.name),id='dk:'+c.name,st=sv?svcState(sv):'idle',a=x=>sv&&(sv.actions||[]).includes(x);
-        const b=(x,cls)=>a(x)?`<button class="btn sm ${cls||''}" onclick="doAct('${id}','${x}')">${ACT[x][0]} ${ACT[x][1].replace(' container','')}</button>`:'';
-        return `<div class="r2 click" onclick="openDrawer('${id}')"><span class="dot" style="background:${SCOL[st]}"></span>
+        const b=(x,cls)=>a(x)?`<button class="btn sm ${cls||''}" onclick="doAct(${jq(id)},${jq(x)})">${ACT[x][0]} ${ACT[x][1].replace(' container','')}</button>`:'';
+        return `<div class="r2 click" onclick="openDrawer(${jq(id)})"><span class="dot" style="background:${SCOL[st]}"></span>
           <div class="tx"><div class="nm">${esc(sv?sv.name:c.name)}<i>${esc(c.name)}</i></div><div class="sb" title="${esc(c.image)}">${sv&&sv.desc?esc(sv.desc)+' · ':''}image ${esc((c.image||'').split('/').pop())} · ${esc(c.status||c.state)}</div></div>
           <span class="cn">${sv&&sv.up&&sv.memMB?fmtMB(sv.memMB):''}</span><span class="cn">${sv&&sv.up?(sv.cpuN||0).toFixed(1)+'%':''}</span><span class="cn p">${sv&&sv.ports&&sv.ports.length?sv.ports[0]:''}</span><span class="cn">${u(c.size||'').split(' (')[0]}</span>
-          <div class="acts" style="width:330px;justify-content:flex-end" onclick="event.stopPropagation()">${b('start')}${b('restart')}${b('unpause')}${b('pause')}${b('stop','danger')}${b('remove','danger')}<button class="btn sm" onclick="openDrawer('${id}','logs')">Logs</button>${sv?`<button class="btn sm" title="more actions" onclick="menu(event,'${id}')">⋯</button>`:''}</div></div>`;})+'</div>';}).join('')
+          <div class="acts" style="width:330px;justify-content:flex-end" onclick="event.stopPropagation()">${b('start')}${b('restart')}${b('unpause')}${b('pause')}${b('stop','danger')}${b('remove','danger')}<button class="btn sm" onclick="openDrawer(${jq(id)},'logs')">Logs</button>${sv?`<button class="btn sm" title="more actions" onclick="menu(event,${jq(id)})">⋯</button>`:''}</div></div>`;})+'</div>';}).join('')
       +(k.stopped?`<button class="btn" onclick="doDocker('prune-containers')">Remove the ${k.stopped} stopped container${k.stopped>1?'s':''}</button>`:'');
   }else if(dkView==='images'){
     $('#dk-hint').textContent='Images are the templates containers start from. An unused image only costs disk and can be removed.';
@@ -1202,10 +1236,10 @@ let openMenu=null;
 function menu(ev,id){
   closeMenu();const s=S.services.find(x=>x.id===id);if(!s)return;
   const m=document.createElement('div');m.className='menu';
-  const acts=(s.actions||[]).map(a=>`<button class="${DANGER[a]?'danger':''}" onclick="doAct('${id}','${a}')">${ACT[a][0]} ${ACT[a][1]}</button>`).join('');
-  m.innerHTML=`<div class="mh">${esc(s.name)}</div>`+acts+(acts?'<div class="sep"></div>':'')+`<button onclick="closeMenu();openDrawer('${id}','logs')">▤ Logs</button><button onclick="closeMenu();openDrawer('${id}')">ⓘ Details</button>`
-    +(s.url?`<button onclick="closeMenu();window.open('${s.url}','_blank','noopener')">↗ Open in browser</button>`:'')
-    +((s.docker||s.pid)?`<button onclick="closeMenu();copyText('${s.docker||s.pid}')">⧉ Copy ${s.docker?'container name':'PID'}</button>`:'');
+  const acts=(s.actions||[]).map(a=>`<button class="${DANGER[a]?'danger':''}" onclick="doAct(${jq(id)},${jq(a)})">${ACT[a][0]} ${ACT[a][1]}</button>`).join('');
+  m.innerHTML=`<div class="mh">${esc(s.name)}</div>`+acts+(acts?'<div class="sep"></div>':'')+`<button onclick="closeMenu();openDrawer(${jq(id)},'logs')">▤ Logs</button><button onclick="closeMenu();openDrawer(${jq(id)})">ⓘ Details</button>`
+    +(s.url?`<button onclick="closeMenu();window.open(${jq(s.url)},'_blank','noopener')">↗ Open in browser</button>`:'')
+    +((s.docker||s.pid)?`<button onclick="closeMenu();copyText(${jq(s.docker||s.pid)})">⧉ Copy ${s.docker?'container name':'PID'}</button>`:'');
   document.body.appendChild(m);const r=ev.target.getBoundingClientRect();
   const row=ev.target.closest&&ev.target.closest('.srow');if(row)row.classList.add('menu-on');
   m.style.top=Math.min(r.bottom+4,innerHeight-m.offsetHeight-8)+'px';m.style.left=Math.min(r.left,innerWidth-240)+'px';openMenu=m;
@@ -1240,8 +1274,8 @@ function doAct(id,act){
 /* ---- drawer ---- */
 let drawerId=null,drawerTab='details',followT=null,dRange='live';
 function actBtns(s){
-  return (s.actions||[]).map(a=>`<button class="act ${DANGER[a]?'danger':''}" title="${esc((WHY[a]||(()=>''))(s))}" onclick="doAct('${s.id}','${a}')">${ACT[a][0]} ${ACT[a][1]}</button>`).join('')
-    +(s.url?`<a class="act" href="${s.url}" target="_blank" rel="noopener">↗ Open</a>`:'');
+  return (s.actions||[]).map(a=>`<button class="act ${DANGER[a]?'danger':''}" title="${esc((WHY[a]||(()=>''))(s))}" onclick="doAct(${jq(s.id)},${jq(a)})">${ACT[a][0]} ${ACT[a][1]}</button>`).join('')
+    +(s.url?`<a class="act" href="${url(s.url)}" target="_blank" rel="noopener">↗ Open</a>`:'');
 }
 function dchart(lab,series,cur,c,fmt,span){
   const st=series&&series.length?stat(series):null;
@@ -1274,7 +1308,7 @@ async function openModel(i){
   document.querySelector('.dtabs').style.display='none';
   $('#d-facts').innerHTML=[m.size,m.runtime,m.loaded?'in memory':'on disk only'].filter(Boolean).map(x=>`<span class="chipn">${esc(x)}</span>`).join('');
   $('#d-acts').innerHTML=(m.loaded?`<button class="act" onclick="doModel(${i},'stop');closeDrawer()">■ Unload</button>`:`<button class="act" onclick="doModel(${i},'load');closeDrawer()">▶ Load into memory</button>`)
-    +`<button class="act danger" onclick="doModel(${i},'delete')">Delete from disk</button>`+(m.link?`<a class="act" href="${m.link}" target="_blank" rel="noopener">↗ Library page</a>`:'');
+    +`<button class="act danger" onclick="doModel(${i},'delete')">Delete from disk</button>`+(m.link?`<a class="act" href="${url(m.link)}" target="_blank" rel="noopener">↗ Library page</a>`:'');
   $('#scrim').classList.add('show');$('#drawer').classList.add('show');$('#drawer').setAttribute('aria-hidden','false');
   const b=$('#d-body');
   const base=`<div class="kv">${[kvrow('size on disk',m.size),kvrow('modified',m.modified),kvrow('digest',m.digest),kvrow('runtime',m.runtime),kvrow('processor',m.proc),kvrow('context',m.ctx),kvrow('stays loaded',m.until)].join('')}</div>`;
@@ -1289,19 +1323,19 @@ function agentDetailHTML(a){
   const btn=(l,js,cls)=>`<button class="btn sm ${cls||''}" onclick="${js}">${l}</button>`;
   return `<div class="mdhead"><span class="pill ${a.running?'up':'off'}">${a.running?'RUNNING':'not running'}</span><span class="mdname">${esc(a.name)}</span></div>
     <div class="dwhat">${esc(a.desc)}</div>
-    <div class="abtns">${a.url?`<a class="btn sm" href="${a.url}" target="_blank" rel="noopener">↗ Open its web page</a>`:''}${a.app?btn('Open the '+esc(a.app)+' app',`agentDo('${a.id}','app')`):''}${a.canLaunch?btn('▶ Start in Terminal',`agentDo('${a.id}','launch')`):''}
-      ${a.home?btn('Open data folder',`openPath('agent','${a.id}')`):''}${a.home&&T.editor?btn('Open in '+esc(T.editor),`openPath('agent','${a.id}','editor')`):''}${a.home&&T.terminal?btn('Terminal here',`openPath('agent','${a.id}','terminal')`):''}
-      ${cmd?btn('Copy command',`copyText('${esc(cmd)}')`):''}${a.running&&a.canStop?btn('■ Stop all '+a.procs+' processes',`stopAgent('${a.id}')`,'danger'):''}</div>
+    <div class="abtns">${a.url?`<a class="btn sm" href="${url(a.url)}" target="_blank" rel="noopener">↗ Open its web page</a>`:''}${a.app?btn('Open the '+esc(a.app)+' app',`agentDo(${jq(a.id)},'app')`):''}${a.canLaunch?btn('▶ Start in Terminal',`agentDo(${jq(a.id)},'launch')`):''}
+      ${a.home?btn('Open data folder',`openPath('agent',${jq(a.id)})`):''}${a.home&&T.editor?btn('Open in '+esc(T.editor),`openPath('agent',${jq(a.id)},'editor')`):''}${a.home&&T.terminal?btn('Terminal here',`openPath('agent',${jq(a.id)},'terminal')`):''}
+      ${cmd?btn('Copy command',`copyText('${esc(cmd)}')`):''}${a.running&&a.canStop?btn('■ Stop all '+a.procs+' processes',`stopAgent(${jq(a.id)})`,'danger'):''}</div>
     ${a.running?`<div class="dcharts"><div class="dchart" style="padding-bottom:9px"><div class="dl"><span>Memory</span></div><div class="dv" style="color:var(--accent2)">${fmtMB(a.memMB)}</div><div class="dm">${a.procs} process${a.procs>1?'es':''}</div></div>
       <div class="dchart" style="padding-bottom:9px"><div class="dl"><span>CPU</span></div><div class="dv" style="color:var(--accent)">${a.cpu}%</div><div class="dm">summed over its processes</div></div></div>`
       :`<p class="hint">Installed but not running, so it uses no memory.${cmd?` Start it from here, or type <code class="cmd">${esc(cmd)}</code> in a terminal.`:a.app?' Open the app to start it.':''}</p>`}
     ${dsec('About',`<div class="kv">${[kvrow('status',a.running?'running':'installed, not running'),kvrow('version',a.version),kvrow('installed with',a.installedVia),kvrow('program',a.bin),kvrow('desktop app',a.app&&'/Applications/'+a.app+'.app'),kvrow('usual port',a.port),
-      a.url?`<div class="k">web page</div><div><a href="${a.url}" target="_blank" rel="noopener">${esc(a.url)}</a></div>`:''].join('')}</div>`)}
-    ${a.home?dsec('Its data'+(f.size?` <small>${esc(f.size)}</small>`:''),`<div class="kv"><div class="k">folder</div><div><a class="path" onclick="openPath('agent','${a.id}')">${esc(a.home)}</a></div>${kvrow('size on disk',f.size)}${kvrow('last changed',f.changed)}${kvrow('items inside',f.count)}</div>
-      ${(f.configs||[]).length?`<div class="deprow" style="margin-top:10px"><span class="k">settings files</span>${f.configs.map(c=>`<span class="chip" style="cursor:pointer" title="open this file" onclick="openPath('agentcfg','${a.id}/${esc(c)}')">${esc(c)} ›</span>`).join('')}</div>`:''}
+      a.url?`<div class="k">web page</div><div><a href="${url(a.url)}" target="_blank" rel="noopener">${esc(a.url)}</a></div>`:''].join('')}</div>`)}
+    ${a.home?dsec('Its data'+(f.size?` <small>${esc(f.size)}</small>`:''),`<div class="kv"><div class="k">folder</div><div><a class="path" onclick="openPath('agent',${jq(a.id)})">${esc(a.home)}</a></div>${kvrow('size on disk',f.size)}${kvrow('last changed',f.changed)}${kvrow('items inside',f.count)}</div>
+      ${(f.configs||[]).length?`<div class="deprow" style="margin-top:10px"><span class="k">settings files</span>${f.configs.map(c=>`<span class="chip" style="cursor:pointer" title="open this file" onclick="openPath('agentcfg',${jq(a.id+'/'+c)})">${esc(c)} ›</span>`).join('')}</div>`:''}
       ${(f.items||[]).length?`<div class="deprow" style="margin-top:6px"><span class="k">most recent</span>${f.items.map(x=>`<span class="chip">${esc(x)}</span>`).join('')}</div>`:''}`):''}`
-    +((a.services||[]).length?dsec('Its services <small>'+a.services.length+'</small>',a.services.map(x=>`<div class="depl"><span class="sdot" style="background:${x.up?'var(--ok)':'var(--idle)'}"></span><a onclick="showTab('services');openDrawer('${esc(x.id)}')">${esc(x.name)}</a><span class="why">${x.up?'running':'stopped'}</span>${x.start?`<button class="btn sm" onclick="doAct('${esc(x.id)}','start')">▶ Start</button>`:`<button class="btn sm" onclick="showTab('services');openDrawer('${esc(x.id)}','logs')">Logs</button>`}</div>`).join('')):'')
-    +((a.top||[]).length?dsec('Biggest processes <small>'+a.procs+' in total</small>',`<table class="ptab"><thead><tr><th>PID</th><th>Process</th><th>CPU %</th><th>Memory</th><th></th></tr></thead><tbody>${a.top.map(c=>`<tr><td class="num muted">${c.pid}</td><td class="num">${esc(c.name)}</td><td class="num">${c.cpu.toFixed(1)}</td><td class="num">${fmtMB(c.rssMB)}</td><td><button class="xbtn" title="stop this process" onclick="killProc(${c.pid},'${esc(c.name).replace(/'/g,'')}')">✕</button></td></tr>`).join('')}</tbody></table>`):'');
+    +((a.services||[]).length?dsec('Its services <small>'+a.services.length+'</small>',a.services.map(x=>`<div class="depl"><span class="sdot" style="background:${x.up?'var(--ok)':'var(--idle)'}"></span><a onclick="showTab('services');openDrawer(${jq(x.id)})">${esc(x.name)}</a><span class="why">${x.up?'running':'stopped'}</span>${x.start?`<button class="btn sm" onclick="doAct(${jq(x.id)},'start')">▶ Start</button>`:`<button class="btn sm" onclick="showTab('services');openDrawer(${jq(x.id)},'logs')">Logs</button>`}</div>`).join('')):'')
+    +((a.top||[]).length?dsec('Biggest processes <small>'+a.procs+' in total</small>',`<table class="ptab"><thead><tr><th>PID</th><th>Process</th><th>CPU %</th><th>Memory</th><th></th></tr></thead><tbody>${a.top.map(c=>`<tr><td class="num muted">${c.pid}</td><td class="num">${esc(c.name)}</td><td class="num">${c.cpu.toFixed(1)}</td><td class="num">${fmtMB(c.rssMB)}</td><td><button class="xbtn" title="stop this process" onclick="killProc(${c.pid},${jq(c.name)})">✕</button></td></tr>`).join('')}</tbody></table>`):'');
 }
 function agentDo(id,action){return post('/api/agent',{id,action},action==='app'?'open app':'start in Terminal').then(()=>setTimeout(()=>loadInv(true),2500));}
 function stopAgent(id){const a=INV.agents.find(x=>x.id===id);askConfirm(`Stop ${a.name}?`,`Asks all ${a.procs} processes of ${a.name} to quit (${fmtMB(a.memMB)}). Running sessions and anything unsaved in them are lost.`,async()=>{await post('/api/agent',{id,action:'stop'},'stop '+a.name);setTimeout(()=>loadInv(true),1500);});}
@@ -1324,19 +1358,19 @@ function renderDetail(d){
   const s=S.services.find(x=>x.id===d.id)||d;
   const what=d.what?`<div class="dwhat">${esc(d.what)}</div>`:'';
   const charts=d.up?`<div style="margin-bottom:8px"><span class="seg" id="dseg"><button data-v="live">Live</button><button data-v="1h">1h</button><button data-v="6h">6h</button><button data-v="24h">24h</button><button data-v="48h">48h</button></span></div><div class="dcharts" id="d-charts">${dcharts(s)}</div>`:'';
-  const depl=(l,arrow)=>(l||[]).map(x=>`<div class="depl"><span class="muted">${arrow}</span><a onclick="openDrawer('${esc(x.id)}')">${esc(x.name)}</a><span class="why">${esc(x.why.replace(/^config /,'set in its config: ').replace('compose depends_on','starts after it (compose)').replace('runs it (child process)','started by it'))}</span></div>`).join('');
+  const depl=(l,arrow)=>(l||[]).map(x=>`<div class="depl"><span class="muted">${arrow}</span><a onclick="openDrawer(${jq(x.id)})">${esc(x.name)}</a><span class="why">${esc(x.why.replace(/^config /,'set in its config: ').replace('compose depends_on','starts after it (compose)').replace('runs it (child process)','started by it'))}</span></div>`).join('');
   const mgr=d.kind==='docker'?'Docker'+(d.project?' Compose':''):d.brew?'Homebrew service · '+d.brew:d.launchd?'launchd · '+d.launchd:d.systemd?'systemd · '+d.systemd:'started by hand (no service manager)';
   const mem=u(d.memUse)||d.treeMem||(d.rssMB!=null?d.rssMB+' MB':'');
   const over=`<div class="kv">${[kvrow('status',(d.state||(d.up?'running':'stopped'))+(d.health?' · '+d.health:'')),kvrow('uptime',up(d.uptime)),kvrow('managed by',mgr),kvrow('image',d.image),kvrow('image id',d.imageId),kvrow('created',d.created&&d.created+' ago'),kvrow('command',d.command),kvrow('stack',d.project&&(d.project+(d.service?' / '+d.service:''))),kvrow('if it stops',({no:'stays stopped','always':'Docker always restarts it','unless-stopped':'Docker restarts it unless you stopped it','on-failure':'Docker restarts it if it crashed'})[d.restartPolicy]||d.restartPolicy),kvrow('restarts',d.restarts),kvrow('exit code',d.up?null:(d.exitCode===0?'0':d.exitCode)),kvrow('stopped',d.finished&&d.finished+' ago'),kvrow('killed for memory',d.oom?'yes (OOM)':null),kvrow('same launchd job',d.jobMates),kvrow('defined in',!d.up&&d.kind!=='docker'?d.where:null)].join('')}</div>`;
   const res=`<div class="kv">${[kvrow('CPU',d.treeCpu||d.cpu),kvrow('Memory',mem+(d.memPct?' · '+d.memPct:'')),kvrow('Memory limit',d.memLimit),kvrow('CPU limit',d.cpuLimit),kvrow('Net I/O',u(d.netIO)),kvrow('Disk I/O',u(d.blockIO)),kvrow('Processes',d.pidsInside||d.procs),kvrow('PID',d.pid&&(d.pid+(d.ppid?' · parent '+d.ppid:''))),kvrow('User',d.user),kvrow('Open files',d.openFiles)].join('')}</div>`;
-  const net=`<div class="kv">${[(d.url?`<div class="k">web page</div><div><a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.url)}</a></div>`:s.http==='api'?`<div class="k">web page</div><div class="muted">none: port ${s.port} is an API for other programs, there is nothing to open in a browser</div>`:''),kvrow('ports',d.ports),kvrow('networks',d.networks),(d.cwd?`<div class="k">working folder</div><div><a class="path" title="open this folder" onclick="openPath('cwd','${esc(d.id)}')">${esc(d.cwd)}</a></div>`:''),kvrow('workdir',d.workdir),(d.logFile?`<div class="k">log file</div><div><a class="path" title="show this file in its folder" onclick="openPath('log','${esc(d.id)}')">${esc(d.logFile)}</a></div>`:'')].join('')}</div>`;
+  const net=`<div class="kv">${[(d.url?`<div class="k">web page</div><div><a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.url)}</a></div>`:s.http==='api'?`<div class="k">web page</div><div class="muted">none: port ${s.port} is an API for other programs, there is nothing to open in a browser</div>`:''),kvrow('ports',d.ports),kvrow('networks',d.networks),(d.cwd?`<div class="k">working folder</div><div><a class="path" title="open this folder" onclick="openPath('cwd',${jq(d.id)})">${esc(d.cwd)}</a></div>`:''),kvrow('workdir',d.workdir),(d.logFile?`<div class="k">log file</div><div><a class="path" title="show this file in its folder" onclick="openPath('log',${jq(d.id)})">${esc(d.logFile)}</a></div>`:'')].join('')}</div>`;
   const deps=((d.dependsOn&&d.dependsOn.length)||(d.usedBy&&d.usedBy.length))?depl(d.dependsOn,'uses →')+depl(d.usedBy,'used by ←'):'<span class="muted" style="font-size:12.5px">No link seen in the last 24h. Links come from live connections and container configuration.</span>';
   const inside=(d.inside&&d.inside.length)?`<table class="ptab"><thead><tr><th>PID</th><th>CPU %</th><th>Memory</th><th>Command</th></tr></thead><tbody>${d.inside.map(c=>`<tr><td class="num muted">${esc(c.pid)}</td><td class="num">${esc(c.cpu)}</td><td class="num">${fmtMB(c.rssMB)}</td><td class="num" style="word-break:break-all">${esc(c.cmd)}</td></tr>`).join('')}</tbody></table>`:'';
   const health=(d.healthCmd||(d.healthLog&&d.healthLog.length))?`<div class="kv">${kvrow('check',d.healthCmd)}${kvrow('result',d.health)}</div>${(d.healthLog||[]).slice(-1).map(h=>h?`<div class="hl">${esc(h)}</div>`:'').join('')}`:'';
-  const kids=(d.children&&d.children.length)?`<table class="ptab"><thead><tr><th>PID</th><th>Process</th><th>CPU %</th><th>Memory</th><th></th></tr></thead><tbody>${d.children.map(c=>`<tr><td class="num muted">${c.pid}</td><td class="num">${esc(c.name)}</td><td class="num">${c.cpu.toFixed(1)}</td><td class="num">${fmtMB(c.rssMB)}</td><td><button class="xbtn" title="Stop this process" onclick="killChild(${c.pid},'${esc(c.name)}')">✕</button></td></tr>`).join('')}</tbody></table>`:'';
+  const kids=(d.children&&d.children.length)?`<table class="ptab"><thead><tr><th>PID</th><th>Process</th><th>CPU %</th><th>Memory</th><th></th></tr></thead><tbody>${d.children.map(c=>`<tr><td class="num muted">${c.pid}</td><td class="num">${esc(c.name)}</td><td class="num">${c.cpu.toFixed(1)}</td><td class="num">${fmtMB(c.rssMB)}</td><td><button class="xbtn" title="Stop this process" onclick="killChild(${c.pid},${jq(c.name)})">✕</button></td></tr>`).join('')}</tbody></table>`:'';
   const mounts=(d.mounts&&d.mounts.length)?`<div class="kv">${d.mounts.map(m=>`<div class="k">vol</div><div>${esc(m)}</div>`).join('')}</div>`:'';
   const env=(d.env&&d.env.length)?`<div class="env">${d.env.map(e=>{const i=e.indexOf('=');return `<div class="er"><span class="ek">${esc(e.slice(0,i))}</span><span class="ev">${esc(e.slice(i+1))}</span></div>`}).join('')}</div>`:'';
-  const cnt=n=>` <small>${n}</small>`;
+  const cnt=n=>` <small>${esc(n)}</small>`;
   return what+charts+dsec('Connections'+cnt(((d.dependsOn||[]).length+(d.usedBy||[]).length)||'none'),deps)+dsec('About',over)+dsec('Resources',res,false)+dsec('Network and files',net,false)+(health?dsec('Health check'+cnt(d.health||''),health,false):'')
     +(inside?dsec('Processes inside'+cnt(d.inside.length),inside,false):'')+(kids?dsec('Child processes'+cnt(d.children.length),kids,false):'')+dsec('Storage'+cnt((d.mounts||[]).length),mounts,false)
     +(env?dsec('Environment'+cnt(d.env.length+' shown'+(d.envHidden?', '+d.envHidden+' secret hidden':'')),env,false):'');
@@ -1452,7 +1486,7 @@ function renderUsage(){
     .map(([l,v,sub])=>`<div class="card"><div class="lab">${l}</div><div class="val">${v}</div><div class="sub">${esc(sub)}</div></div>`).join('');
   const mx=Math.max(...days.map(x=>x.cost),0.0001),show=days.slice(-45);
   $('#us-day-leg').textContent=days.length?`${days.length} active day${days.length>1?'s':''}${days.length>45?' · last 45 shown':''} · busiest ${money(mx)}`:'';
-  $('#us-days').innerHTML=show.length?`<div class="ubars">${show.map(x=>`<div class="ubar" title="${x.day}: ${money(x.cost)} · ${tok(allTok(x))} tokens · ${x.msgs} requests"><b>${show.length<=16?money(x.cost):''}</b><i style="height:${Math.max(1,x.cost/mx*100)}%"></i><span>${show.length<=31?x.day.slice(5):''}</span></div>`).join('')}</div>`:'<div class="empty">No usage in this period.</div>';
+  $('#us-days').innerHTML=show.length?`<div class="ubars">${show.map(x=>`<div class="ubar" title="${esc(x.day)}: ${money(x.cost)} · ${tok(allTok(x))} tokens · ${x.msgs} requests"><b>${show.length<=16?money(x.cost):''}</b><i style="height:${Math.max(1,x.cost/mx*100)}%"></i><span>${show.length<=31?esc(x.day.slice(5)):''}</span></div>`).join('')}</div>`:'<div class="empty">No usage in this period.</div>';
   const P=d.parts,pt=P.inp+P.out+P.cw+P.cr||1;
   $('#us-parts').innerHTML=[['New input','what you and tools sent that was not cached',T.inp,P.inp,'var(--accent)'],['Written to cache','stored so later requests can reuse it',T.cw,P.cw,'var(--warn)'],
     ['Read from cache','the conversation so far, re-read cheaply',T.cr,P.cr,'var(--ok)'],['Output','what the model wrote, including its thinking',T.out,P.out,'var(--accent2)']]
@@ -1482,12 +1516,12 @@ function renderUsageSessions(){
   const d=US;if(!d)return;const q=usQ.toLowerCase();
   const F=usF,list=d.sessions.filter(x=>(!F||(F.k==='cwd'?x.cwd===F.v:F.k==='tool'?x.tool===F.v:x.models.some(m=>m[0]===F.v)))&&(!q||(x.title+' '+x.cwd+' '+x.tool+' '+x.models.map(m=>m[0]).join(' ')).toLowerCase().includes(q)))
     .sort(usSort==='recent'?(a,b)=>(b.last>a.last?1:-1):usSort==='tokens'?(a,b)=>allTok(b)-allTok(a):(a,b)=>b.cost-a.cost);
-  const sb=(k,l)=>`<button class="btn sm ${usSort===k?'on':''}" onclick="usSort='${k}';renderUsageSessions()">${l}</button>`;
+  const sb=(k,l)=>`<button class="btn sm ${usSort===k?'on':''}" onclick="usSort=${jq(k)};renderUsageSessions()">${l}</button>`;
   $('#us-sessions').innerHTML=`<div class="rows"><div class="rh"><b>Sessions</b><small>${list.length.toLocaleString()}${d.sessionCount>d.sessions.length&&!F?' of the '+d.sessions.length.toLocaleString()+' most expensive (of '+d.sessionCount.toLocaleString()+')':''} · click one for the full breakdown</small>
       ${F?`<span class="chipn" style="font-family:var(--sans)">${F.k==='cwd'?'folder':F.k==='tool'?'agent':'model'}: <b>${esc(F.k==='model'?mshort(F.v):F.v)}</b></span><button class="btn sm" onclick="usFilter()">✕ Show all</button>`:''}<span class="sp"></span>
       <input class="uin" id="us-q" placeholder="find by title, folder, model…" value="${esc(usQ)}"><span class="fbar"><span class="muted" style="font-size:12px">Sort</span>${sb('cost','Cost')}${sb('recent','Most recent')}${sb('tokens','Tokens')}</span></div>
     <div class="ugrid h"><span>Session</span><span>Agent</span><span>Last active</span><span class="n">Requests</span><span class="n">Sent · written back</span><span>Models</span><span class="n">Cost</span></div>`
-    +(list.slice(0,150).map(x=>`<div class="ugrid row" onclick="openUsageSession('${esc(x.id)}')"><div style="min-width:0"><div class="nm">${esc(x.title||x.project)}</div><div class="one">${esc(x.cwd||'')}${x.branch?' · ⎇ '+esc(x.branch):''}${x.subs?' · '+x.subs+' sub-agent'+(x.subs>1?'s':'')+' ('+money(x.subCost)+')':''}</div></div>
+    +(list.slice(0,150).map(x=>`<div class="ugrid row" onclick="openUsageSession(${jq(x.id)})"><div style="min-width:0"><div class="nm">${esc(x.title||x.project)}</div><div class="one">${esc(x.cwd||'')}${x.branch?' · ⎇ '+esc(x.branch):''}${x.subs?' · '+x.subs+' sub-agent'+(x.subs>1?'s':'')+' ('+money(x.subCost)+')':''}</div></div>
       <div style="min-width:0"><div style="font-size:13px">${esc(x.tool)}</div><div class="one">${esc(x.entry||'')}</div></div>
       <div style="min-width:0"><div style="font-size:13px">${x.last?hhmm(Date.parse(x.last)/1000):''}</div><div class="one">${x.first&&x.last?'over '+(ulen(x.first,x.last)||'a moment'):''}</div></div>
       <span class="n">${x.msgs.toLocaleString()}</span><span class="n">${tok(x.inp+x.cw+x.cr)} · ${tok(x.out)}</span>
@@ -1510,7 +1544,7 @@ async function openUsageSession(id){
   const hx=Math.max(...d.hours.map(h=>h.cost),0.0001),hs=d.hours.slice(-72);
   b.innerHTML=dsec('About',`<div class="kv">${[kvrow('agent',d.tool+(d.entry?' · '+d.entry:'')),kvrow('started',d.first&&hhmm(Date.parse(d.first)/1000)),kvrow('last active',d.last&&hhmm(Date.parse(d.last)/1000)),kvrow('folder',d.cwd),kvrow('branch',d.branch),kvrow('session id',d.id),kvrow('log file',d.log)].join('')}</div>`)
     +dsec('By model',`<div style="overflow:auto"><table class="utab">${th(['Model','Requests','Input','Cache write 5 min','Cache write 1 hour','Cache read','Output','of which thinking','Cost'])}<tbody>${d.models.map(m=>`<tr><td><b>${esc(mshort(m.model))}</b>${d.priced[m.model.split(' (')[0]]===false?' <span class="muted">no price</span>':''}</td>${mrow(m)}</tr>`).join('')}</tbody></table></div>`)
-    +dsec('Cost over time <small>'+d.hours.length+' active hour'+(d.hours.length===1?'':'s')+(d.hours.length>72?' · last 72 shown':'')+'</small>',`<div class="ubars" style="height:130px">${hs.map(h=>`<div class="ubar" title="${h.hour}:00 · ${money(h.cost)} · ${h.msgs} requests · ${tok(h.inp+h.cw5+h.cw1+h.cr+h.out)} tokens"><b>${hs.length<=12?money(h.cost):''}</b><i style="height:${Math.max(1,h.cost/hx*100)}%"></i><span>${hs.length<=24?h.hour.slice(11)+'h':''}</span></div>`).join('')}</div>`)
+    +dsec('Cost over time <small>'+d.hours.length+' active hour'+(d.hours.length===1?'':'s')+(d.hours.length>72?' · last 72 shown':'')+'</small>',`<div class="ubars" style="height:130px">${hs.map(h=>`<div class="ubar" title="${esc(h.hour)}:00 · ${money(h.cost)} · ${h.msgs} requests · ${tok(h.inp+h.cw5+h.cw1+h.cr+h.out)} tokens"><b>${hs.length<=12?money(h.cost):''}</b><i style="height:${Math.max(1,h.cost/hx*100)}%"></i><span>${hs.length<=24?esc(h.hour.slice(11))+'h':''}</span></div>`).join('')}</div>`)
     +(d.subs.length?dsec('Sub-agents it started <small>'+d.subs.length+' · '+money(d.subs.reduce((a,v)=>a+v.cost,0))+'</small>',`<div style="overflow:auto;max-height:340px"><table class="utab">${th(['Sub-agent','Requests','Input','Cache write 5 min','Cache write 1 hour','Cache read','Output','of which thinking','Cost'])}<tbody>${d.subs.map(m=>`<tr><td class="num">${esc(m.agent.replace('agent-','').slice(0,10))}</td>${mrow(m)}</tr>`).join('')}</tbody></table></div>`):'');
 }
 
@@ -1525,10 +1559,10 @@ const clock=t=>new Date(t*1000).toLocaleTimeString([],{hour:'2-digit',minute:'2-
 const lvlp=p=>p>=100?'err':p>=80?'warn':'';
 function liveRows(list){
   return list.map(x=>{const pc=x.ctxMax?Math.min(100,x.ctx/x.ctxMax*100):0,col=pc>=85?'var(--err)':pc>=65?'var(--warn)':'var(--accent)';
-    return `<div class="lgrid" onclick="openUsageSession('${esc(x.id)}')" title="open the full breakdown of this session">
+    return `<div class="lgrid" onclick="openUsageSession(${jq(x.id)})" title="open the full breakdown of this session">
       <span class="sdot" style="background:${x.state==='working'?'var(--ok)':x.state==='stalled'?'var(--err)':'var(--warn)'}"></span>
       <div style="min-width:0"><div class="nm">${esc(x.title)}</div><div class="one">${esc(x.cwd)}${x.subs?' · '+x.subs+' sub-agent'+(x.subs>1?'s':''):''}</div></div>
-      <div style="min-width:0"><div class="lstate ${x.state}">${x.state==='working'?'Working':x.state==='stalled'?'Stalled':'Waiting for you'}</div><div class="one">${esc(x.what)}</div></div>
+      <div style="min-width:0"><div class="lstate ${esc(x.state)}">${x.state==='working'?'Working':x.state==='stalled'?'Stalled':'Waiting for you'}</div><div class="one">${esc(x.what)}</div></div>
       <div style="min-width:0"><div style="font-size:13px">${esc(mshort(x.model||''))}</div><div class="one">${esc(x.entry||'')}</div></div>
       <div title="how full its context window is: the more it holds, the more every request costs"><div class="gb"><i style="width:${pc.toFixed(0)}%;background:${col}"></i></div><div class="one">${tok(x.ctx)} of ${tok(x.ctxMax)} context (${pc.toFixed(0)}%)</div></div>
       <div class="n"><b>${money(x.costToday)}</b><div class="one">${x.reqToday.toLocaleString()} requests</div></div>
@@ -1562,7 +1596,7 @@ function renderNow(){
     <div class="sec"><h2>Last 7 days</h2><div class="nbig">${money(d.week.cost)}</div>
       <div class="nline">${d.week.prev?`<b>${dw>=0?'▲':'▼'} ${Math.abs(dw).toFixed(0)}%</b> against the 7 days before (${money(d.week.prev)})`:'no earlier week to compare'}</div>
       <div class="nline">Today so far: <b>${money(d.today)}</b></div>
-      ${d.topSession?`<div class="nline">Most expensive session today: <a href="#" onclick="openUsageSession('${esc(d.topSession.id)}');return false">${esc(d.topSession.title)}</a> · <b>${money(d.topSession.cost)}</b></div>`:''}
+      ${d.topSession?`<div class="nline">Most expensive session today: <a href="#" onclick="openUsageSession(${jq(d.topSession.id)});return false">${esc(d.topSession.title)}</a> · <b>${money(d.topSession.cost)}</b></div>`:''}
       <div class="nline">9 in 10 of your windows stay under <b>${money(S.p90)}</b></div></div>
     <div class="sec"><h2>Budgets <span class="ct">warns at 80%, alerts at 100%</span></h2>
       ${brow('day','Today',d.today)}${brow('week','Last 7 days',d.week.cost)}${brow('block','This 5-hour window',b?b.cost:0)}${brow('session','Any one session today',d.topSession?d.topSession.cost:0)}

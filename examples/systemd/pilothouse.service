@@ -1,0 +1,15 @@
+# Start Pilothouse at login and keep it running (Linux, your user, no root).
+#   1. Replace the path below.   2. Copy to ~/.config/systemd/user/
+#   3. systemctl --user enable --now pilothouse
+[Unit]
+Description=Pilothouse - local AI stack dashboard
+After=default.target
+
+[Service]
+ExecStart=/usr/bin/python3 /PATH/TO/pilothouse/server.py
+Restart=on-failure
+RestartSec=5
+# Environment=DASH_PORT=7777
+
+[Install]
+WantedBy=default.target

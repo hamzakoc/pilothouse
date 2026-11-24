@@ -1,0 +1,9 @@
+# Scrape Pilothouse's /metrics endpoint.
+scrape_configs:
+  - job_name: pilothouse
+    scrape_interval: 15s
+    # the access key: the file Pilothouse keeps in its data folder
+    authorization:
+      credentials_file: /home/YOU/.pilothouse/token
+    static_configs:
+      - targets: ["127.0.0.1:7777"]

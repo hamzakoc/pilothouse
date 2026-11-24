@@ -1,0 +1,4 @@
+{
+  "my-model": [3.0, 15.0, 0.1],
+  "another-vendor/big-model": [1.25, 10.0, 0.1]
+}

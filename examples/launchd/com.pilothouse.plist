@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Start Pilothouse at login and keep it running (macOS).
+     1. Replace the paths below (python3, the clone, and YOU in the log path).   2. Copy to ~/Library/LaunchAgents/
+     3. launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.pilothouse.plist -->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.pilothouse</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/bin/python3</string>
+    <string>/PATH/TO/pilothouse/server.py</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>/PATH/TO/pilothouse</string>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>ProcessType</key>
+  <string>Background</string>
+  <key>StandardOutPath</key>
+  <string>/Users/YOU/Library/Logs/pilothouse.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/YOU/Library/Logs/pilothouse.log</string>
+</dict>
+</plist>

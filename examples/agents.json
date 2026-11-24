@@ -1,0 +1,11 @@
+[
+  {
+    "id": "mytool",
+    "name": "My Tool",
+    "bins": ["mytool"],
+    "dirs": ["~/.mytool", "%APPDATA%/MyTool"],
+    "process": "(^|/)mytool( |$)|MyTool\\.app",
+    "desc": "Example entry: replace with your own tool",
+    "port": 9000
+  }
+]

@@ -1,14 +1,5 @@
 #!/bin/bash
-# Double-click to launch the Local Services dashboard.
-# Starts the tiny status server (if not already up) and opens it in your browser.
+# macOS: double-click to start Pilothouse and open it in your browser (if it already runs, this just opens it).
 cd "$(dirname "$0")" || exit 1
-
-if curl -s -o /dev/null http://127.0.0.1:7777/api/status; then
-  echo "Dashboard already running."
-else
-  echo "Starting dashboard server…"
-  (sleep 1; open "http://127.0.0.1:7777") &
-  exec /usr/bin/env python3 server.py
-fi
-
-open "http://127.0.0.1:7777"
+command -v python3 >/dev/null 2>&1 || { echo "Python 3.8 or newer is required: xcode-select --install, or https://www.python.org/downloads/"; read -r _; exit 1; }
+exec python3 server.py --open

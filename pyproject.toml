@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pilothouse"
+description = "One local page to see and steer your AI stack: services, agents, models, usage and cost."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.8"
+dependencies = []
+dynamic = ["version"]
+keywords = ["dashboard", "local", "llm", "ai-agents", "docker", "monitoring", "ollama", "claude-code"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: MacOS",
+  "Operating System :: POSIX :: Linux",
+  "Operating System :: Microsoft :: Windows",
+  "Topic :: System :: Monitoring",
+]
+
+[project.urls]
+Homepage = "https://github.com/hamzakoc/pilothouse"
+Documentation = "https://github.com/hamzakoc/pilothouse/tree/main/docs"
+Issues = "https://github.com/hamzakoc/pilothouse/issues"
+Changelog = "https://github.com/hamzakoc/pilothouse/blob/main/CHANGELOG.md"
+
+[project.scripts]
+pilothouse = "pilothouse.app:main"
+
+[tool.setuptools]
+packages = ["pilothouse"]
+
+[tool.setuptools.dynamic]
+version = { attr = "pilothouse.__version__" }
+
+[tool.setuptools.package-data]
+pilothouse = ["web/*.html"]
