@@ -4,3 +4,10 @@
 __pycache__/
 # dev evidence screenshots (not part of the app)
 evidence/
+
+# local secrets / settings written by other tools into this folder
+.env
+
+# your own local settings
+pricing.json
+agents.json

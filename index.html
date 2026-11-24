@@ -103,7 +103,7 @@
   .er{display:flex;gap:6px;flex-wrap:wrap;padding-bottom:5px;border-bottom:1px solid var(--border)}
   .ek{color:var(--accent2);word-break:break-all} .ek::after{content:'='} .ev{color:var(--text);word-break:break-all;min-width:0;flex:1}
 
-  .cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+  .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-bottom:20px}
   @media(max-width:760px){.cols{grid-template-columns:1fr}}
   .panel{padding:14px 16px}
   table{width:100%;border-collapse:collapse;font-size:13px}
@@ -139,9 +139,6 @@
   .open{font-family:var(--mono);font-size:11px}
 
   /* services list (simplified, scannable) */
-  .segbar{display:inline-flex;gap:2px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:3px;margin-bottom:16px}
-  .segbar button{background:none;border:none;color:var(--dim);font:600 12.5px var(--sans);padding:6px 15px;border-radius:7px;cursor:pointer;transition:var(--t)}
-  .segbar button.on{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.14)}
   .sgroup{margin-bottom:15px}
   .sghead{display:flex;align-items:center;gap:7px;font:700 10.5px var(--sans);letter-spacing:1.3px;text-transform:uppercase;color:var(--dim);padding:5px 6px;cursor:pointer;user-select:none}
   .sgchev{color:var(--dim2);font-size:9px;width:9px;display:inline-block}
@@ -151,16 +148,18 @@
   .srow:last-child{border-bottom:none}
   .srow:hover,.srow:focus-visible{background:var(--surface2)}
   .sdot{width:9px;height:9px;border-radius:50%;flex:none}
-  .snm{font-weight:600;font-size:13.5px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .snm{font-weight:600;font-size:13.5px;color:var(--text);white-space:nowrap;flex:none}
+  .sdesc{color:var(--dim);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
   .swarn{color:var(--warn);font-size:12px;flex:none;cursor:help}
   .sright{margin-left:auto;display:flex;align-items:center;gap:10px;flex:none}
-  .smeta{color:var(--dim);font-family:var(--mono);font-size:12px;white-space:nowrap}
+  .smeta{color:var(--dim2);font-family:var(--mono);font-size:12px;white-space:nowrap;display:flex;align-items:center;gap:8px}
+  .smem{color:var(--accent2);font-weight:600}
   .sdown{color:var(--err);margin-left:6px;font-weight:600}
   .sact{display:flex;gap:1px;opacity:0;transition:opacity var(--t)}
   .srow:hover .sact,.srow:focus-within .sact{opacity:1}
   .srowlink,.srowk{background:none;border:none;color:var(--dim);cursor:pointer;font-size:14px;line-height:1;padding:4px 6px;border-radius:6px;text-decoration:none}
   .srowlink:hover,.srowk:hover{background:var(--surface3);color:var(--accent)}
-  #cy{width:100%;height:72vh;min-height:520px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);touch-action:none}
+  #cy{width:100%;height:78vh;min-height:620px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);touch-action:none}
   .cytool{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px}
   .cyleg{font:11px var(--mono);color:var(--dim2);display:inline-flex;align-items:center;gap:6px}
   .cyleg .ld{width:9px;height:9px;border-radius:50%;display:inline-block;margin:0 2px} .cyleg .ld.ok{background:var(--ok)} .cyleg .ld.er{background:var(--err)}
@@ -190,6 +189,10 @@
   .dtabs button.on{color:var(--text);border-bottom-color:var(--accent)}
   .dbody{flex:1;overflow:auto;padding:16px}
   .kv{display:grid;grid-template-columns:minmax(0,130px) minmax(0,1fr);gap:7px 12px;font-size:12.5px;font-family:var(--mono);word-break:break-word}
+  .dwhat{font-size:13px;color:var(--dim);margin:2px 0 16px}
+  .dsec{margin-bottom:17px} .dst{font:700 10px var(--sans);letter-spacing:1.3px;text-transform:uppercase;color:var(--dim2);margin-bottom:8px}
+  .chip{display:inline-block;background:var(--surface3);border:1px solid var(--border);border-radius:14px;padding:3px 10px;font:11.5px var(--mono);margin:0 5px 5px 0;color:var(--text)}
+  .deprow{margin-bottom:8px;display:flex;align-items:center;gap:7px;flex-wrap:wrap} .deprow .k{color:var(--dim2);font-family:var(--mono);font-size:11px}
   .kv .k{color:var(--dim2)}
   .logbox{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;font:11.5px var(--mono);white-space:pre-wrap;word-break:break-word;height:100%;overflow:auto;line-height:1.6}
   .logline.err{color:var(--err)} .logline.warn{color:var(--warn)} .logline.info{color:var(--dim)}
@@ -226,6 +229,232 @@
   .cbox{width:min(400px,92vw);background:var(--surface);border:1px solid var(--border2);border-radius:14px;box-shadow:var(--sh);padding:20px}
   .cbox h3{margin:0 0 8px;font-size:16px} .cbox p{color:var(--dim);font-size:13px;margin:0 0 18px}
   .cbox .row{display:flex;gap:10px;justify-content:flex-end}
+  /* --- round 3: alerts, per-app memory, row metrics, events, controls --- */
+  .bell{position:relative} .bell .bdg{position:absolute;top:-5px;right:-5px;background:var(--err);color:#fff;font:700 10px var(--mono);border-radius:9px;padding:1px 5px;display:none}
+  .bell.has .bdg{display:block} .bell.has{color:var(--err);border-color:var(--err)}
+  #alerts{display:none}
+  .alert{display:flex;align-items:center;gap:10px;padding:9px 13px;border-radius:9px;font-size:13px;border:1px solid;cursor:pointer}
+  .alert.err{color:var(--err);background:var(--errbg);border-color:color-mix(in srgb,var(--err) 40%,transparent)}
+  .alert.warn{color:var(--warn);background:var(--warnbg);border-color:color-mix(in srgb,var(--warn) 40%,transparent)}
+  .alert b{font-weight:650} .alert .go{margin-left:auto;font:600 11px var(--mono);opacity:.8}
+  .membar{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--surface3);margin:4px 0 9px}
+  .membar i{display:block;height:100%;transition:width var(--t)}
+  .mleg{display:flex;flex-wrap:wrap;gap:5px 14px;font:11.5px var(--mono);color:var(--dim);margin-bottom:14px}
+  .mleg span{display:inline-flex;align-items:center;gap:6px} .mleg i{width:9px;height:9px;border-radius:2px;display:inline-block} .mleg b{color:var(--text);font-weight:600}
+  .brow{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(50px,1fr) 62px 44px 26px;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid var(--border);font-size:12.5px}
+  .brow:last-child{border-bottom:none} .brow:hover{background:var(--surface2)}
+  .brow .bn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600} .brow .bn small{color:var(--dim2);font-weight:500;font-family:var(--mono);margin-left:5px}
+  .brow .bb{height:7px;border-radius:4px;background:var(--surface3);overflow:hidden} .brow .bb i{display:block;height:100%;background:var(--accent2);border-radius:4px}
+  .brow .bv{font-family:var(--mono);text-align:right;color:var(--text);font-weight:600} .brow .bc{font-family:var(--mono);text-align:right;color:var(--dim2)}
+  .xbtn{background:none;border:1px solid transparent;color:var(--dim2);cursor:pointer;border-radius:6px;width:24px;height:24px;font-size:12px;line-height:1;padding:0}
+  .xbtn:hover{color:var(--err);border-color:var(--err);background:var(--errbg)} .xbtn:disabled{opacity:.25;cursor:not-allowed}
+  .seg{display:inline-flex;gap:2px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:2px;vertical-align:middle}
+  .seg button{background:none;border:none;color:var(--dim);font:600 11.5px var(--sans);padding:4px 10px;border-radius:6px;cursor:pointer;letter-spacing:0;text-transform:none}
+  .seg button.on{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.16)} .seg button:hover{color:var(--text)}
+  h2 .sp{flex:1}
+  .stool{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+  .stool .sum{font:12px var(--mono);color:var(--dim);margin-left:auto} .stool .sum b{color:var(--text)}
+  .stool label{font:600 10.5px var(--sans);letter-spacing:1.1px;text-transform:uppercase;color:var(--dim2)}
+  .mini{flex:none;display:block}
+  .smem{width:62px;text-align:right;display:inline-block} .scpu{width:48px;text-align:right;display:inline-block;color:var(--dim)} .sport{width:54px;text-align:right;display:inline-block}
+  .sstate{font:700 10px var(--mono);padding:2px 7px;border-radius:10px;letter-spacing:.4px}
+  .sstate.idle{color:var(--dim2);background:var(--idlebg)} .sstate.err{color:var(--err);background:var(--errbg)} .sstate.paused{color:var(--warn);background:var(--warnbg)}
+  .sgm{color:var(--dim2);font-family:var(--mono);letter-spacing:0;font-size:11px;text-transform:none;font-weight:500}
+  .sgact{margin-left:auto;display:flex;gap:6px;opacity:0;transition:opacity var(--t)} .sghead:hover .sgact,.sgact:focus-within{opacity:1}
+  .sgact button{background:var(--surface);border:1px solid var(--border);color:var(--dim);border-radius:7px;font:600 11px var(--sans);padding:3px 9px;cursor:pointer;letter-spacing:0;text-transform:none}
+  .sgact button:hover{color:var(--accent);border-color:var(--accent)} .sgact button.danger:hover{color:var(--err);border-color:var(--err)}
+  .evrow{display:flex;align-items:center;gap:11px;padding:8px 6px;border-bottom:1px solid var(--border);font-size:13px}
+  .evrow:last-child{border-bottom:none} .evrow[data-id]{cursor:pointer} .evrow[data-id]:hover{background:var(--surface2)}
+  .evi{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font:700 11px var(--mono);flex:none}
+  .evi.ok{color:var(--ok);background:var(--okbg)} .evi.err{color:var(--err);background:var(--errbg)} .evi.warn{color:var(--warn);background:var(--warnbg)} .evi.dim{color:var(--dim);background:var(--idlebg)}
+  .evt{margin-left:auto;font:11px var(--mono);color:var(--dim2);white-space:nowrap}
+  .dacts{display:flex;flex-wrap:wrap;gap:7px;padding:11px 16px 0} .dacts:empty{display:none} .dacts .act{padding:6px 12px;font-size:12.5px}
+  .dcharts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:17px}
+  .dchart{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:9px 11px 0;overflow:hidden}
+  .dchart .dl{font:700 10px var(--sans);letter-spacing:1.2px;text-transform:uppercase;color:var(--dim2);display:flex;justify-content:space-between}
+  .dchart .dv{font:700 19px var(--mono);margin:3px 0 1px} .dchart .dm{font:10.5px var(--mono);color:var(--dim2)}
+  .dchart svg{display:block;width:calc(100% + 22px);margin:4px -11px 0;height:46px}
+  .ptab td{padding:5px 8px;font-size:12px}
+  .stat4{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin-bottom:16px}
+  .stat4 .card{padding:13px 15px} .stat4 .lab{font-size:10.5px;text-transform:uppercase;letter-spacing:1px;color:var(--dim);font-weight:600}
+  .stat4 .val{font:720 24px var(--mono);margin-top:6px} .stat4 .sub{font:11px var(--mono);color:var(--dim);margin-top:4px}
+  .cforce{display:none;align-items:center;gap:8px;font-size:12.5px;color:var(--dim);margin:-8px 0 16px} .cforce.show{display:flex}
+  tr.click{cursor:pointer}
+  /* --- round 4: ranges, away summary, map detail, docker control --- */
+  #since:empty{display:none}
+  .since{border:1px solid var(--border2);border-left:3px solid var(--accent);border-radius:11px;background:var(--surface);padding:13px 16px;margin-bottom:14px}
+  .since .sh{display:flex;align-items:center;gap:10px;font-weight:650;font-size:14px} .since .sh span{color:var(--dim);font-weight:500;font-size:12.5px}
+  .since .sh button{margin-left:auto}
+  .sfacts{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 4px}
+  .sfact{font:600 12px var(--mono);padding:4px 10px;border-radius:14px;background:var(--surface3);color:var(--text)}
+  .sfact.err{color:var(--err);background:var(--errbg)} .sfact.warn{color:var(--warn);background:var(--warnbg)} .sfact.ok{color:var(--ok);background:var(--okbg)}
+  .brow{cursor:pointer} .brow .bn i{font-style:normal;color:var(--dim2);font-size:9px;display:inline-block;width:11px}
+  .bprocs{background:var(--surface2);border-bottom:1px solid var(--border);padding:4px 4px 6px 22px}
+  .bproc{display:grid;grid-template-columns:54px minmax(0,1fr) 62px 44px 62px 26px;gap:10px;align-items:center;font:12px var(--mono);padding:3px 0;color:var(--dim)}
+  .bproc b{color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .bproc span{text-align:right}
+  .cywrap{position:relative}
+  #cytip{position:absolute;display:none;z-index:6;pointer-events:none;background:var(--surface);border:1px solid var(--border2);border-radius:9px;box-shadow:var(--sh);padding:9px 12px;font-size:12px;max-width:330px;line-height:1.55}
+  #cytip b{font-size:13px} #cytip .k{color:var(--dim2);font-family:var(--mono);font-size:11px} #cytip .d{color:var(--dim)}
+  .srow.menu-on{background:var(--surface2);box-shadow:inset 3px 0 var(--accent)}
+  .menu .mh{padding:7px 10px 6px;font:700 11px var(--sans);color:var(--dim);border-bottom:1px solid var(--border);margin-bottom:4px;max-width:230px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  button.act.danger{color:var(--err);border-color:color-mix(in srgb,var(--err) 35%,var(--border))}
+  .rules td{font-size:12.5px;padding:7px 10px} .rules .fire{color:var(--err);font-weight:700} .rules .calm{color:var(--ok)}
+  .depl{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12.5px} .depl:last-child{border-bottom:none}
+  .depl a{cursor:pointer;font-weight:600} .depl .why{margin-left:auto;color:var(--dim2);font:11px var(--mono);text-align:right}
+  .tbtn{background:none;border:1px solid var(--border);color:var(--dim);border-radius:6px;font:600 11px var(--sans);padding:3px 8px;cursor:pointer;margin-left:4px}
+  .tbtn:hover{color:var(--accent);border-color:var(--accent)} .tbtn.danger{color:var(--err)} .tbtn.danger:hover{border-color:var(--err);background:var(--errbg)}
+  tr.stack td{background:var(--surface2);font:700 10.5px var(--sans);letter-spacing:1.2px;text-transform:uppercase;color:var(--dim);padding:7px 10px}
+  .apphist{padding:2px 0 0} .apphist svg{width:100%;height:34px}
+  .hl{font-family:var(--mono);font-size:11.5px;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:7px 9px;white-space:pre-wrap;word-break:break-word;color:var(--dim);margin-top:4px}
+  /* --- map: readable cards on top of the graph, one colored panel per section --- */
+  #cyhtml{position:absolute;inset:0;overflow:hidden;pointer-events:none;border-radius:10px}
+  #cylayer{position:absolute;left:0;top:0;transform-origin:0 0}
+  .nd{position:absolute;width:240px;height:84px;box-sizing:border-box;border-radius:11px;background:var(--surface);border:1.5px solid var(--border2);border-left:6px solid var(--g);
+    padding:9px 8px 0 12px;font-family:var(--sans);overflow:hidden;box-shadow:0 2px 9px rgba(0,0,0,.2);transition:opacity var(--t),border-color var(--t)}
+  .nd-h{display:flex;align-items:center;gap:7px;height:20px}
+  .nd-h .dot{width:10px;height:10px;border-radius:50%;flex:none}
+  .nd-h b{font-size:14.5px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:0 1 auto;min-width:0}
+  .nd-h i{font-style:normal;font-size:11.5px;font-weight:600;color:var(--g);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1 1 0;min-width:0}
+  .nd-k{pointer-events:auto;margin-left:auto;flex:none;background:var(--surface3);border:1px solid var(--border);color:var(--dim);border-radius:6px;width:24px;height:20px;line-height:1;font-size:14px;cursor:pointer;padding:0}
+  .nd-k:hover{color:var(--accent);border-color:var(--accent)}
+  .nd-d{font-size:12px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;height:16px}
+  .nd-m{display:flex;gap:5px;margin-top:6px}
+  .nd-m span{font:600 11px var(--mono);background:var(--surface3);color:var(--text);border-radius:5px;padding:2px 6px;white-space:nowrap}
+  .nd-m span.port{color:var(--dim)} .nd-m span.bad{color:var(--err);background:var(--errbg)} .nd-m span.off{color:var(--dim2)}
+  .nd.err{border-color:var(--err);background:var(--errbg)} .nd.idle{border-style:dashed;opacity:.72} .nd.paused{border-color:var(--warn)}
+  .nd.hov{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 35%,transparent)} .nd.dim{opacity:.2}
+  .sect{position:absolute;display:flex;align-items:center;gap:9px;white-space:nowrap;font:750 12.5px var(--sans);letter-spacing:1.1px;text-transform:uppercase;color:var(--g)}
+  .sect small{font:500 11.5px var(--sans);letter-spacing:0;text-transform:none;color:var(--dim)}
+  .sect .tbtn{pointer-events:auto;text-transform:none;letter-spacing:0;background:var(--surface);margin-left:0}
+  .gchip{width:9px;height:9px;border-radius:3px;display:inline-block;flex:none}
+  .cyleg .gl{display:inline-flex;align-items:center;gap:5px;margin-right:9px}
+  .alert .tbtn{background:var(--surface);margin-left:auto} .alert .tbtn+.go{margin-left:8px}
+  /* --- calm pass: readable section titles, one row design everywhere, actions always visible --- */
+  body{font-size:14.5px}
+  section{max-width:1600px;margin:0 auto}
+  h2{font:700 15.5px var(--sans);text-transform:none;letter-spacing:0;color:var(--text);margin:0 0 4px;gap:10px;flex-wrap:wrap}
+  h2 .ct{font:500 13px var(--sans);color:var(--dim);letter-spacing:0}
+  .hint{color:var(--dim);font-size:13px;margin:0 0 13px;line-height:1.5;max-width:900px}
+  .sec{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--g,var(--border2));border-radius:12px;padding:16px 18px;margin-bottom:16px;min-width:0}
+  .cols>.sec{margin-bottom:0}
+  .rows{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--g,var(--border2));border-radius:12px;overflow:hidden;margin-bottom:16px}
+  .rh{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:11px 14px;border-bottom:1px solid var(--border);background:color-mix(in srgb,var(--g,var(--border2)) 10%,var(--surface))}
+  .rh b{font-size:14.5px;font-weight:700} .rh small{color:var(--dim);font-size:12.5px} .rh .sp{flex:1}
+  .r2{display:flex;align-items:center;gap:12px;padding:9px 14px;border-bottom:1px solid var(--border);min-height:58px}
+  .r2:last-child{border-bottom:none} .r2.click{cursor:pointer} .r2.click:hover{background:var(--surface2)}
+  .r2 .dot{width:10px;height:10px;border-radius:50%;flex:none}
+  .r2 .tx{min-width:0;flex:1}
+  .r2 .nm{font-weight:650;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .r2 .nm i{font-style:normal;font-weight:500;font-size:12.5px;color:var(--dim);margin-left:8px}
+  .r2 .sb{color:var(--dim);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+  .r2 .nums{display:flex;gap:6px;flex:none} .r2 .acts{display:flex;gap:6px;flex:none;align-items:center}
+  .chipn{font:600 12px var(--mono);background:var(--surface3);color:var(--text);border-radius:6px;padding:3px 8px;white-space:nowrap}
+  .chipn.ok{color:var(--ok);background:var(--okbg)} .chipn.off{color:var(--dim2);background:var(--idlebg)} .chipn.dimc{color:var(--dim)}
+  .btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;font:600 12.5px var(--sans);padding:6px 11px;cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center;gap:5px;line-height:1.2}
+  .btn:hover{border-color:var(--accent);color:var(--accent);text-decoration:none} .btn.danger{color:var(--err)} .btn.danger:hover{border-color:var(--err);background:var(--errbg);color:var(--err)}
+  .btn.sm{padding:4px 9px;font-size:12px}
+  @media(max-width:1100px){.r2 .nums{display:none}}
+  /* overview */
+  .hero{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:16px 18px;border-radius:12px;border:1px solid var(--border);border-left:5px solid var(--ok);background:var(--surface);margin-bottom:14px}
+  .hero.warn{border-left-color:var(--warn)} .hero.err{border-left-color:var(--err)}
+  .hero .hb{font-size:18px;font-weight:700} .hero .hs{color:var(--dim);font-size:13px;margin-top:3px}
+  .hero .hg{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+  .hero .hg .chipn{cursor:pointer;font-family:var(--sans);font-size:12.5px;padding:5px 10px;display:inline-flex;align-items:center;gap:6px}
+  .tile{min-height:112px;padding:14px 16px 46px} .tile .lab{font-size:12px;letter-spacing:.3px;text-transform:none;color:var(--dim)} .tile .val{font-size:30px} .tile .sub{font-size:12px;font-family:var(--sans)}
+  .prow{display:grid;grid-template-columns:minmax(0,1fr) 62px 78px 28px;gap:10px;align-items:center;padding:7px 4px;border-bottom:1px solid var(--border);font-size:13.5px}
+  .prow:last-child{border-bottom:none} .prow.h{color:var(--dim2);font:600 11px var(--sans);text-transform:uppercase;letter-spacing:.5px;padding-top:0}
+  .prow .pn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600} .prow .pn small{color:var(--dim);font-weight:500;margin-left:7px}
+  .prow span.n{font-family:var(--mono);text-align:right}
+  .brow{font-size:13.5px;padding:7px 4px}
+  /* services rows: actions always there */
+  .sact{opacity:1;min-width:132px;justify-content:flex-end;align-items:center} .srow{height:50px} .snm{font-size:14.5px} .sdesc{font-size:13px}
+  /* drawer: facts first, sections fold */
+  .dfacts{display:flex;flex-wrap:wrap;gap:6px;padding:10px 16px 0} .dfacts:empty{display:none}
+  details.dsec{border:1px solid var(--border);border-radius:10px;margin-bottom:10px;background:var(--surface2)}
+  details.dsec>summary{cursor:pointer;list-style:none;padding:10px 13px;font:700 13px var(--sans);display:flex;align-items:center;gap:8px}
+  details.dsec>summary::-webkit-details-marker{display:none}
+  details.dsec>summary::before{content:'▸';color:var(--dim2);font-size:10px;width:10px} details.dsec[open]>summary::before{content:'▾'}
+  details.dsec>summary small{color:var(--dim);font-weight:500;font-size:12px}
+  details.dsec>.db{padding:2px 13px 13px}
+  details.wbox{margin-bottom:16px} details.wbox>summary{cursor:pointer;list-style:none;font:700 14.5px var(--sans);display:flex;align-items:center;gap:9px}
+  details.wbox>summary::-webkit-details-marker{display:none} details.wbox>summary::before{content:'▸';color:var(--dim2);font-size:11px} details.wbox[open]>summary::before{content:'▾'}
+  details.wbox>summary small{color:var(--dim);font-weight:500;font-size:12.5px}
+  /* --- table pass: lists are real tables (same columns on every row), color means "kind" only --- */
+  .sgrid{display:grid;grid-template-columns:12px minmax(0,1fr) 70px 82px 62px 64px 156px;gap:12px;align-items:center}
+  .srow.sgrid{display:grid;height:50px}
+  .shead{padding:7px 14px;border-bottom:1px solid var(--border);font:600 11px var(--sans);letter-spacing:.5px;text-transform:uppercase;color:var(--dim2)}
+  .shead .r,.sgrid .r{text-align:right} .sgrid .r{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:13px;white-space:nowrap}
+  .sname{display:flex;align-items:baseline;gap:10px;min-width:0} .sname .snm{flex:0 1 auto;overflow:hidden;text-overflow:ellipsis}
+  .sgrid .sact{min-width:0;justify-content:flex-end;gap:4px}
+  .rh.tog{cursor:pointer;user-select:none} .rh .chev{color:var(--dim2);font-size:10px;width:10px}
+  .r2 .cn{width:76px;text-align:right;font:13px var(--mono);font-variant-numeric:tabular-nums;flex:none;white-space:nowrap} .r2 .cn.p{width:58px;color:var(--dim)}
+  .rcols{display:flex;align-items:center;gap:12px;padding:7px 14px;border-bottom:1px solid var(--border);font:600 11px var(--sans);letter-spacing:.5px;text-transform:uppercase;color:var(--dim2)}
+  .rcols .tx{flex:1} .rcols .cn{width:76px;text-align:right;flex:none} .rcols .cn.p{width:58px} .rcols .acts{flex:none}
+  @media(max-width:1100px){.r2 .cn,.rcols .cn{display:none}}
+  .hero{align-items:flex-start} .hero .hleft{flex:1;min-width:280px}
+  .hal{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:10px;font-size:13.5px} .hal .lv{font-weight:700}
+  .hal.warn .lv{color:var(--warn)} .hal.err .lv{color:var(--err)}
+  .tile[data-s="neutral"] .val{color:var(--text)}
+  .nd-d i{font-style:normal;font-weight:650;color:var(--g)}
+  .stat4 .card .btn{margin-top:9px}
+  code.cmd{font:12.5px var(--mono);background:var(--surface3);border-radius:6px;padding:3px 8px}
+  /* --- nothing hidden: the full detail is back, in the new layout --- */
+  .tile{min-height:132px;padding-bottom:48px} .tile .stats{font:11px var(--mono);color:var(--dim2);margin-top:6px;gap:10px} .tile .stats b{color:var(--dim)}
+  .prow{grid-template-columns:52px minmax(0,1fr) 92px 58px 78px 66px 28px} .prow .d{color:var(--dim);font:12.5px var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sgrid{grid-template-columns:12px minmax(0,1fr) 70px 82px 62px 64px 232px}
+  #docker td{white-space:nowrap} #docker td.nmc{white-space:normal}
+  .dkh{display:flex;align-items:center;gap:10px;margin:8px 0 10px;font:700 15px var(--sans)} .dkh small{font:500 13px var(--sans);color:var(--dim)}
+  /* --- stopped things fold away: running on top, stopped one click below --- */
+  .sfold{display:flex;align-items:center;gap:8px;padding:10px 14px;color:var(--dim);font-size:13px;cursor:pointer;border-bottom:1px solid var(--border);user-select:none}
+  .sfold:last-child{border-bottom:none} .sfold:hover{background:var(--surface2);color:var(--text)} .sfold b{font-weight:650}
+  /* --- wider detail panel, repos as a real list, paths you can click --- */
+  .drawer{width:min(860px,96vw)}
+  .kv{grid-template-columns:minmax(0,170px) minmax(0,1fr)}
+  a.path{color:var(--dim);font-family:var(--mono);font-size:12px;cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px} a.path:hover{color:var(--accent)}
+  .rgrid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1.1fr) minmax(0,1fr) auto;gap:16px;align-items:center;padding:11px 14px;border-bottom:1px solid var(--border)}
+  .rgrid:last-child{border-bottom:none} .rgrid:hover{background:var(--surface2)}
+  .rgrid.h{font:600 11px var(--sans);letter-spacing:.5px;text-transform:uppercase;color:var(--dim2);padding:7px 14px} .rgrid.h:hover{background:none}
+  .rgrid .nm{font-weight:680;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .rgrid .nm a{font-weight:500;font-size:12.5px;margin-left:8px}
+  .rgrid .one{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px;color:var(--dim)}
+  .rchips{display:flex;gap:5px;flex-wrap:wrap} .chipn.warnc{color:var(--warn);background:var(--warnbg)}
+  .fbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center} .fbar .btn.on{border-color:var(--accent);color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
+  .abtns{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+  @media(max-width:1100px){.rgrid{grid-template-columns:minmax(0,1fr) auto} .rgrid .c2,.rgrid .c3{display:none}}
+  /* --- usage and cost --- */
+  .ubars{display:flex;align-items:flex-end;gap:4px;height:170px;padding-top:18px}
+  .ubar{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;position:relative;cursor:default}
+  .ubar i{display:block;width:100%;max-width:46px;background:var(--accent);border-radius:4px 4px 0 0;min-height:2px;opacity:.85} .ubar:hover i{opacity:1}
+  .ubar b{font:600 10.5px var(--mono);color:var(--dim);margin-bottom:3px;white-space:nowrap}
+  .ubar span{font:10.5px var(--mono);color:var(--dim2);margin-top:5px;white-space:nowrap}
+  .utab td,.utab th{white-space:nowrap} .utab td.n,.utab th.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+  .utab td.c{text-align:right;font:700 13.5px var(--mono)} .utab td,.utab th{padding-left:7px;padding-right:7px}
+  table.utab{table-layout:fixed;width:100%;min-width:460px} .utab td:first-child{overflow:hidden}
+  .utab .u1,.utab .u2{white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .utab .u2{margin-top:2px} .utab .shr{display:inline-block;height:6px;border-radius:3px;background:var(--accent);vertical-align:middle;margin-right:7px}
+  .ugrid{display:grid;grid-template-columns:minmax(0,1.7fr) 128px 132px 64px minmax(0,1.1fr) minmax(0,1fr) 92px;gap:14px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--border)}
+  .ugrid:last-child{border-bottom:none} .ugrid.row{cursor:pointer} .ugrid.row:hover{background:var(--surface2)}
+  .ugrid.h{font:600 11px var(--sans);letter-spacing:.5px;text-transform:uppercase;color:var(--dim2);padding:7px 14px}
+  .ugrid .n{text-align:right;font:13px var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap} .ugrid .cost{text-align:right;font:700 14.5px var(--mono)}
+  .ugrid .nm{font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .ugrid .one{font-size:12.5px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .uin{background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font:13px var(--sans);padding:6px 10px;outline:none;width:220px} .uin:focus{border-color:var(--accent)}
+  .upart{display:grid;grid-template-columns:150px minmax(0,1fr) 92px 84px;gap:12px;align-items:center;padding:8px 2px;border-bottom:1px solid var(--border);font-size:13.5px} .upart:last-of-type{border-bottom:none}
+  .upart .bb{height:8px;border-radius:4px;background:var(--surface3);overflow:hidden} .upart .bb i{display:block;height:100%;border-radius:4px}
+  .upart .n{text-align:right;font-family:var(--mono)} .upart small{display:block;color:var(--dim);font-size:12px}
+  @media(max-width:1200px){.ugrid{grid-template-columns:minmax(0,1fr) 92px} .ugrid>:not(:first-child):not(:last-child){display:none}}
+  /* --- right now: 5-hour window, live sessions, budgets --- */
+  .cols3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:16px} .cols3>.sec{margin-bottom:0}
+  @media(max-width:1150px){.cols3{grid-template-columns:1fr}}
+  .nbig{font:720 30px var(--mono);margin:4px 0 2px} .nline{font-size:13px;color:var(--dim);margin-top:5px} .nline b{color:var(--text);font-weight:650}
+  .pbar{height:9px;border-radius:5px;background:var(--surface3);overflow:hidden;margin:9px 0 3px} .pbar i{display:block;height:100%;border-radius:5px;background:var(--accent)}
+  .pbar.warn i{background:var(--warn)} .pbar.err i{background:var(--err)}
+  .brow2{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:13.5px} .brow2:last-of-type{border-bottom:none}
+  .brow2 small{color:var(--dim);font-size:12px} .brow2 input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:7px;color:var(--text);font:13px var(--mono);padding:5px 8px;text-align:right;outline:none}
+  .brow2 input:focus{border-color:var(--accent)}
+  .lgrid{display:grid;grid-template-columns:12px minmax(0,1.4fr) minmax(0,1.1fr) 118px minmax(110px,.9fr) 96px 72px;gap:12px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer}
+  .lgrid:last-child{border-bottom:none} .lgrid:hover{background:var(--surface2)} .lgrid.h{cursor:default;font:600 11px var(--sans);letter-spacing:.5px;text-transform:uppercase;color:var(--dim2);padding:7px 14px} .lgrid.h:hover{background:none}
+  .lgrid .nm{font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .lgrid .one{font-size:12.5px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lgrid .n{text-align:right;font:13px var(--mono);white-space:nowrap} .lgrid .gb{height:7px;border-radius:4px;background:var(--surface3);overflow:hidden;margin-bottom:3px} .lgrid .gb i{display:block;height:100%;border-radius:4px}
+  .lstate{font-weight:650;font-size:13px} .lstate.working{color:var(--ok)} .lstate.waiting{color:var(--warn)} .lstate.stalled{color:var(--err)}
+  @media(max-width:1150px){.lgrid{grid-template-columns:12px minmax(0,1fr) 104px} .lgrid>:nth-child(n+3):not(:nth-child(6)){display:none}}
 </style>
 </head>
 <body>
@@ -236,6 +465,7 @@
   <div class="health"><span class="pulse" id="pulse"></span><span class="big" id="hcount">—</span></div>
   <span class="stamp" id="stamp"></span>
   <div class="htools">
+    <button class="ico bell" id="bell" title="Alerts and activity">◔<span class="bdg" id="bell-n"></span></button>
     <button class="ico" id="pause" title="Pause auto-refresh (space)">⏸</button>
     <button class="ico" id="density" title="Toggle density">≡</button>
     <button class="ico" id="theme" title="Toggle theme">◐</button>
@@ -247,43 +477,118 @@
   <button data-tab="services">⬡ Services <span class="b" id="b-svc">—</span></button>
   <button data-tab="agents">🤖 Agents <span class="b" id="b-ag">—</span></button>
   <button data-tab="models">◆ Models <span class="b" id="b-md">—</span></button>
+  <button data-tab="usage">$ Usage <span class="b" id="b-us">—</span></button>
+  <button data-tab="docker">🐳 Docker <span class="b" id="b-dk">—</span></button>
   <button data-tab="repos">⎇ Repos <span class="b" id="b-rp">—</span></button>
+  <button data-tab="activity">◔ Activity <span class="b" id="b-ev">—</span></button>
 </nav>
 
 <section id="tab-overview">
+  <div id="since"></div>
+  <div id="hero"></div>
+  <div id="alerts" hidden></div>
   <div class="tiles" id="tiles"></div>
-  <div class="card panel" style="margin-bottom:18px"><h2>History · ~3 min window <span class="ct" id="hist-leg"></span></h2><div id="histchart"></div></div>
+  <div id="ov-live"></div>
   <div class="cols">
-    <div class="card panel"><h2>Loaded models <span class="ct" id="llm-ct"></span></h2><div id="llm"></div></div>
-    <div class="card panel"><h2>Docker containers <span class="ct" id="dk-ct"></span></h2><div style="overflow:auto;max-height:260px"><table id="docker"></table></div></div>
+    <div class="sec" id="memsec"><h2>What is using memory <span class="ct" id="mem-ct"></span></h2>
+      <p class="hint">Counted like Activity Monitor: in RAM, plus what macOS squeezed or moved to disk. Click an app to see its processes; ✕ quits it.</p>
+      <div class="membar" id="membar"></div><div class="mleg" id="mleg"></div><div id="apps"></div>
+      <div style="margin-top:10px"><button class="btn sm" id="apps-more"></button></div></div>
+    <div class="sec"><h2>Busiest processes <span class="sp"></span><span class="seg" id="procseg"><button data-v="cpu">By CPU</button><button data-v="mem">By memory</button></span></h2>
+      <p class="hint">Single processes, right now. ✕ asks one to quit (only your own processes can be stopped).</p>
+      <div id="procs"></div></div>
   </div>
-  <div class="card panel"><h2>Top processes</h2><div style="overflow:auto;max-height:320px"><table id="procs"></table></div></div>
+  <div class="sec"><h2>History <span class="seg" id="histseg"><button data-v="live">Live</button><button data-v="1h">1h</button><button data-v="6h">6h</button><button data-v="24h">24h</button><button data-v="48h">48h</button></span> <span class="ct" id="hist-leg"></span></h2><div id="histchart"></div></div>
+  <div class="cols">
+    <div class="sec"><h2>Models in memory <span class="ct" id="llm-ct"></span></h2><div id="llm"></div></div>
+    <div class="sec"><h2>Recent activity <span class="sp"></span><a class="btn sm" href="#" onclick="showTab('activity');return false">See all</a></h2><div id="ev-mini"></div></div>
+  </div>
+  <div class="sec" style="margin-top:16px"><h2>Docker containers <span class="ct" id="dk-ct"></span><span class="sp"></span><a class="btn sm" href="#" onclick="showTab('docker');return false">Manage in Docker tab</a></h2>
+    <p class="hint">Live numbers for every running container. Click a row for its logs, health and everything inside it.</p>
+    <div style="overflow:auto"><table id="docker"></table></div></div>
 </section>
 
 <section id="tab-services" hidden>
   <div id="svc-topo" class="card panel">
-    <div class="cytool"><span class="cyleg"><b style="color:var(--dim);font-weight:600">Service dependencies</b> · <span class="ld ok"></span>up <span class="ld er"></span>down · 🐳 docker · arrows = "depends on" · drag · zoom · click</span><button class="refresh" id="cy-fit">⤢ Fit</button></div>
-    <div id="cy"></div></div>
-  <div id="svc-list" style="margin-top:20px"></div>
+    <div class="cytool"><span class="cyleg"><b style="color:var(--dim);font-weight:600">What talks to what</b> · an arrow means "uses" · solid = seen now, dashed = seen in the last 24h · hover for the evidence · click a box for detail · ⋯ for actions</span>
+      <span><button class="refresh" id="cy-zout" title="zoom out">−</button> <button class="refresh" id="cy-zin" title="zoom in">+</button> <button class="refresh" id="cy-fit">⤢ Fit</button></span></div>
+    <div class="cyleg" id="cy-groups" style="margin-bottom:9px;flex-wrap:wrap"></div>
+    <div class="cywrap"><div id="cy"></div><div id="cyhtml"><div id="cylayer"></div></div><div id="cytip"></div></div></div>
+  <div class="stool" style="margin-top:20px">
+    <label>Show</label><span class="seg" id="showseg"><button data-v="all">All</button><button data-v="running">Running</button><button data-v="stopped">Stopped</button><button data-v="problems">Problems</button></span>
+    <label>Sort</label><span class="seg" id="sortseg"><button data-v="group">Group</button><button data-v="mem">Memory</button><button data-v="cpu">CPU</button></span>
+    <span class="sum" id="svc-sum"></span></div>
+  <div id="svc-list"></div>
 </section>
 
-<section id="tab-agents" hidden><h2>AI Agents &amp; CLIs <span class="ct" id="ag-sub"></span></h2>
-  <div class="md"><div id="agents"></div><div id="agent-detail" class="card panel mdpanel"></div></div></section>
-<section id="tab-models" hidden><h2>Downloaded LLMs <span class="ct" id="md-sub"></span></h2><div class="card" style="overflow:auto"><table id="models"></table></div></section>
+<section id="tab-agents" hidden><h2>AI agents and tools <span class="ct" id="ag-sub"></span></h2>
+  <p class="hint">The AI tools installed on this machine. Pick one to see what it is running and how much it uses.</p>
+  <div class="md"><div id="agents"></div><div id="agent-detail" class="sec mdpanel"></div></div></section>
+<section id="tab-models" hidden><h2>Models <span class="ct" id="md-sub"></span></h2>
+  <p class="hint">Every model on this machine, read straight from disk, so it is complete even when Ollama is stopped: Ollama's library, loose model files, and the Hugging Face cache. "In memory" means a server is holding it right now and it costs RAM.</p>
+  <div id="models"></div></section>
+<section id="tab-usage" hidden>
+  <h2>Usage and cost <span class="ct" id="us-sub"></span><span class="sp"></span>
+    <span class="seg" id="usseg"><button data-v="today">Today</button><button data-v="7d">7 days</button><button data-v="30d">30 days</button><button data-v="90d">90 days</button><button data-v="all">All time</button></span></h2>
+  <p class="hint">Tokens and cost for every session, read from each agent's own logs on this machine; nothing is sent anywhere. Cost is what those tokens cost at the public API price. On a flat subscription you do not pay this amount: read it as the value of what you used.</p>
+  <div id="us-scan"></div>
+  <div class="cols3" id="us-now"></div>
+  <div id="us-live"></div>
+  <details class="sec wbox" style="margin-bottom:16px"><summary>Recent 5-hour windows <small id="us-blk-sum"></small></summary><div style="overflow:auto;margin-top:10px"><table class="utab" id="us-blocks"></table></div></details>
+  <h2 style="margin-top:6px">The whole period <span class="ct">totals for the range picked above</span></h2>
+  <div class="stat4" id="us-tiles"></div>
+  <div class="sec"><h2>Cost per day <span class="ct" id="us-day-leg"></span></h2><div id="us-days"></div></div>
+  <div class="cols">
+    <div class="sec"><h2>What the cost is made of</h2><p class="hint">Every request re-sends the conversation so far. Most of it is read from cache at a fraction of the price; new text is written to cache at a premium.</p><div id="us-parts"></div></div>
+    <div class="sec"><h2>By model <span class="ct">click a row to see its sessions</span></h2><div style="overflow:auto"><table class="utab" id="us-models"></table></div></div>
+  </div>
+  <div class="cols" style="margin-top:16px">
+    <div class="sec"><h2>By agent <span class="ct">click a row to see its sessions</span></h2><div style="overflow:auto"><table class="utab" id="us-tools"></table></div></div>
+    <div class="sec"><h2>By project folder <span class="ct">click a row to see its sessions · click the path to open the folder</span></h2><div style="overflow:auto;max-height:420px"><table class="utab" id="us-projects"></table></div></div>
+  </div>
+  <div id="us-sessions" style="margin-top:16px"></div>
+  <details class="sec wbox" style="margin-top:16px"><summary>Prices used <small>dollars per million tokens · change them in pricing.json</small></summary>
+    <div style="margin:10px 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button class="btn sm" onclick="fetchPrices()">Get prices for other vendors</button>
+      <span class="muted" style="font-size:12.5px" id="us-xp"></span></div>
+    <div style="overflow:auto"><table class="utab" id="us-prices"></table></div></details>
+</section>
+<section id="tab-docker" hidden>
+  <h2>Docker <span class="ct" id="dk-sub"></span><span class="sp"></span><span class="seg" id="dkseg"><button data-v="all">Everything</button><button data-v="containers">Containers</button><button data-v="images">Images</button><button data-v="volumes">Volumes</button></span>
+    <button class="btn sm" onclick="loadInv(true)">⟳ Rescan</button></h2>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><button class="btn sm" onclick="doDocker('prune-containers')">Remove stopped containers</button><button class="btn sm" onclick="doDocker('prune-unused')">Remove unused images</button>
+    <button class="btn sm" onclick="doDocker('prune-images')">Prune dangling images</button><button class="btn sm" onclick="doDocker('prune-cache')">Clear build cache</button></div>
+  <p class="hint" id="dk-hint"></p>
+  <div class="stat4" id="dk-stats"></div>
+  <div id="dk-body"></div>
+</section>
+<section id="tab-activity" hidden>
+  <h2>Activity <span class="ct" id="al-sub"></span><span class="sp"></span>
+    <button class="btn sm" onclick="showSince(Date.now()/1000-86400,true)">Summarize last 24h</button><button class="btn sm" id="notify"></button><button class="btn sm" onclick="exportSnap()">⇩ Export</button></h2>
+  <p class="hint">What needs attention now, what is being watched, and everything that happened. Events are kept for 14 days and survive restarts.</p>
+  <div id="al-list"></div>
+  <details class="sec wbox" id="rules-box" open><summary>What is being watched <small id="rules-sum"></small></summary><div style="overflow:auto;margin-top:10px"><table class="rules" id="rules"></table></div></details>
+  <div class="rows" style="--g:var(--border2)"><div class="rh"><b>Timeline</b><small id="ev-sub"></small><span class="sp"></span>
+    <span class="seg" id="evseg"><button data-v="all">All</button><button data-v="state">Up / down</button><button data-v="action">Your actions</button><button data-v="alert">Alerts</button></span></div>
+    <div id="ev-list" style="padding:4px 10px"></div></div>
+</section>
 <section id="tab-repos" hidden>
-  <h2>GitHub accounts <span class="ct" id="gh-sub"></span></h2><div class="grid" id="accounts" style="margin-bottom:18px"></div>
-  <h2>Local repositories <span class="ct" id="rp-sub"></span></h2><div class="card" style="overflow:auto"><table id="repos"></table></div>
+  <h2>Repositories <span class="ct" id="rp-sub"></span></h2>
+  <p class="hint">Git repositories found in your usual project folders, with what is uncommitted or not pushed. Click a path to open that folder; the GitHub accounts this machine is signed in to are listed first.</p>
+  <div id="accounts" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px"></div>
+  <div id="repos"></div>
 </section>
 
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" aria-hidden="true">
   <div class="dh"><span class="pill" id="d-pill"></span><span class="name" id="d-name"></span><button class="ico" id="d-close">✕</button></div>
-  <div class="dtabs"><button data-dt="details" class="on">Details</button><button data-dt="logs">Logs</button><button data-dt="actions">Actions</button></div>
+  <div class="dfacts" id="d-facts"></div>
+  <div class="dacts" id="d-acts"></div>
+  <div class="dtabs"><button data-dt="details" class="on">Details</button><button data-dt="logs">Logs</button><button data-dt="events">Events</button></div>
   <div class="dbody" id="d-body"></div>
 </aside>
 
 <div id="palette"><div class="pbox"><input id="pinput" placeholder="Jump to service, model, action…" aria-label="Command palette"><div class="presults" id="presults"></div></div></div>
-<div id="confirm"><div class="cbox"><h3 id="c-title"></h3><p id="c-msg"></p><div class="row"><button class="act" id="c-cancel">Cancel</button><button class="act danger" id="c-ok">Confirm</button></div></div></div>
+<div id="confirm"><div class="cbox"><h3 id="c-title"></h3><p id="c-msg"></p><label class="cforce" id="c-forcerow"><input type="checkbox" id="c-force"> Force (SIGKILL) - use only if it ignores a normal stop</label><div class="row"><button class="act" id="c-cancel">Cancel</button><button class="act danger" id="c-ok">Confirm</button></div></div></div>
 <div id="toasts"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.30.2/cytoscape.min.js"></script>
@@ -291,8 +596,27 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape-dagre/2.5.0/cytoscape-dagre.min.js"></script>
 <script>
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)], esc=s=>(s==null?'':String(s)).replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));
-const CORES=navigator.hardwareConcurrency||10;
-let S={services:[]}, MET=null, INV=null, paused=false, lastTs=0;
+let CORES=navigator.hardwareConcurrency||8;
+let S={services:[],alerts:[],events:[]}, MET=null, INV=null, paused=false, lastTs=0;
+const ls=k=>{try{return localStorage.getItem(k)}catch(e){return null}}, lset=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+const fmtMB=mb=>mb>=1024?(mb/1024).toFixed(1)+' GB':Math.round(mb||0)+' MB';
+const ACT={restart:['⟳','Restart'],stop:['■','Stop'],start:['▶','Start'],pause:['⏸','Pause'],unpause:['▶','Resume'],kill:['✕','Force kill'],unload:['⏏','Stop and keep stopped'],remove:['🗑','Remove container']};
+const DANGER={stop:1,kill:1,unload:1,remove:1};
+const up=t=>{const m=/^(?:(\d+)-)?(?:(\d+):)?(\d+):(\d+)$/.exec(t||'');if(!m)return t||'';const d=+(m[1]||0),h=+(m[2]||0),mi=+m[3];return d?d+'d '+h+'h':h?h+'h '+mi+'m':mi?mi+'m':m[4]+'s';};
+const u=t=>(t||'').replace(/([\d.]+)\s*([kKMGT])i?B/g,(_,n,x)=>(+n>=100?Math.round(+n):Math.round(+n*10)/10)+' '+x.toUpperCase()+'B');
+const hhmm=ts=>{const d=new Date(ts*1000),t=d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});return d.toDateString()===new Date().toDateString()?t:d.toLocaleDateString([],{weekday:'short'})+' '+t;};
+const dur=s=>s<90?Math.round(s)+'s':s<5400?Math.round(s/60)+'m':s<172800?(s/3600).toFixed(1)+'h':Math.round(s/86400)+'d';
+/* segmented controls: <span class="seg" id=..> with data-v buttons */
+function seg(id,cur,cb){const el=$('#'+id);if(!el)return;const set=v=>$$('button',el).forEach(b=>b.classList.toggle('on',b.dataset.v===v));set(cur);
+  $$('button',el).forEach(b=>b.onclick=e=>{e.stopPropagation();set(b.dataset.v);cb(b.dataset.v);});}
+/* every state-changing call goes through here (the server rejects POSTs without this header) */
+async function post(url,body,label){
+  toast('ok',label+'…','');
+  try{const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','X-Dash':'1'},body:JSON.stringify(body)});
+    const j=await r.json();toast(j.ok?'ok':'err',(j.ok?'✓ ':'✗ ')+label,j.msg||'');return j;}
+  catch(e){toast('err','Error',String(e));return{ok:false};}
+  finally{setTimeout(()=>{pollStatus();pollMetrics();},1300);}
+}
 
 /* ---- theme / density / pause ---- */
 try{const t=localStorage.getItem('theme'); if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}
@@ -308,7 +632,10 @@ setInterval(()=>{if(lastTs)$('#stamp').textContent=(paused?'paused · ':'')+'upd
 
 /* ---- tabs ---- */
 $$('nav button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
-function showTab(t){$$('nav button').forEach(x=>x.classList.toggle('on',x.dataset.tab===t));['overview','services','agents','models','repos'].forEach(k=>$('#tab-'+k).hidden=(k!==t));
+const TABS=['overview','services','agents','models','usage','docker','repos','activity'];
+function showTab(t){$$('nav button').forEach(x=>x.classList.toggle('on',x.dataset.tab===t));TABS.forEach(k=>$('#tab-'+k).hidden=(k!==t));
+  if(t==='usage')loadUsage();
+  if(t==='usage'||t==='overview')pollNow();
   if(t==='services')setTimeout(()=>{if(!cyG)initCy();else{cyG.resize();syncCy();cyG.fit(null,22);}},60);}
 
 /* ---- sparkline ---- */
@@ -318,23 +645,32 @@ function spark(series,w=216,h=42){
   const pts=series.map((v,i)=>`${(i/(n-1)*w).toFixed(1)},${(h-3-((v-mn)/rg)*(h-7)).toFixed(1)}`).join(' ');
   return`<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><path class="ar" d="M${pts} L${w},${h} L0,${h} Z"/><path class="ln" d="M${pts}"/></svg>`;
 }
+function mini(series,w=64,h=18,c='var(--accent2)'){
+  if(!series||series.length<2)return`<svg class="mini" width="${w}" height="${h}"></svg>`;
+  // autoscale to the series' own range so small changes show; a steady value is a flat mid line
+  const mn=Math.min(...series),mx=Math.max(...series),flat=(mx-mn)<=Math.max(mx*0.02,0.05),rg=(mx-mn)||1,n=series.length;
+  const pts=series.map((v,i)=>`${(i/(n-1)*w).toFixed(1)},${(flat?h/2:h-2-((v-mn)/rg)*(h-4)).toFixed(1)}`).join(' ');
+  return`<svg class="mini" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">${flat?'':`<path d="M${pts} L${w},${h} L0,${h} Z" fill="${c}" opacity=".13"/>`}<path d="M${pts}" fill="none" stroke="${c}" stroke-width="1.3" opacity="${flat?.55:1}"/></svg>`;
+}
 function stat(s){if(!s||!s.length)return null;const mn=Math.min(...s),mx=Math.max(...s),av=s.reduce((a,b)=>a+b,0)/s.length,d=s.length>1?s[s.length-1]-s[s.length-2]:0;return{mn,mx,av,d};}
 const HSERIES=[['cpu','CPU','var(--accent)'],['mem','MEM','var(--accent2)'],['gpu','GPU','var(--ok)'],['load','LOAD','var(--warn)'],['disk','DISK','#6ea8fe']];
 let hVis;try{hVis=JSON.parse(localStorage.getItem('hvis'))}catch(e){}hVis=hVis||{cpu:1,mem:1,gpu:1,load:0,disk:0};
 const hval=(k,s)=>k==='load'?(s||[]).map(v=>Math.min(100,v/CORES*100)):(s||[]);
 function toggleSeries(k){hVis[k]=hVis[k]?0:1;try{localStorage.setItem('hvis',JSON.stringify(hVis))}catch(e){}if(window._H){isHover=false;renderHistory(window._H);renderHleg(window._Hd);}}
+let histRange=ls('histrange')||'live',histData=null;
+const xlab=(H,i)=>{const t=H.ts||[],last=t[t.length-1];if(!t.length)return'';if(H.range)return hhmm(t[i]);const d=last-t[i];return d<2?'now':'-'+dur(d);};
 function chart(H){
   const w=1000,vh=185,bot=20,p=6,plot=vh-bot;
   const vis=HSERIES.filter(([k])=>hVis[k]).map(([k,lab,c])=>[k,lab,c,hval(k,H[k])]);
-  const allv=vis.flatMap(([,,,s])=>s);
+  const allv=vis.flatMap(([,,,s])=>s),n=(H.ts||H.cpu||[]).length;
+  if(n<2)return`<div class="empty" style="padding:44px">${H.range?'No history saved for this range yet. It fills in one point per minute while the dashboard runs.':'collecting…'}</div>`;
   if(!allv.length)return`<svg class="hchart" viewBox="0 0 ${w} ${vh}"><text x="${w/2}" y="${plot/2}" text-anchor="middle" fill="var(--dim2)" style="font:11px var(--mono)">select a series</text></svg>`;
   let lo=Math.min(...allv),hi=Math.max(...allv),pad=Math.max(4,(hi-lo)*0.18);
   let ymin=Math.max(0,Math.floor((lo-pad)/5)*5),ymax=Math.min(100,Math.ceil((hi+pad)/5)*5);
   if(ymax-ymin<10)ymax=Math.min(100,ymin+10);
   const Y=v=>p+(1-(Math.max(ymin,Math.min(ymax,v))-ymin)/(ymax-ymin))*(plot-2*p);
   const grid=[0,.25,.5,.75,1].map(f=>{const val=ymax-(ymax-ymin)*f,yy=(p+f*(plot-2*p)).toFixed(1);return`<line x1="0" x2="${w}" y1="${yy}" y2="${yy}" stroke="var(--border)"/><text x="4" y="${yy-2}" fill="var(--dim2)" style="font:9px var(--mono)">${Math.round(val)}%</text>`;}).join('');
-  const n=(H.cpu||[]).length;
-  const xax=[0,.25,.5,.75,1].map(f=>{const sec=Math.round((1-f)*(n-1)*2);const lab=sec===0?'now':'-'+(sec>=60?Math.floor(sec/60)+'m':sec+'s');return`<text x="${(f*w).toFixed(0)}" y="${vh-5}" text-anchor="${f===0?'start':f===1?'end':'middle'}" fill="var(--dim2)" style="font:9px var(--mono)">${lab}</text>`;}).join('');
+  const xax=[0,.25,.5,.75,1].map(f=>`<text x="${(f*w).toFixed(0)}" y="${vh-5}" text-anchor="${f===0?'start':f===1?'end':'middle'}" fill="var(--dim2)" style="font:9px var(--mono)">${xlab(H,Math.round(f*(n-1)))}</text>`).join('');
   const base=(plot-p).toFixed(1);
   const paths=vis.map(([k,lab,c,s])=>{if(!s||s.length<2)return'';const m=s.length;const pts=s.map((v,i)=>`${(i/(m-1)*w).toFixed(1)},${Y(v).toFixed(1)}`).join(' ');return`<path d="M${pts} L${w},${base} L0,${base} Z" fill="${c}" opacity=".07"/><path d="M${pts}" fill="none" stroke="${c}" stroke-width="1.8"/>`;}).join('');
   return`<svg class="hchart" viewBox="0 0 ${w} ${vh}">${grid}${paths}${xax}</svg>`;
@@ -348,161 +684,371 @@ function renderHistory(H){
   el.innerHTML=chart(H)+'<div class="xh" id="xh"></div><div class="htt" id="htt"></div>';
   if(hoverWired)return;hoverWired=true;
   el.addEventListener('mouseenter',()=>{isHover=true;});
-  el.addEventListener('mousemove',e=>{const Hh=window._H;if(!Hh||!Hh.cpu||Hh.cpu.length<2)return;isHover=true;
-    const r=el.getBoundingClientRect(),f=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),n=Hh.cpu.length,idx=Math.round(f*(n-1)),px=idx/(n-1)*r.width,sec=(n-1-idx)*2;
-    const xh=$('#xh'),tt=$('#htt');xh.style.left=px+'px';xh.style.display='block';
-    tt.innerHTML=`<b>${sec===0?'now':'-'+(sec>=60?Math.floor(sec/60)+'m':sec+'s')}</b>&nbsp; `+HSERIES.filter(([k])=>hVis[k]).map(([k,lab,c])=>`<span style="color:${c}">${lab} ${nf(hval(k,Hh[k])[idx]||0)}</span>`).join(' ');
+  el.addEventListener('mousemove',e=>{const Hh=window._H,n=Hh&&(Hh.ts||Hh.cpu||[]).length;if(!n||n<2)return;isHover=true;
+    const r=el.getBoundingClientRect(),f=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)),idx=Math.round(f*(n-1)),px=idx/(n-1)*r.width;
+    const xh=$('#xh'),tt=$('#htt');if(!xh)return;xh.style.left=px+'px';xh.style.display='block';
+    tt.innerHTML=`<b>${xlab(Hh,idx)}</b>&nbsp; `+HSERIES.filter(([k])=>hVis[k]).map(([k,lab,c])=>`<span style="color:${c}">${lab} ${nf(hval(k,Hh[k])[idx]||0)}</span>`).join(' ');
     tt.style.display='block';let tx=px+10;if(tx>r.width-235)tx=px-225;tt.style.left=Math.max(0,tx)+'px';});
   el.addEventListener('mouseleave',()=>{isHover=false;const xh=$('#xh'),tt=$('#htt');if(xh)xh.style.display='none';if(tt)tt.style.display='none';});
 }
+async function loadHist(){if(histRange==='live')return;try{histData=await (await fetch('/api/history?range='+histRange)).json();isHover=false;renderHistory(histData);}catch(e){}}
+seg('histseg',histRange,v=>{histRange=v;lset('histrange',v);isHover=false;if(v==='live'){if(MET)renderHistory(MET.hist);}else loadHist();});
+setInterval(loadHist,60000);loadHist();
 const lvl=(v,w=70,e=90)=>v>=e?'err':v>=w?'warn':'ok';
 const nf=v=>Math.abs(v)>=10?Math.round(v):Math.round(v*10)/10;
 
 /* ---- metrics render ---- */
 function renderMetrics(d){
-  MET=d; const H=d.hist||{};
+  MET=d; const H=d.hist||{}; if(d.cores)CORES=d.cores;
   const loadPct=Math.min(100,d.load[0]/CORES*100);
   const netTot=d.rxKBs+d.txKBs;
+  const fire=n=>(S.rules||[]).some(r=>r.firing&&r.name.startsWith(n))?'warn':'neutral';
   const tiles=[
-    {lab:'CPU',val:d.cpu,unit:'%',sub:`user ${d.cpuUser} · sys ${d.cpuSys}`,s:lvl(d.cpu),g:d.cpu,h:H.cpu},
-    {lab:'Memory',val:d.memPct,unit:'%',sub:`${d.memUsedGB} / ${d.memTotalGB} GB · swap ${d.swapGB}`,s:lvl(d.memPct),g:d.memPct,h:H.mem},
-    {lab:'GPU · Metal',val:d.gpu,unit:'%',sub:'unified memory',s:lvl(d.gpu),g:d.gpu,h:H.gpu},
-    {lab:'Load',val:d.load[0].toFixed(2),unit:'',sub:`${d.load.map(x=>x.toFixed(1)).join(' / ')} · ${CORES}c`,s:lvl(loadPct),g:loadPct,h:(H.load||[])},
-    {lab:'Network',val:(netTot>1024?(netTot/1024).toFixed(1):Math.round(netTot)),unit:(netTot>1024?' MB/s':' KB/s'),sub:`↓${Math.round(d.rxKBs)} ↑${Math.round(d.txKBs)} KB/s`,s:'neutral',g:null,h:(H.rx||[]).map((v,i)=>v+((H.tx||[])[i]||0))},
-    {lab:'Disk',val:(d.disk[0]?.pct??0),unit:'%',sub:d.disk[0]?`${d.disk[0].usedGB} / ${d.disk[0].totalGB} GB`:'—',s:lvl(d.disk[0]?.pct??0,80,92),g:d.disk[0]?.pct,h:(H.disk||[])},
+    {lab:'CPU',val:d.cpu,unit:'%',sub:`across ${CORES} cores`,s:fire('CPU'),g:d.cpu,h:H.cpu},
+    {lab:'Memory',val:d.memPct,unit:'%',sub:`${d.memUsedGB} of ${d.memTotalGB} GB · ${d.swapGB} GB moved to disk`,s:fire('Memory'),g:d.memPct,h:H.mem},
+    {lab:'GPU',val:d.gpu,unit:'%',sub:d.platform==='macOS'?'Apple GPU, shares memory with RAM':'GPU utilisation',s:'neutral',g:d.gpu,h:H.gpu},
+    {lab:'Busy cores',val:d.load[0].toFixed(1),unit:'',sub:`of ${CORES} · 5 min ${d.load[1].toFixed(1)} · 15 min ${d.load[2].toFixed(1)}`,s:'neutral',g:loadPct,h:(H.load||[])},
+    {lab:'Network',val:(netTot>1024?(netTot/1024).toFixed(1):Math.round(netTot)),unit:(netTot>1024?' MB/s':' KB/s'),sub:`down ${Math.round(d.rxKBs)} · up ${Math.round(d.txKBs)} KB/s`,s:'neutral',g:null,h:(H.rx||[]).map((v,i)=>v+((H.tx||[])[i]||0))},
+    {lab:'Disk',val:(d.disk[0]?.pct??0),unit:'%',sub:d.disk[0]?`${d.disk[0].usedGB} of ${d.disk[0].totalGB} GB used`:'—',s:fire('Startup disk'),g:d.disk[0]?.pct,h:(H.disk||[])},
   ];
-  $('#tiles').innerHTML=tiles.map(t=>{
-    const st=t.h&&t.h.length?stat(t.h):null;
-    let delta='';
-    if(st){const cls=t.s==='neutral'?'flat':(st.d>0.05?'up':st.d<-0.05?'down':'flat');const ar=st.d>0.05?'▲':st.d<-0.05?'▼':'→';delta=`<span class="delta ${cls}">${ar} ${nf(Math.abs(st.d))}</span>`;}
-    const stats=st?`<div class="stats"><span>min <b>${nf(st.mn)}</b></span><span>avg <b>${nf(st.av)}</b></span><span>max <b>${nf(st.mx)}</b></span></div>`:'';
+  $('#tiles').innerHTML=tiles.map(t=>{const st=t.h&&t.h.length?stat(t.h):null;
+    const delta=st?`<span class="delta flat" title="change since the previous sample">${st.d>0.05?'▲':st.d<-0.05?'▼':'→'} ${nf(Math.abs(st.d))}</span>`:'';
     return `<div class="tile card" data-s="${t.s}">
       <div class="thead"><span class="lab">${t.lab}</span>${delta}</div>
       <div class="val num">${t.val}<small>${t.unit}</small></div>
-      <div class="sub">${esc(t.sub)}</div>${stats}
-      ${t.g!=null?`<div class="gauge"><i style="width:${Math.min(100,t.g)}%"></i></div>`:''}
+      <div class="sub">${esc(t.sub)}</div>
+      ${st?`<div class="stats"><span>min <b>${nf(st.mn)}</b></span><span>avg <b>${nf(st.av)}</b></span><span>max <b>${nf(st.mx)}</b></span></div>`:''}
       ${spark(t.h)}</div>`;}).join('');
-  renderHistory(H);
+  if(histRange==='live')renderHistory(H);
   renderHleg(d);
 
   const llm=d.llm||[];
   $('#llm-ct').textContent=llm.length?llm.length+' loaded':'';
-  $('#llm').innerHTML=llm.length?llm.map(m=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
-    <span class="badge loaded">● LIVE</span><b class="num" style="font-size:13px">${esc(m.name)}</b>
-    <span class="muted num" style="margin-left:auto;font-size:12px">${esc(m.size)} · ${esc(m.proc)} · until ${esc(m.until)}</span></div>`).join(''):'<div class="empty">No models loaded. Run one via Ollama or Hermes.</div>';
-
-  const dk=d.docker||[];
-  $('#dk-ct').textContent=dk.length;
-  $('#docker').innerHTML=`<thead><tr><th>Container</th><th>CPU</th><th>Mem</th><th>Net</th></tr></thead><tbody>`+
-    (dk.length?dk.map(c=>`<tr><td class="num">${esc(c.name)}</td><td class="num">${esc(c.cpu)}</td><td class="num muted">${esc(c.mem)}</td><td class="num muted">${esc(c.net)}</td></tr>`).join(''):'<tr><td colspan="4" class="empty">No containers</td></tr>')+`</tbody>`;
-
-  const pr=d.procs||[];
-  $('#procs').innerHTML=`<thead><tr><th>PID</th><th>Process</th><th>CPU %</th><th>Mem (MB)</th></tr></thead><tbody>`+
-    pr.map(p=>`<tr><td class="num muted">${p.pid}</td><td class="num">${esc(p.name||'—')}</td><td class="num" style="color:${p.cpu>50?'var(--err)':p.cpu>15?'var(--warn)':'var(--text)'}">${p.cpu.toFixed(1)}</td><td class="num muted">${p.rssMB}</td></tr>`).join('')+`</tbody>`;
+  $('#llm').innerHTML=llm.length?llm.map((m,i)=>`<div class="r2" style="padding-left:2px;padding-right:2px"><span class="dot" style="background:var(--ok)"></span>
+    <div class="tx"><div class="nm">${esc(m.name)}</div><div class="sb">${esc(m.proc)}${m.ctx?' · '+ctxk(m.ctx):''} · stays loaded ${keep(m.until)}${m.port!==11434?' · Ollama server on port '+m.port:''}</div></div>
+    <div class="nums"><span class="chipn">${esc(m.size)}</span></div>
+    <div class="acts"><button class="btn sm" onclick="doModelName(MET.llm[${i}].name,'stop')">Unload</button></div></div>`).join('')
+    :'<div class="empty">No model is loaded in Ollama. Load one from the Models tab.</div>';
+  const dk=(d.docker||[]).slice().sort((a,b)=>parseFloat(b.memPct)-parseFloat(a.memPct));
+  $('#dk-ct').textContent=dk.length+' running';
+  $('#docker').innerHTML=`<thead><tr><th>Container</th><th style="text-align:right">CPU</th><th style="text-align:right">Memory</th><th style="text-align:right">Of its limit</th><th style="text-align:right">Network in / out</th><th style="text-align:right">Disk read / write</th><th style="text-align:right">Processes</th><th></th></tr></thead><tbody>`+
+    (dk.length?dk.map(c=>{const sv=S.services.find(x=>x.docker===c.name),id='dk:'+c.name,r=x=>`<td class="num" style="text-align:right">${x}</td>`;
+      return `<tr class="click" onclick="openDrawer('${id}')"><td class="nmc"><b>${esc(sv?sv.name:c.name)}</b> <span class="muted" style="font-size:12px">${esc(c.name)}</span></td>${r(esc(c.cpu))}${r(u(c.mem).split(' / ')[0])}${r(esc(c.memPct))}${r(u(c.net))}${r(u(c.block))}${r(esc(c.pids))}
+        <td style="white-space:nowrap;text-align:right" onclick="event.stopPropagation()"><button class="tbtn" onclick="doAct('${id}','restart')">⟳ Restart</button><button class="tbtn" onclick="openDrawer('${id}','logs')">Logs</button></td></tr>`;}).join('')
+      :'<tr><td colspan="8" class="empty">No running containers</td></tr>')+`</tbody>`;
+  renderMem(d);renderProcs();
+}
+const MPARTS=[['app','Apps (in RAM)','var(--accent2)'],['wired','Locked by system and AI models','var(--accent)'],['compressed','Compressed','var(--warn)'],['cached','Cached files','var(--idle)'],['other','Other','var(--border2)'],['free','Free','var(--surface3)']];
+function renderMem(d){
+  const P=d.memParts||{},tot=d.memTotalGB||1;
+  $('#mem-ct').textContent=`${d.memUsedGB} of ${d.memTotalGB} GB used · ${d.swapGB} GB moved to disk`;
+  $('#membar').innerHTML=MPARTS.filter(([k])=>P[k]).map(([k,l,c])=>`<i style="width:${(P[k]/tot*100).toFixed(1)}%;background:${c}" title="${l}: ${P[k]} GB"></i>`).join('');
+  $('#mleg').innerHTML=MPARTS.filter(([k])=>P[k]!=null).map(([k,l,c])=>`<span><i style="background:${c};${k==='free'?'border:1px solid var(--border2)':''}"></i>${l} <b>${P[k]} GB</b></span>`).join('');
+  const all=d.apps||[],apps=appsAll?all:all.slice(0,8),totMB=tot*1024;
+  $('#apps-more').textContent=appsAll?'Show fewer':`Show all ${all.length} apps`;$('#apps-more').hidden=all.length<=8;
+  $('#apps').innerHTML=apps.map((a,i)=>{const open=appOpen.has(a.name);return `<div class="brow" onclick="toggleApp(${i})" title="${a.n>1?'show its processes':''}"><span class="bn"><i>${open?'▾':'▸'}</i>${esc(a.name)}<small>${a.n>1?a.n+' processes':''}${a.swapMB>200?' · '+fmtMB(a.swapMB)+' squeezed or on disk':''}</small></span>
+    <span class="bb"><i style="width:${Math.min(100,a.memMB/totMB*100).toFixed(1)}%"></i></span><span class="bv">${fmtMB(a.memMB)}</span><span class="bc">${a.cpu.toFixed(0)}%</span>
+    <button class="xbtn" ${a.mine?'':'disabled'} title="${a.mine?'Quit '+esc(a.name):'system or other user: cannot quit'}" onclick="event.stopPropagation();quitApp(${i})">✕</button></div>`
+    +(open?`<div class="bprocs"><div class="bproc" style="color:var(--dim2)"><span style="text-align:left">PID</span><b style="color:var(--dim2)">process</b><span>memory</span><span>CPU</span><span>running</span><span></span></div>${a.procs.map(q=>`<div class="bproc"><span style="text-align:left">${q.pid}</span><b title="${esc(q.name)}">${esc(q.name)}</b><span>${fmtMB(q.rssMB)}</span><span>${q.cpu.toFixed(0)}%</span><span>${up(q.up)}</span><button class="xbtn" ${q.mine?'':'disabled'} title="Stop this process" onclick="event.stopPropagation();killProc(${q.pid},'${esc(q.name).replace(/'/g,'')}')">✕</button></div>`).join('')}${a.n>a.procs.length?`<div class="bproc" style="color:var(--dim2)"><span></span><b style="color:var(--dim2)">+ ${a.n-a.procs.length} smaller</b></div>`:''}<div class="apphist" data-app="${esc(a.name)}">${appHist[a.name]||''}</div></div>`:'');}).join('')||'<div class="empty">no data yet</div>';
+}
+let appsAll=true;$('#apps-more').onclick=()=>{appsAll=!appsAll;renderMem(MET);};
+const appOpen=new Set();
+const appHist={};
+async function toggleApp(i){const a=(MET.apps||[])[i];if(!a)return;
+  if(appOpen.has(a.name)){appOpen.delete(a.name);renderMem(MET);return;}
+  appOpen.add(a.name);renderMem(MET);
+  try{const h=await (await fetch('/api/history?range=24h&app='+encodeURIComponent(a.name))).json();   // its memory over the last day, from disk
+    appHist[a.name]=h.ts.length>1?`<div class="bproc" style="grid-template-columns:1fr;color:var(--dim2)"><span style="text-align:left">memory, ${hhmm(h.ts[0])} → now · min ${fmtMB(Math.min(...h.mem))} · max ${fmtMB(Math.max(...h.mem))}</span></div>${mini(h.mem,520,34)}`:'<div class="bproc" style="grid-template-columns:1fr;color:var(--dim2)"><span style="text-align:left">history for this app starts now (one point per minute)</span></div>';
+    renderMem(MET);}catch(e){}}
+let procSort=ls('procsort')||'cpu';
+const PNAME={WindowServer:'macOS display',mdworker_shared:'Spotlight indexing',mds_stores:'Spotlight index',mds:'Spotlight',fileproviderd:'Cloud file sync',kernel_task:'macOS kernel',launchd:'macOS service manager',
+  ControlCenter:'Control Center','com.apple.Virtualization.VirtualMachine':'Docker virtual machine',coreaudiod:'macOS audio',bird:'iCloud sync',cloudd:'iCloud sync',trustd:'macOS security',syslogd:'System log',logd:'System log'};
+function renderProcs(){
+  if(!MET)return;const pr=(procSort==='cpu'?MET.procs:MET.procsMem)||[];
+  $('#procs').innerHTML=`<div class="prow h"><span>PID</span><span>Process</span><span>User</span><span class="n">CPU</span><span class="n">Memory</span><span class="n">Running</span><span></span></div>`+
+    pr.map(p=>`<div class="prow"><span class="d">${p.pid}</span><span class="pn" title="${esc(p.name)}">${esc(PNAME[p.name]||p.name||'—')}<small>${esc(PNAME[p.name]?p.name:(p.app!==p.name?p.app:''))}</small></span><span class="d">${esc(p.user)}</span>
+      <span class="n" style="color:${p.cpu>50?'var(--err)':p.cpu>15?'var(--warn)':'var(--text)'}">${p.cpu.toFixed(1)}%</span><span class="n">${fmtMB(p.rssMB)}</span><span class="n d" style="text-align:right">${up(p.up)}</span>
+      <button class="xbtn" ${p.mine?'':'disabled'} title="${p.mine?'Stop this process':'system or other user: cannot stop'}" onclick="killProc(${p.pid})">✕</button></div>`).join('');
+}
+seg('procseg',procSort,v=>{procSort=v;lset('procsort',v);renderProcs();});
+function killProc(pid,name){
+  const p=[...(MET.procs||[]),...(MET.procsMem||[])].find(x=>x.pid===pid);const nm=name||(p?p.name:'process');
+  askConfirm(`Stop ${nm} (pid ${pid})?`,'Asks the process to quit. Anything unsaved in it is lost.',force=>post('/api/proc',{pid,force},(force?'force kill ':'stop ')+nm),{force:true});
+}
+function quitApp(i){
+  const a=(MET.apps||[])[i];if(!a)return;
+  askConfirm(`Quit ${a.name}?`,`Asks all ${a.n} process${a.n>1?'es':''} of ${a.name} to quit (${fmtMB(a.memMB)} freed). Anything unsaved is lost.`,()=>post('/api/app',{name:a.name},'quit '+a.name));
 }
 
 /* ---- services render + topology ---- */
-let cyG=null,cySig='',cyESig='';
+let cyG=null,cySig='';
 function cyColors(){const cs=getComputedStyle(document.documentElement),g=v=>cs.getPropertyValue(v).trim();
-  return{s3:g('--surface3'),b2:g('--border2'),tx:g('--text'),dm:g('--dim2'),ok:g('--ok'),er:g('--err'),erb:g('--errbg'),ac:g('--accent')};}
+  return{s3:g('--surface3'),b2:g('--border2'),tx:g('--text'),dm:g('--dim2'),ok:g('--ok'),er:g('--err'),erb:g('--errbg'),ac:g('--accent'),wn:g('--warn'),id:g('--idle')};}
+/* one state per service: ok | paused | idle (stopped on purpose) | err (crashed / unhealthy / gone) */
+function svcState(s){const bad=(S.alerts||[]).some(a=>a.id===s.id);return bad?'err':s.paused?'paused':!s.up?(s.crashed?'err':'idle'):'ok';}
+const SCOL={ok:'var(--ok)',paused:'var(--warn)',idle:'var(--idle)',err:'var(--err)'};
+const SWORD={ok:'UP',paused:'PAUSED',idle:'STOPPED',err:'DOWN'};
+/* one color per kind of thing; each Docker stack gets its own */
+const GPAL={'AI / LLM':'#9b7bff','Backend':'#ff8f3d','Database':'#3d9bff','Automation':'#f5a623','Web / Dev':'#21c08b','Infra':'#8a94a6','Other':'#8a94a6'};
+const DPAL=['#12b5cb','#e8589a','#7cc634','#d9a514','#c678dd'];
+function GCOL(g){if(GPAL[g])return GPAL[g];if(!g.startsWith('Docker'))return GPAL.Other;
+  const all=[...new Set((S.services||[]).map(s=>s.group).filter(x=>x.startsWith('Docker')))].sort();return DPAL[Math.max(0,all.indexOf(g))%DPAL.length];}
+const NW=240,NH=84,PAD=18,HEAD=40,GAP=26;
 function cyStyle(c){return[
-  {selector:'node',style:{'background-color':c.s3,'border-color':c.b2,'border-width':1.8,'shape':'round-rectangle','label':'data(label)','text-wrap':'wrap','text-max-width':165,'text-valign':'center','text-halign':'center','color':c.tx,'font-size':11.5,'font-family':'-apple-system,system-ui,sans-serif','font-weight':600,'width':188,'height':54}},
-  {selector:'node.up',style:{'border-color':c.ok}},
-  {selector:'node.down',style:{'border-color':c.er,'background-color':c.erb}},
-  {selector:'node:selected',style:{'border-width':2.8,'border-color':c.ac}},
-  {selector:'edge',style:{'width':2,'line-color':c.ac,'opacity':0.85,'target-arrow-color':c.ac,'target-arrow-shape':'triangle','arrow-scale':1,'curve-style':'taxi','taxi-direction':'rightward','taxi-turn':'45%','taxi-turn-min-distance':14}},
+  {selector:'node[sid]',style:{'shape':'round-rectangle','width':NW,'height':NH,'background-opacity':0,'border-width':0}},   // the readable card is HTML, drawn on top
+  {selector:'node.panel',style:{'shape':'round-rectangle','width':'data(w)','height':'data(h)','background-color':'data(col)','background-opacity':0.075,'border-width':1.3,'border-color':'data(col)','border-opacity':0.6,'events':'no'}},
+  {selector:'edge',style:{'width':2.2,'line-color':c.ac,'opacity':0.95,'target-arrow-color':c.ac,'target-arrow-shape':'triangle','arrow-scale':1.2,'curve-style':'taxi','taxi-direction':'rightward','taxi-turn':'50%','taxi-turn-min-distance':16,
+    'label':'data(lab)','font-size':11,'font-weight':600,'font-family':'-apple-system,system-ui,sans-serif','color':c.tx,'text-background-color':c.s3,'text-background-opacity':1,'text-background-padding':4,'text-background-shape':'roundrectangle','text-border-width':1,'text-border-color':c.b2,'text-border-opacity':1}},
+  {selector:'edge.stale',style:{'line-style':'dashed','opacity':0.5}},
+  {selector:'edge.dim',style:{'opacity':0.1}},
 ];}
-function slug(g){return 'g_'+g.replace(/[^a-z0-9]/gi,'_');}
-function svcLabel(s){
-  let nm=s.name;
-  if(s.kind==='docker'){const proj=(s.group.split('· ')[1]||'').replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-    if(proj)nm=nm.replace(new RegExp('[_-]?'+proj+'[_-]?','g'),'').replace(/_\d+$/,'').replace(/^[_-]+|[_-]+$/g,'')||s.name;}
-  if(nm.length>20)nm=nm.slice(0,19)+'…';
-  return (s.kind==='docker'?'🐳 ':'')+nm+(s.port?'\n:'+s.port:'');
-}
-function edgeEls(){
-  const ids=new Set((S.services||[]).map(s=>s.id));
-  return (S.edges||[]).filter(e=>ids.has(e[0])&&ids.has(e[1])).map(e=>({data:{id:'e_'+e[0]+'_'+e[1],source:'n_'+e[0],target:'n_'+e[1]}}));
-}
-function connectedIds(){
-  const ids=new Set((S.services||[]).map(s=>s.id)),c=new Set();
-  (S.edges||[]).forEach(e=>{if(ids.has(e[0])&&ids.has(e[1])){c.add(e[0]);c.add(e[1]);}});
-  return c;
-}
-function cyElements(){
-  const els=[];
-  (S.services||[]).forEach(s=>els.push({data:{id:'n_'+s.id,sid:s.id,label:svcLabel(s)},classes:s.up?'up':'down'}));
-  return els.concat(edgeEls());
-}
-function cySignature(){return (S.services||[]).map(s=>s.id).sort().join('|');}
-function edgeSignature(){return (S.edges||[]).map(e=>e[0]+'>'+e[1]).sort().join('|');}
-function updateEdges(){if(!cyG)return;cyG.edges().remove();cyG.add(edgeEls());}
+const edgeLab=w=>w.startsWith('live connection to :')?'port '+w.slice(20):w.startsWith('config ')?'set in config':w.startsWith('compose ')?'starts after':w.startsWith('runs it')?'started by it':w;
+function liveEdges(){const ids=new Set((S.services||[]).map(s=>s.id));return (S.edges||[]).filter(e=>ids.has(e[0])&&ids.has(e[1]));}
+function edgeEls(){return liveEdges().map(e=>({data:{id:'e_'+e[0]+'_'+e[1],source:'n_'+e[0],target:'n_'+e[1],lab:edgeLab(e[2]||''),why:e[2]||'',age:e[3]||0},classes:(e[3]||0)>150?'stale':''}));}
+function connectedIds(){const c=new Set();liveEdges().forEach(e=>{c.add(e[0]);c.add(e[1]);});return c;}
+function cyElements(){return (S.services||[]).map(s=>({data:{id:'n_'+s.id,sid:s.id,grp:s.group}})).concat(edgeEls());}
+function cySignature(){return (S.services||[]).map(s=>s.id+(s.up?'+':'-')).sort().join('|')+'#'+liveEdges().map(e=>e[0]+'>'+e[1]+((e[3]||0)>150?'~':'')).sort().join('|');}
+let SECTS=[];
 function cyRunLayout(){
-  const conn=connectedIds();
-  let flowBottom=30,flowRight=760,placed=false;
-  // 1) connected services -> dagre dependency flow (left-to-right)
-  if(typeof dagre!=='undefined' && conn.size){
-    const g=new dagre.graphlib.Graph();
-    g.setGraph({rankdir:'LR',nodesep:42,ranksep:100,marginx:26,marginy:26});
-    g.setDefaultEdgeLabel(()=>({}));
-    cyG.nodes().forEach(n=>{if(conn.has(n.data('sid'))){const bb=n.boundingBox();g.setNode(n.id(),{width:bb.w||188,height:bb.h||54});}});
-    cyG.edges().forEach(e=>g.setEdge(e.source().id(),e.target().id()));
-    dagre.layout(g);
-    cyG.batch(()=>cyG.nodes().forEach(n=>{const p=g.node(n.id());if(p){n.position({x:p.x,y:p.y});flowBottom=Math.max(flowBottom,p.y);flowRight=Math.max(flowRight,p.x);placed=true;}}));
-  }
-  // 2) everything else -> tidy grid below the flow (so all services are visible)
-  const rest=cyG.nodes().filter(n=>!conn.has(n.data('sid')));
-  const perRow=Math.max(4,Math.round((flowRight+120)/212)),colW=212,rowH=74,y0=(placed?flowBottom+150:40);
-  cyG.batch(()=>rest.forEach((n,i)=>n.position({x:40+(i%perRow)*colW+colW/2,y:y0+Math.floor(i/perRow)*rowH})));
-  cyG.fit(null,22);
+  cyG.nodes('.panel').remove();SECTS=[];
+  const svc=n=>S.services.find(s=>s.id===n.data('sid'))||{},base=s=>(s.name||'').split(' · ')[0],secs=[];
+  // 1) every connected set of services is one section, laid out left to right: a service points at what it uses
+  cyG.elements('node[sid], edge').components().filter(c=>c.edges().length).sort((a,b)=>b.nodes().length-a.nodes().length).forEach(c=>{
+    const g=new dagre.graphlib.Graph();g.setGraph({rankdir:'LR',nodesep:18,ranksep:96,marginx:0,marginy:0});g.setDefaultEdgeLabel(()=>({}));
+    c.nodes().forEach(n=>g.setNode(n.id(),{width:NW,height:NH}));c.edges().forEach(e=>g.setEdge(e.source().id(),e.target().id()));
+    dagre.layout(g);let w=0,h=0;
+    const at=c.nodes().map(n=>{const q=g.node(n.id());w=Math.max(w,q.x+NW/2);h=Math.max(h,q.y+NH/2);return{n,x:PAD+q.x,y:HEAD+q.y};});
+    const groups=[...new Set(c.nodes().map(n=>n.data('grp')))],roots=c.nodes().filter(n=>!n.incomers('edge').length).map(n=>svc(n));
+    const title=groups.length===1&&groups[0].startsWith('Docker')?groups[0].replace('Docker · ','')+' stack'
+      :(roots.length===1?roots[0].name:[...new Set(roots.map(base))].slice(0,2).join(' + '))+' and what it uses';
+    secs.push({at,w:Math.max(w+2*PAD,groups.length===1&&groups[0].startsWith('Docker')?560:Math.min(700,260+title.length*9)),h:h+HEAD+PAD,title,sub:c.nodes().length+' services · '+c.edges().length+' link'+(c.edges().length>1?'s':''),col:GCOL(svc(c.nodes()[0]).group||'Other'),group:groups.length===1?groups[0]:null});});
+  // 2) services with no link: one section per kind, so nothing is hidden
+  const conn=connectedIds(),rest={},perRow=3,linked=secs.length>0;
+  cyG.nodes('[sid]').forEach(n=>{if(!conn.has(n.data('sid'))){const k=n.data('grp')+(svc(n).up?'':'|off');(rest[k]=rest[k]||[]).push(n);}});   // stopped ones get their own section, which folds
+  Object.keys(rest).forEach(k=>{const g=k.split('|off')[0],ns=rest[k],cols=Math.min(perRow,ns.length),rows=Math.ceil(ns.length/perRow);
+    secs.push({at:ns.map((n,i)=>({n,x:PAD+(i%perRow)*(NW+14)+NW/2,y:HEAD+Math.floor(i/perRow)*(NH+14)+NH/2})),w:Math.max(cols*(NW+14)-14+2*PAD,g.startsWith('Docker')?520:330),h:HEAD+rows*(NH+14)-14+PAD,
+      title:g.replace('Docker · ','')+(g.startsWith('Docker')?' stack':''),sub:ns.length+(linked?' not connected to anything we can see':' services'),col:GCOL(g),group:g});});
+  // 2b) a section where nothing is running folds into one "Stopped" strip under the map; "Show" brings it back
+  cyG.nodes('[sid]').style('display','element');
+  const isOff=t=>t.at.every(a=>!svc(a.n).up),off=secs.filter(isOff),onl=secs.filter(t=>!isOff(t));let strip=null;
+  if(off.length){const n=off.reduce((a,t)=>a+t.at.length,0);
+    if(!mapOff)off.forEach(t=>t.at.forEach(a=>a.n.style('display','none')));
+    const groups=[...new Set(off.map(t=>t.group).filter(g=>g&&g.startsWith('Docker')))];
+    strip={at:[],w:560+groups.length*170,h:HEAD+8,title:'Stopped',sub:`${n} service${n>1?'s':''} not running`,col:'#8a94a6',group:null,strip:true,offGroups:groups};
+    secs.length=0;secs.push(...onl);}
+  [...secs,...(strip?[strip]:[]),...off].forEach(t=>{t.w=Math.max(t.w,headW(t));});
+  // 3) pack the sections into columns so the whole map has the shape of the canvas (bigger boxes, less empty space)
+  const asp=Math.max(1,cyG.width()/Math.max(1,cyG.height())),area=secs.reduce((a,t)=>a+(t.w+GAP)*(t.h+GAP),0);
+  const Ht=Math.max(Math.sqrt(area/asp)*1.1,...secs.map(t=>t.h));
+  const place=(t,x,y)=>{t.at.forEach(a=>a.n.position({x:x+a.x,y:y+a.y}));SECTS.push({x,y,h:t.h,title:t.title,sub:t.sub,col:t.col,group:t.group,strip:t.strip,offGroups:t.offGroups});
+    cyG.add({group:'nodes',data:{id:'p_'+SECTS.length,w:t.w,h:t.h,col:t.col},position:{x:x+t.w/2,y:y+t.h/2},classes:'panel',selectable:false,grabbable:false});};
+  let cx=0,cyy=0,cw=0;
+  secs.forEach(t=>{if(cyy>0&&cyy+t.h>Ht){cx+=cw+GAP;cyy=0;cw=0;}place(t,cx,cyy);cyy+=t.h+GAP;cw=Math.max(cw,t.w);});
+  if(strip){const y=SECTS.length?Math.max(...SECTS.map(t=>t.y+t.h))+GAP:0;place(strip,0,y);   // the strip sits under everything that runs
+    let x=0;if(mapOff)off.forEach(t=>{place(t,x,y+strip.h+GAP);x+=t.w+GAP;});}
+  cyG.fit(cyG.elements(':visible'),14);drawCards();
 }
+let mapOff=ls('mapoff')==='1';
+function toggleMapOff(){mapOff=!mapOff;lset('mapoff',mapOff?'1':'0');rebuildCy();}
+function startGroup(gi){const g=(window._sgall||[])[gi];if(g)post('/api/group',{group:g,action:'start'},'start '+g.replace('Docker · ',''));}
+/* the HTML layer: section titles + one card per service, moved with the graph's pan and zoom */
+function syncLayer(){if(!cyG)return;const q=cyG.pan(),z=cyG.zoom();$('#cylayer').style.transform=`translate(${q.x}px,${q.y}px) scale(${z})`;}
+function cardHTML(s,pos){
+  const st=svcState(s),[nm,...q]=s.name.split(' · ');
+  const chips=s.up?`${s.memMB?`<span>${fmtMB(s.memMB)}</span>`:''}<span>${(s.cpuN||0).toFixed(1)}% CPU</span>${s.port?`<span class="port">port ${s.port}</span>`:''}`
+    :`<span class="${st==='err'?'bad':'off'}">${st==='err'?'DOWN':'stopped'}</span>${s.port?`<span class="port">:${s.port}</span>`:''}`;
+  return `<div class="nd ${st}" data-n="${esc(s.id)}" style="--g:${GCOL(s.group)};left:${pos.x-NW/2}px;top:${pos.y-NH/2}px">
+    <div class="nd-h"><span class="dot" style="background:${SCOL[st]}"></span><b>${s.kind==='docker'?'🐳 ':''}${esc(nm)}</b><span style="flex:1"></span><button class="nd-k" title="actions" onclick="event.stopPropagation();menu(event,'${s.id}')">⋯</button></div>
+    <div class="nd-d">${q.length?`<i>${esc(q.join(' · '))}</i>${s.desc?' · ':''}`:''}${esc(s.desc||(s.kind==='docker'?s.where:''))}</div><div class="nd-m">${chips}</div></div>`;
+}
+function sectHead(t){   // title + count + the buttons that act on the whole section
+  const dk=t.group&&t.group.startsWith('Docker'),gi=(window._sgall||[]).indexOf(t.group),head=`<span class="gchip" style="background:${t.col}"></span>${esc(t.title)} <small>${esc(t.sub)}</small>`;
+  if(t.strip)return head+`<button class="tbtn" onclick="toggleMapOff()">${mapOff?'▾ Hide them':'▸ Show them'}</button>`+(t.offGroups||[]).map(g=>`<button class="tbtn" onclick="startGroup(${(window._sgall||[]).indexOf(g)})">▶ Start ${esc(g.replace('Docker · ',''))}</button>`).join('');
+  if(!dk||gi<0)return head;
+  return head+(S.services.some(v=>v.group===t.group&&v.up)?`<button class="tbtn" onclick="doGroupName(${gi},'restart')">⟳ Restart all</button><button class="tbtn danger" onclick="doGroupName(${gi},'stop')">■ Stop all</button>`:`<button class="tbtn" onclick="startGroup(${gi})">▶ Start all</button>`);
+}
+function headW(t){   // real pixel width of a section header, so its panel is never narrower than its own title and buttons
+  const d=document.createElement('div');d.className='sect';d.style.cssText='visibility:hidden;left:0;top:0';d.innerHTML=sectHead(t);
+  document.body.appendChild(d);const w=d.offsetWidth;d.remove();return w+2*PAD+6;}
+function drawCards(){
+  if(!cyG)return;const L=$('#cylayer');
+  L.innerHTML=SECTS.map(t=>`<div class="sect" style="--g:${t.col};left:${t.x+PAD}px;top:${t.y+11}px">${sectHead(t)}</div>`).join('')
+    +cyG.nodes('[sid]').filter(n=>n.style('display')!=='none').map(n=>{const s=S.services.find(x=>x.id===n.data('sid'));return s?cardHTML(s,n.position()):'';}).join('');
+  syncLayer();
+  const gs=[...new Set(S.services.map(s=>s.group))];
+  $('#cy-groups').innerHTML=gs.map(g=>`<span class="gl"><span class="gchip" style="background:${GCOL(g)}"></span>${esc(g)}</span>`).join('');
+}
+function cyTip(html,pos){const t=$('#cytip');if(!html){t.style.display='none';return;}t.innerHTML=html;t.style.display='block';
+  const w=$('#cy').clientWidth;t.style.left=Math.max(4,Math.min(pos.x+14,w-t.offsetWidth-6))+'px';t.style.top=(pos.y+16)+'px';}
+const card=id=>$('#cylayer').querySelector('[data-n="'+CSS.escape(id)+'"]');
+function cyFocus(keep){   // dim everything that is not part of what is being pointed at
+  $$('#cylayer .nd').forEach(el=>{el.classList.toggle('dim',!!keep&&!keep.has(el.dataset.n));el.classList.remove('hov');});
+  cyG.edges().forEach(e=>e.toggleClass('dim',!!keep&&!(keep.has(e.source().data('sid'))&&keep.has(e.target().data('sid')))));}
 function initCy(){
   const el=document.getElementById('cy');if(!el)return;
-  if(typeof cytoscape==='undefined'){el.innerHTML='<div class="empty">Diagram library did not load (offline?). The list below has everything.</div>';return;}
-  cyG=cytoscape({container:el,elements:cyElements(),style:cyStyle(cyColors()),minZoom:0.3,maxZoom:2.5,wheelSensitivity:0.22});
-  cySig=cySignature();cyESig=edgeSignature();cyRunLayout();
-  cyG.on('tap','node',e=>{const sid=e.target.data('sid');if(sid)openDrawer(sid);});
+  if(typeof cytoscape==='undefined'||typeof dagre==='undefined'){el.innerHTML='<div class="empty">Diagram library did not load (offline?). The list below has everything.</div>';return;}
+  cyG=cytoscape({container:el,elements:cyElements(),style:cyStyle(cyColors()),minZoom:0.2,maxZoom:2.2,wheelSensitivity:0.22,autoungrabify:true});
+  cySig=cySignature();cyG.on('viewport',()=>{syncLayer();cyTip('');});cyRunLayout();
+  cyG.on('tap','node[sid]',e=>openDrawer(e.target.data('sid')));
+  cyG.on('cxttap','node[sid]',e=>{const c=card(e.target.data('sid'));if(c)menu({target:c.querySelector('.nd-k')},e.target.data('sid'));});
+  cyG.on('mouseover','node[sid]',e=>{const s=S.services.find(x=>x.id===e.target.data('sid'));if(!s)return;
+    const uses=liveEdges().filter(x=>x[0]===s.id),usedBy=liveEdges().filter(x=>x[1]===s.id),nm=id=>(S.services.find(v=>v.id===id)||{}).name||id;
+    cyFocus(new Set(e.target.closedNeighborhood('node').map(n=>n.data('sid'))));const c=card(s.id);if(c)c.classList.add('hov');
+    cyTip(`<b>${esc(s.name)}</b><div class="d">${esc(s.desc||'')}</div>
+      <div class="k">${SWORD[svcState(s)]} · ${esc(s.kind==='docker'?'docker container '+s.docker:s.kind==='launchd'?'launchd job '+s.launchd:s.kind==='brew'?'brew service '+s.brew:'started by hand')}</div>
+      <div class="k">${s.up?`memory ${s.memMB?fmtMB(s.memMB):'—'} · CPU ${(s.cpuN||0).toFixed(1)}% · up ${up(s.uptime||'')}`:esc(s.uptime||'')}</div>
+      ${uses.length?`<div class="d">uses: ${uses.map(x=>esc(nm(x[1]))).join(', ')}</div>`:''}${usedBy.length?`<div class="d">used by: ${usedBy.map(x=>esc(nm(x[0]))).join(', ')}</div>`:''}
+      <div class="k">click for full detail · ⋯ or right-click for actions</div>`,e.renderedPosition);});
+  cyG.on('mouseover','edge',e=>{const d=e.target.data(),n=id=>(S.services.find(s=>'n_'+s.id===id)||{}).name||id;
+    cyFocus(new Set([e.target.source().data('sid'),e.target.target().data('sid')]));
+    cyTip(`<b>${esc(n(d.source))} → ${esc(n(d.target))}</b><div class="d">how we know: ${esc(d.why)}</div><div class="k">${d.age>150?'last seen '+dur(d.age)+' ago':'seen right now'}</div>`,e.renderedPosition);});
+  cyG.on('mouseout','node, edge',()=>{cyTip('');cyFocus(null);});
 }
-function rebuildCy(){if(!cyG)return;cyG.json({elements:cyElements()});cySig=cySignature();cyESig=edgeSignature();cyRunLayout();}
-function syncCy(){if(!cyG)return;
-  if(cySignature()!==cySig){rebuildCy();return;}
-  if(edgeSignature()!==cyESig){updateEdges();cyESig=edgeSignature();}
-  updateCyStatus();}
-function updateCyStatus(){if(!cyG)return;const map=Object.fromEntries((S.services||[]).map(s=>[s.id,s]));cyG.nodes().forEach(n=>{const sid=n.data('sid');if(!sid)return;const s=map[sid];n.removeClass('up down');n.addClass(s&&s.up?'up':'down');});}
+function rebuildCy(){if(!cyG)return;cyG.elements().remove();cyG.add(cyElements());cySig=cySignature();cyRunLayout();}
+function syncCy(){if(!cyG)return;if(cySignature()!==cySig){rebuildCy();return;}drawCards();}
 function restyleCy(){if(cyG)cyG.style(cyStyle(cyColors()));}
+function doGroupName(gi,act){const g=(window._sgall||[])[gi];if(!g)return;const n=S.services.filter(v=>v.group===g&&v.up).length;
+  askConfirm(`${ACT[act][1]} all ${n} containers in ${g.replace('Docker · ','')}?`,act==='stop'?'Everything in this stack goes down until you start it again.':'Each container restarts; expect a short outage.',()=>post('/api/group',{group:g,action:act},`${act} ${n} in ${g}`));}
 function renderServices(d){
-  S=d; lastTs=d.ts;
-  const up=d.services.filter(s=>s.up).length,total=d.services.length;
-  $('#hcount').textContent=up+'/'+total;$('#b-svc').textContent=up+'/'+total;
-  const col=up===total?'var(--ok)':(up===0?'var(--err)':'var(--warn)');
+  S=d; lastTs=d.ts; window._sgall=[...new Set(d.services.map(s=>s.group))];
+  const up=d.services.filter(s=>s.up).length,total=d.services.length,al=d.alerts||[];
+  const idle=d.services.filter(s=>svcState(s)==='idle').length,down=total-up-idle;
+  $('#hcount').textContent=up+' running'+(down?' · '+down+' down':'')+(al.length?' · '+al.length+' alert'+(al.length>1?'s':''):'');$('#b-svc').textContent=up+'/'+total;
+  const gs={};d.services.forEach(s=>{const g=gs[s.group]=gs[s.group]||{n:0,up:0};g.n++;if(s.up)g.up++;});
+  const lv=al.some(a=>a.level==='err')||down?'err':al.length?'warn':'';
+  const big=((MET&&MET.apps)||[]).slice(0,2).map(a=>`${a.name} ${fmtMB(a.memMB)}`).join(', ');
+  const fix=a=>{const sv=a.id&&d.services.find(x=>x.id===a.id),act=sv&&['start','restart'].find(x=>(sv.actions||[]).includes(x));
+    if(act)return `<button class="btn sm" onclick="doAct('${a.id}','${act}')">${ACT[act][0]} ${ACT[act][1]} it</button><button class="btn sm" onclick="openDrawer('${a.id}','logs')">See its logs</button>`;
+    if(a.key==='mem'||a.key==='pressure')return ((MET&&MET.llm)||[]).slice(0,2).map((m,i)=>`<button class="btn sm" onclick="doModelName(MET.llm[${i}].name,'stop')">Unload ${esc(m.name)} (${esc(m.size)})</button>`).join('')+`<button class="btn sm" onclick="$('#memsec').scrollIntoView({behavior:'smooth',block:'center'})">See what uses it</button>`;
+    if((a.key||'').startsWith('budget'))return `<button class="btn sm" onclick="showTab('usage')">See usage</button>`;
+    return a.id?`<button class="btn sm" onclick="openDrawer('${a.id}')">Open it</button>`:'';};
+  const seen=new Set(),lines=al.filter(a=>{const k=(a.key==='pressure'&&al.some(x=>x.key==='mem'))?'skip':a.key;if(k==='skip'||seen.has(k))return false;seen.add(k);return true;});
+  $('#hero').innerHTML=`<div class="hero ${lv}"><div class="hleft"><div class="hb">${down?`${down} service${down>1?'s are':' is'} down`:al.length?'Everything is running, but something needs attention':'Everything is running'}</div>
+    <div class="hs">${up} services running${idle?', '+idle+' stopped on purpose':''}, using ${fmtMB(d.services.reduce((a,s)=>a+(s.up?s.memMB||0:0),0))} of memory between them</div>
+    ${lines.map(a=>`<div class="hal ${a.level}"><span class="lv">${a.level==='err'?'●':'▲'}</span><span>${esc(a.msg)}${(a.key==='mem'||a.key==='pressure')&&big?' · biggest: '+esc(big):''}</span>${fix(a)}</div>`).join('')}</div>
+    <div class="hg">${Object.keys(gs).map(g=>`<span class="chipn" onclick="showTab('services')"><span class="gchip" style="background:${GCOL(g)}"></span>${esc(g.replace('Docker · ',''))} ${gs[g].up}${gs[g].up<gs[g].n?'/'+gs[g].n:''}</span>`).join('')}</div></div>`;
+  const col=al.some(a=>a.level==='err')?'var(--err)':al.length?'var(--warn)':'var(--ok)';
   $('#hcount').style.color=col;$('#pulse').style.background=col;
-  const map=Object.fromEntries(d.services.map(s=>[s.id,s]));
   syncCy();
   applyFilter();
+  renderAlerts();renderEvents();touchSeen();
+  if(drawerId)syncDrawer();
 }
 function srow(s){
-  let port=s.port; if(!port&&s.url){const m=s.url.match(/:(\d+)/);if(m)port=m[1];}
-  const meta=s.up?`${port?':'+port:''}${s.uptime?' · '+esc(s.uptime):' · running'}`:`${port?':'+port+' · ':''}<span class="sdown">down</span>`;
-  const open=s.url?`<a class="srowlink" href="${s.url}" target="_blank" rel="noopener" title="open" onclick="event.stopPropagation()">↗</a>`:'';
-  const kebab=(s.actions&&s.actions.length)?`<button class="srowk" title="actions" onclick="event.stopPropagation();menu(event,'${s.id}')">⋯</button>`:'';
-  const title=s.note?` title="${esc(s.note)}"`:'';
-  return `<div class="srow" data-id="${s.id}"${title} onclick="openDrawer('${s.id}')" tabindex="0" role="button" aria-label="${esc(s.name)}, ${s.up?'up':'down'}">
-    <span class="sdot" style="background:${s.up?'var(--ok)':'var(--err)'}" aria-hidden="true"></span>
-    <span class="snm">${esc(s.name)}</span>
-    <span class="sright"><span class="smeta">${meta}</span><span class="sact">${open}${kebab}</span></span></div>`;
+  const st=svcState(s),on=s.up&&st!=='paused';
+  const open=s.url?`<a class="srowlink" href="${s.url}" target="_blank" rel="noopener" title="open in browser" onclick="event.stopPropagation()">↗</a>`:'';
+  const quick=(s.actions||[]).filter(a=>['restart','start','unpause','stop'].includes(a)).slice(0,2).map(a=>`<button class="tbtn ${DANGER[a]?'danger':''}" onclick="event.stopPropagation();doAct('${s.id}','${a}')">${ACT[a][0]} ${ACT[a][1]}</button>`).join('');
+  return `<div class="srow sgrid" data-id="${s.id}" onclick="openDrawer('${s.id}')" tabindex="0" role="button" aria-label="${esc(s.name)}, ${SWORD[st]}">
+    <span class="sdot" style="background:${SCOL[st]}" aria-hidden="true"></span>
+    <span class="sname"><span class="snm">${esc(s.name)}</span>${s.desc?`<span class="sdesc">${esc(s.desc)}</span>`:''}</span>
+    <span>${on?mini(s.hist&&s.hist.mem,70,18):''}</span>
+    <span class="r">${on?(s.memMB?`<b class="smem" style="width:auto">${fmtMB(s.memMB)}</b>`:'—'):`<span class="sstate ${st}">${SWORD[st]}</span>`}</span>
+    <span class="r">${on?(s.cpuN||0).toFixed(1)+'%':''}</span>
+    <span class="r" style="color:var(--dim)">${s.port||''}</span>
+    <span class="sact">${open}${quick}<button class="srowk" title="more actions" onclick="event.stopPropagation();menu(event,'${s.id}')">⋯</button></span></div>`;
 }
+const SHEAD=`<div class="sgrid shead"><span></span><span>Service</span><span>Trend</span><span class="r">Memory</span><span class="r">CPU</span><span class="r">Port</span><span></span></div>`;
 let svcCollapsed={};try{svcCollapsed=JSON.parse(localStorage.getItem('svccol'))||{}}catch(e){}
+let svcSort=ls('svcsort')||'group',svcShow='all';
+seg('sortseg',svcSort,v=>{svcSort=v;lset('svcsort',v);applyFilter();});
+seg('showseg',svcShow,v=>{svcShow=v;applyFilter();});
 function toggleGroupIdx(i){const g=(window._sgorder||[])[i];if(g==null)return;svcCollapsed[g]=!svcCollapsed[g];try{localStorage.setItem('svccol',JSON.stringify(svcCollapsed))}catch(e){}renderList();}
+function doGroup(i,act){
+  const g=(window._sgorder||[])[i];if(!g)return;
+  const n=S.services.filter(s=>s.group===g&&(act==='start'?!s.up:s.up)).length;
+  const run=()=>post('/api/group',{group:g,action:act},`${act} ${n} in ${g}`);
+  if(act==='start')run();else askConfirm(`${ACT[act][1]} all ${n} containers in ${g.replace('Docker · ','')}?`,act==='stop'?'Everything in this compose project goes down until you start it again.':'Each container restarts; expect a short outage.',run);
+}
 function renderList(){
   const q=$('#q').value.trim(),order=[],byg={};
-  for(const s of S.services){if(!byg[s.group]){byg[s.group]=[];order.push(s.group);}byg[s.group].push(s);}
-  window._sgorder=order;
-  $('#svc-list').innerHTML=order.map((g,i)=>{const it=byg[g],u=it.filter(s=>s.up).length,col=q?false:svcCollapsed[g],down=u<it.length;
-    return `<div class="sgroup">
-      <div class="sghead" onclick="toggleGroupIdx(${i})"><span class="sgchev">${col?'▸':'▾'}</span>${esc(g)} <span class="sgc ${down?'warn':''}">${u}/${it.length}</span></div>
-      ${col?'':`<div class="srows">${it.map(srow).join('')}</div>`}</div>`;}).join('');
+  const show={all:()=>true,running:s=>s.up,stopped:s=>!s.up,problems:s=>svcState(s)==='err'}[svcShow];
+  const list=S.services.filter(show);
+  const mem=list.reduce((a,s)=>a+(s.up?s.memMB||0:0),0),cpu=list.reduce((a,s)=>a+(s.up?s.cpuN||0:0),0);
+  $('#svc-sum').innerHTML=`<b>${list.length}</b> service${list.length===1?'':'s'} · <b>${fmtMB(mem)}</b> memory · <b>${cpu.toFixed(1)}%</b> CPU`;
+  if(!list.length){$('#svc-list').innerHTML=`<div class="sec empty">${svcShow==='problems'?'No problems. Everything that should be up is up.':'Nothing matches this filter.'}</div>`;return;}
+  if(svcSort!=='group'){
+    const k=svcSort==='mem'?'memMB':'cpuN';
+    $('#svc-list').innerHTML=`<div class="rows"><div class="rh"><b>All services</b><small>sorted by ${svcSort==='mem'?'memory':'CPU'}, biggest first</small></div>${SHEAD}${list.slice().sort((a,b)=>(b.up?b[k]||0:-1)-(a.up?a[k]||0:-1)).map(srow).join('')}</div>`;return;}
+  for(const s of list){if(!byg[s.group]){byg[s.group]=[];order.push(s.group);}byg[s.group].push(s);}
+  order.sort((a,b)=>(byg[b].some(s=>s.up)?1:0)-(byg[a].some(s=>s.up)?1:0));   // groups with something running first
+  window._sgorder=order;const fold=svcShow==='all'&&!q;
+  $('#svc-list').innerHTML=order.map((g,i)=>{const it=byg[g],u=it.filter(s=>s.up).length,col=q?false:svcCollapsed[g];
+    const gm=it.reduce((a,s)=>a+(s.up?s.memMB||0:0),0);
+    const gact=g.startsWith('Docker · ')?`${u?`<button class="btn sm" onclick="event.stopPropagation();doGroup(${i},'restart')">⟳ Restart all</button><button class="btn sm danger" onclick="event.stopPropagation();doGroup(${i},'stop')">■ Stop all</button>`:''}${u<it.length?`<button class="btn sm" onclick="event.stopPropagation();doGroup(${i},'start')">▶ Start stopped</button>`:''}`:'';
+    return `<div class="rows" style="--g:${GCOL(g)}"><div class="rh tog" onclick="toggleGroupIdx(${i})"><span class="chev">${col?'▸':'▾'}</span><span class="gchip" style="background:${GCOL(g)}"></span><b>${esc(g.replace('Docker · ',''))}${g.startsWith('Docker')?' <span class="muted" style="font-weight:500">(Docker stack)</span>':''}</b>
+      <small>${u} of ${it.length} running${gm?' · '+fmtMB(gm):''}</small><span class="sp"></span>${gact}</div>
+      ${col?'':(()=>{const on=fold?it.filter(s=>s.up):it,off=fold?it.filter(s=>!s.up):[],o=offOpen[g];
+        return (on.length||o?SHEAD:'')+on.map(srow).join('')+(off.length?`<div class="sfold" onclick="toggleOff(${i})">${o?'▾':'▸'} <b>${off.length} stopped</b>${o?'':' · '+esc(off.slice(0,4).map(s=>s.name).join(', '))+(off.length>4?' …':'')+' · click to show'}</div>`+(o?off.map(srow).join(''):''):'');})()}</div>`;}).join('');
 }
-$('#cy-fit').onclick=()=>{if(cyG)cyG.fit(null,30);};
+const offOpen={};
+function toggleOff(i){const g=(window._sgorder||[])[i];if(g==null)return;offOpen[g]=!offOpen[g];renderList();}
+/* ---- alerts + events ---- */
+const EK={wait:['◷','warn'],up:['▲','ok'],down:['▼','err'],new:['+','ok'],gone:['−','warn'],action:['⚙','dim'],alert:['!','err'],resolved:['✓','ok']};
+const etime=ts=>{const d=Math.floor(Date.now()/1000)-ts;return hhmm(ts)+' · '+dur(d)+' ago';};
+function evrow(e){const k=EK[e.kind]||EK.action;return `<div class="evrow" ${e.id?`data-id="${esc(e.id)}" onclick="openDrawer('${esc(e.id)}')"`:''}><span class="evi ${k[1]}">${k[0]}</span><span>${esc(e.msg)}${e.times>1?` <span class="muted">· ${e.times} times since ${hhmm(e.first)}</span>`:''}</span><span class="evt">${etime(e.ts)}</span></div>`;}
+/* "what happened while I was away": events + peaks since a moment, from the on-disk history */
+async function showSince(ts,manual){
+  let d;try{d=await (await fetch('/api/since?ts='+Math.floor(ts))).json();}catch(e){return;}
+  const c=d.counts||{},now=Date.now()/1000,ev=(d.events||[]).filter(e=>e.kind!=='action'&&e.kind!=='new');
+  const gap=d.minutes!=null&&(now-d.since)/60>20&&d.minutes<(now-d.since)/60*0.7;
+  const pk=(l,p,u,cls)=>p&&p[0]!=null?`<span class="sfact ${cls(p[0])}">${l} ${nf(p[0])}${u} at ${hhmm(p[1])}</span>`:'';
+  const facts=[c.down?`<span class="sfact err">▼ ${c.down} went down</span>`:'',c.gone?`<span class="sfact warn">− ${c.gone} disappeared</span>`:'',c.alert?`<span class="sfact err">! ${c.alert} alert${c.alert>1?'s':''}</span>`:'',
+    c.up?`<span class="sfact ok">▲ ${c.up} came back</span>`:'',c.resolved?`<span class="sfact ok">✓ ${c.resolved} resolved</span>`:'',
+    pk('peak memory',d.peakMem,'%',v=>v>=90?'err':v>=80?'warn':''),pk('peak CPU',d.peakCpu,'%',v=>v>=90?'err':v>=70?'warn':''),pk('peak swap',d.peakSwap,' GB',v=>v>=8?'warn':'')].join('');
+  $('#since').innerHTML=`<div class="since"><div class="sh">${manual?'Last 24 hours':'While you were away'} <span>since ${hhmm(d.since)} (${dur(now-d.since)})${gap?' · the dashboard itself was not running for part of this time':''}</span>
+    <button class="refresh" onclick="$('#since').innerHTML=''">Dismiss</button></div>
+    <div class="sfacts">${facts||'<span class="sfact ok">✓ nothing went down, no alerts</span>'}</div>${ev.slice(0,8).map(evrow).join('')}${ev.length>8?`<div class="evrow"><a href="#" onclick="showTab('activity');return false">${ev.length-8} more in Activity ›</a></div>`:''}</div>`;
+  if(manual){showTab('overview');scrollTo(0,0);}
+}
+let sinceDone=false;
+function touchSeen(){   // first poll after an absence shows the summary; after that we just keep the "last looked" mark fresh
+  const now=Date.now()/1000,last=parseFloat(ls('lastSeen')||'0');
+  if(!sinceDone){sinceDone=true;if(last&&now-last>900)showSince(last);}
+  if(!document.hidden)lset('lastSeen',String(now));
+}
+function renderAlerts(){
+  const al=S.alerts||[];
+  const html=al.map(a=>`<div class="alert ${a.level}" onclick="${a.id?`openDrawer('${esc(a.id)}')`:`showTab('overview')`}"><b>${a.level==='err'?'●':'▲'}</b>${esc(a.msg)}${(()=>{const sv=a.id&&S.services.find(x=>x.id===a.id),act=sv&&['start','restart'].find(x=>(sv.actions||[]).includes(x));return act?`<button class="tbtn" onclick="event.stopPropagation();doAct('${a.id}','${act}')">${ACT[act][0]} ${ACT[act][1]} now</button>`:'';})()}<span class="go">${a.id?'inspect ›':''}</span></div>`).join('');
+  $('#alerts').innerHTML='';   // the Overview headline states each alert once, with its fix
+  $('#al-list').innerHTML=html?`<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px">${html}</div>`:'<div class="sec" style="--g:var(--ok);color:var(--dim)">✓ Nothing needs attention right now.</div>';
+  $('#al-sub').textContent=al.length?al.length+' alert'+(al.length>1?'s':'')+' active':'all clear';
+  const fr=(S.rules||[]).filter(r=>r.firing).length;$('#rules-sum').textContent=(S.rules||[]).length+' checks · '+(fr?fr+' need attention':'all ok');
+  $('#rules').innerHTML='<thead><tr><th>Check</th><th>Now</th><th>Alerts when</th><th>State</th></tr></thead><tbody>'+(S.rules||[]).map(r=>`<tr><td>${esc(r.name)}</td><td class="num">${esc(r.value)}</td><td class="num muted">${esc(r.rule)}</td><td class="${r.firing?'fire':'calm'}">${r.firing?'● Needs attention':'✓ ok'}</td></tr>`).join('')+'</tbody>';
+  $('#bell').classList.toggle('has',al.length>0);$('#bell-n').textContent=al.length;$('#b-ev').textContent=al.length?al.length+' !':(S.events||[]).length;
+}
+let evShow='all',lastEvN=null,notifyOn=ls('notify')==='1';
+seg('evseg',evShow,v=>{evShow=v;renderEvents();});
+function renderEvents(){
+  const ev=S.events||[];
+  const f={all:()=>true,state:e=>['up','down','new','gone'].includes(e.kind),action:e=>e.kind==='action',alert:e=>e.kind==='alert'||e.kind==='resolved'}[evShow];
+  const merged=[],at={};   // "Dashboard started" x8 is one line, not eight
+  ev.filter(f).forEach(e=>{const k=e.kind+'|'+e.msg.replace(/[\d.]+/g,'#');
+    if((e.kind==='alert'||e.kind==='resolved'||e.msg.startsWith('Dashboard started'))&&at[k]){at[k].times++;at[k].first=e.ts;}else{const c={...e,times:1};at[k]=c;merged.push(c);}});
+  const list=merged;
+  $('#ev-sub').textContent=list.length+' event'+(list.length===1?'':'s');
+  $('#ev-list').innerHTML=list.map(evrow).join('')||'<div class="empty">Nothing yet. Starts, stops, crashes, alerts and every action you take show up here.</div>';
+  $('#ev-mini').innerHTML=merged.slice(0,6).map(evrow).join('')||'<div class="empty">Quiet so far. State changes and actions appear here.</div>';
+  // announce what happened since the last poll (never the backlog on first load)
+  const top=ev.length?ev[0].n:0;
+  if(lastEvN!==null)ev.filter(e=>e.n>lastEvN&&e.kind!=='action'&&e.kind!=='new').reverse().forEach(e=>{
+    const bad=e.kind==='down'||e.kind==='alert'||e.kind==='gone';toast(bad?'err':'ok',e.msg,'');
+    if((bad||e.kind==='wait')&&notifyOn&&window.Notification&&Notification.permission==='granted')new Notification('Local AI Control',{body:e.msg});});
+  lastEvN=top;
+}
+function paintNotify(){$('#notify').textContent=(notifyOn?'🔔 Notifications on':'🔕 Notifications off');}
+$('#notify').onclick=async()=>{
+  if(!notifyOn){if(!window.Notification){toast('err','Not supported in this browser','');return;}
+    const p=await Notification.requestPermission();if(p!=='granted'){toast('err','Notifications blocked','Allow them for this page in the browser settings.');return;}}
+  notifyOn=!notifyOn;lset('notify',notifyOn?'1':'0');paintNotify();};
+paintNotify();
+$('#bell').onclick=()=>showTab('activity');
+function exportSnap(){
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({exported:new Date().toISOString(),status:S,metrics:MET,inventory:INV},null,1)],{type:'application/json'}));
+  a.download='local-ai-control-'+new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')+'.json';a.click();URL.revokeObjectURL(a.href);
+}
+$('#cy-fit').onclick=()=>{if(cyG)cyG.fit(null,16);};
+const cyZoom=f=>{if(cyG)cyG.zoom({level:cyG.zoom()*f,renderedPosition:{x:$('#cy').clientWidth/2,y:$('#cy').clientHeight/2}});};
+$('#cy-zin').onclick=()=>cyZoom(1.25);$('#cy-zout').onclick=()=>cyZoom(0.8);
 
 /* ---- inventory render ---- */
 function renderInv(v){
@@ -511,26 +1057,134 @@ function renderInv(v){
   $('#ag-sub').textContent=v.agents.filter(a=>a.running).length+' running';
   $('#agents').innerHTML='<div class="srows">'+v.agents.map(a=>{
     const dot=a.running?'var(--ok)':(a.installed?'var(--idle)':'var(--err)');
-    const meta=(a.running?'running':(a.installed?'installed':'not installed'))+(a.url?' · '+esc(a.url.replace('http://127.0.0.1','')):'');
+    const meta=(a.running?`<b class="smem" style="width:auto">${fmtMB(a.memMB)}</b> · ${a.procs} process${a.procs>1?'es':''}`:'not running')+((a.facts||{}).size?' · '+esc(a.facts.size)+' of data':'')+(a.version?' · v'+esc(a.version):'');
     return `<div class="srow" data-id="${a.id}" onclick="selectAgent('${a.id}')" tabindex="0" role="button" aria-label="${esc(a.name)}">
       <span class="sdot" style="background:${dot}"></span>
       <span class="snm">${esc(a.name)}</span>
       <span class="sright"><span class="smeta">${meta}</span></span></div>`;}).join('')+'</div>';
   selectAgent((selectedAgent&&v.agents.some(a=>a.id===selectedAgent))?selectedAgent:(v.agents[0]&&v.agents[0].id));
-  const loaded=v.models.filter(m=>m.loaded).length;
-  $('#b-md').textContent=v.models.length;$('#md-sub').textContent=`${v.models.length} downloaded · ${loaded} loaded`;
-  $('#models').innerHTML=`<thead><tr><th>Model</th><th>Size</th><th>State</th><th>Runtime</th><th>Control</th></tr></thead><tbody>`+
-    v.models.map(m=>`<tr data-id="md-${esc(m.name)}"><td class="num">${esc(m.name)}</td><td class="num size">${esc(m.size)}</td>
-      <td>${m.loaded?'<span class="badge loaded">● LOADED</span>':'<span class="badge idle">idle</span>'}</td>
-      <td class="muted num">${esc(m.runtime)}</td>
-      <td style="white-space:nowrap">${m.loaded&&/Ollama/.test(m.runtime)?`<button class="act danger" style="padding:4px 11px;font-size:11.5px" onclick="doModel('${esc(m.name)}')">■ Unload</button> `:''}${m.link?`<a href="${m.link}" target="_blank" rel="noopener">↗ library</a>`:''}</td></tr>`).join('')+`</tbody>`;
-  $('#gh-sub').textContent=v.github.accounts.length+' accounts';
-  $('#accounts').innerHTML=v.github.accounts.map(a=>`<div class="svc card"><div class="top"><span class="name num">${esc(a.login)}</span>${a.active?'<span class="pill on">active</span>':'<span class="pill off">linked</span>'}</div>
-    <div class="where"><a href="https://github.com/${esc(a.login)}" target="_blank" rel="noopener">↗ github.com/${esc(a.login)}</a></div></div>`).join('');
-  $('#b-rp').textContent=v.github.repos.length;$('#rp-sub').textContent=v.github.repos.length+' repos';
-  $('#repos').innerHTML=`<thead><tr><th>Repository</th><th>Branch</th><th>Remote</th></tr></thead><tbody>`+
-    v.github.repos.map(r=>`<tr data-id="rp-${esc(r.path)}"><td class="num">${esc(r.path)}</td><td class="num muted">⎇ ${esc(r.branch)}</td>
-      <td>${r.web?`<a href="${esc(r.web)}" target="_blank" rel="noopener">${esc(r.web.replace('https://github.com/',''))}</a>`:'<span class="muted">local only</span>'}</td></tr>`).join('')+`</tbody>`;
+  renderModels(v);
+  renderDockerInv(v.docker);
+  const ac=v.github.accounts,rp=v.github.repos;
+  $('#b-rp').textContent=rp.length;$('#rp-sub').textContent=`${rp.length} repositories · ${ac.length} GitHub account${ac.length===1?'':'s'}`;
+  $('#accounts').innerHTML=ac.map(a=>`<a class="btn" href="https://github.com/${esc(a.login)}" target="_blank" rel="noopener">@${esc(a.login)}${a.active?' <span class="muted" style="font-weight:500">signed in, active</span>':' <span class="muted" style="font-weight:500">signed in</span>'} ↗</a>`).join('');
+  renderRepos();
+}
+let repoOwner='all',repoSort=ls('reposort')||'recent';
+function renderRepos(){
+  const rp=(INV.github.repos||[]).map((r,i)=>({...r,i,owner:r.web?r.web.split('/')[3]:'',nm:r.path.split('/').pop()})),T=INV.tools||{};
+  if(!rp.length){$('#repos').innerHTML='<div class="sec empty">No git repositories found in the usual folders. Set DASH_REPOS to add more places.</div>';return;}
+  const owners={};rp.forEach(r=>owners[r.owner]=(owners[r.owner]||0)+1);
+  const list=rp.filter(r=>repoOwner==='all'||r.owner===repoOwner).sort(repoSort==='name'?(a,b)=>a.nm.localeCompare(b.nm):repoSort==='changes'?(a,b)=>(b.dirty+b.ahead)-(a.dirty+a.ahead):(a,b)=>b.lastTs-a.lastTs);
+  const dirty=rp.filter(r=>r.dirty).length,push=rp.filter(r=>r.ahead).length;
+  const fb=(k,l)=>`<button class="btn sm ${repoOwner===k?'on':''}" onclick="repoOwner='${k}';renderRepos()">${l}</button>`,sb=(k,l)=>`<button class="btn sm ${repoSort===k?'on':''}" onclick="repoSort='${k}';lset('reposort','${k}');renderRepos()">${l}</button>`;
+  $('#repos').innerHTML=`<div class="rows"><div class="rh"><b>${list.length} repositor${list.length===1?'y':'ies'}</b><small>${dirty} with uncommitted changes · ${push} with commits not pushed</small><span class="sp"></span>
+      <span class="fbar"><span class="muted" style="font-size:12px">Sort</span>${sb('recent','Last changed')}${sb('changes','Most to do')}${sb('name','Name')}</span></div>
+    <div class="rh" style="background:none"><span class="fbar">${fb('all','All '+rp.length)}${Object.keys(owners).sort((a,b)=>a===''?1:b===''?-1:owners[b]-owners[a]).map(o=>fb(o,(o?esc(o):'Only on this machine')+' '+owners[o])).join('')}</span></div>
+    <div class="rgrid h"><span>Repository · click the path to open the folder</span><span class="c2">Branch and state</span><span class="c3">Last commit</span><span>Open in</span></div>`
+    +list.map(r=>{const dir=r.path.slice(0,r.path.length-r.nm.length-1),k=`INV.github.repos[${r.i}].path`;
+      return `<div class="rgrid" data-id="rp-${esc(r.path)}"><div style="min-width:0"><div class="nm">${esc(r.nm)}${r.web?`<a href="${esc(r.web)}" target="_blank" rel="noopener">${esc(r.web.replace('https://github.com/',''))} ↗</a>`:'<span class="muted" style="font-weight:500;font-size:12.5px;margin-left:8px">not pushed anywhere</span>'}</div>
+        <div class="one"><a class="path" title="open this folder" onclick="openPath('repo',${k})">${esc(r.path)}</a></div></div>
+      <div class="c2 rchips"><span class="chipn">⎇ ${esc(r.branch)}</span>${r.dirty?`<span class="chipn warnc" title="files changed but not committed">${r.dirty} uncommitted</span>`:'<span class="chipn ok">clean</span>'}${r.ahead?`<span class="chipn warnc" title="commits that exist only on this machine">${r.ahead} to push</span>`:''}${r.behind?`<span class="chipn" title="commits on the remote you do not have yet">${r.behind} to pull</span>`:''}${r.web&&!r.tracking&&r.branch!=='detached'?'<span class="chipn dimc" title="this branch does not follow a remote branch">branch not on remote</span>':''}</div>
+      <div class="c3" style="min-width:0"><div style="font-size:13px">${esc(r.last||'no commits yet')}</div><div class="one" title="${esc(r.subject||'')}">${esc(r.subject||'')}</div></div>
+      <div class="acts" style="display:flex;gap:6px"><button class="btn sm" onclick="openPath('repo',${k})">Folder</button>${T.editor?`<button class="btn sm" onclick="openPath('repo',${k},'editor')">${esc(T.editor)}</button>`:''}${T.terminal?`<button class="btn sm" onclick="openPath('repo',${k},'terminal')">Terminal</button>`:''}<button class="btn sm" title="copy the path" onclick="copyText(${k})">Copy</button></div></div>`;}).join('')+'</div>';
+}
+const gbOf=t=>{const m=/([\d.]+)\s*(GB|MB)/i.exec(t||'');return m?(+m[1])*(m[2].toUpperCase()==='GB'?1:1/1024):0;};
+const keep=t=>t==='Forever'?'until you unload it':t==='its process runs'?'while its server runs':'for '+t;
+const ctxk=c=>c?(+c>=1000?Math.round(+c/1024)+'k':c)+' tokens of context':'';
+function renderModels(v){
+  const ms=v.models.map((m,i)=>({...m,i})),on=ms.filter(m=>m.loaded),tot=l=>{const b=l.reduce((a,m)=>a+(m.bytes||gbOf(m.size)*1e9),0);return b>=1e9?(b/1e9).toFixed(0)+' GB':Math.round(b/1e6)+' MB';};
+  const up=ms.some(m=>m.ollamaUp),olSvc=S.services.find(x=>!x.up&&x.name.startsWith('Ollama')&&(x.actions||[]).includes('start'));
+  $('#b-md').textContent=on.length+'/'+ms.length;$('#md-sub').textContent=`${ms.length} models on disk (${tot(ms)}) · ${on.length} in memory`;
+  const where=m=>m.path?`<a class="path" title="open this folder" onclick="event.stopPropagation();openPath('model',INV.models[${m.i}].path)">${esc(m.where)}</a>`:esc(m.where||'');
+  const row=m=>`<div class="r2 ${m.ollama&&up?'click':''}" data-id="md-${esc(m.name)}" ${m.ollama&&up?`onclick="openModel(${m.i})"`:''}>
+    <span class="dot" style="background:${m.loaded?'var(--ok)':'var(--idle)'}"></span>
+    <div class="tx"><div class="nm">${esc(m.name)}</div>
+      <div class="sb">${m.loaded?[m.ollama?'held by Ollama':'held by '+esc(m.proc||'a running server'),m.ollama?m.proc:'',ctxk(m.ctx),m.until?'stays loaded '+keep(m.until):''].filter(Boolean).join(' · ')+' · ':''}${esc(m.runtime)} · ${where(m)}${m.modified?' · changed '+esc(m.modified):''}</div></div>
+    <span class="cn">${esc(m.size)}</span>
+    <div class="acts" style="width:250px;justify-content:flex-end" onclick="event.stopPropagation()">${m.ollama?(up?(m.loaded?`<button class="btn sm" onclick="doModel(${m.i},'stop')">Unload</button>`:`<button class="btn sm" onclick="doModel(${m.i},'load')">▶ Load</button>`)
+        +`<button class="btn sm" onclick="openModel(${m.i})">Details</button><button class="btn sm danger" onclick="doModel(${m.i},'delete')">Delete</button>`:'<span class="muted" style="font-size:12px">start Ollama to load or delete</span>')
+      :`<button class="btn sm" onclick="openPath('model',INV.models[${m.i}].path)">Open folder</button>`}${m.link?`<a class="btn sm" href="${esc(m.link)}" target="_blank" rel="noopener" title="its page online">↗</a>`:''}</div></div>`;
+  const grp=(t,sub,list,extra)=>list.length?`<div class="rows"><div class="rh"><b>${t}</b><small>${sub}</small><span class="sp"></span>${extra||''}</div>${list.map(row).join('')}</div>`:'';
+  const off=k=>ms.filter(m=>!m.loaded&&m.kind===k);
+  $('#models').innerHTML=grp('In memory now',`${on.length} model${on.length===1?'':'s'} · about ${tot(on)} of RAM · unload what you are not using`,on)
+    +grp('Ollama models',`${off('ollama').length} on disk · ${tot(off('ollama'))}`+(up?' · Load puts one in memory':' · Ollama is not running, so these cannot be loaded right now'),off('ollama'),
+        !up&&olSvc?`<button class="btn sm" onclick="doAct('${olSvc.id}','start')">▶ Start Ollama</button>`:'')
+    +grp('Model files',`${off('file').length} files found on this machine (GGUF, safetensors, ONNX …) · ${tot(off('file'))}`,off('file'))
+    +grp('Hugging Face downloads',`${off('hf').length} in the Hugging Face cache · ${tot(off('hf'))} · used by Python tools (transformers, MLX, sentence-transformers)`,off('hf'))
+    ||'<div class="sec empty">No models found. Pull one with Ollama or drop a .gguf into ~/models.</div>';
+}
+let dkView=ls('dkview2')||'all';
+seg('dkseg',dkView,v=>{dkView=v;lset('dkview2',v);renderDockerInv(window._dk);});
+function renderDockerInv(k){   // "Everything" = the three views stacked, so nothing sits behind a tab
+  if(!k||dkView!=='all')return renderDockerOne(k);
+  let h='';
+  for(const v of ['containers','images','volumes']){dkView=v;renderDockerOne(k);h+=`<div class="dkh">${v[0].toUpperCase()+v.slice(1)} <small>${esc($('#dk-hint').textContent)}</small></div>`+$('#dk-body').innerHTML;}
+  dkView='all';$('#dk-body').innerHTML=h;$('#dk-hint').textContent='Containers by stack, then the images they start from, then the volumes that hold their data.';
+}
+const dkOff={};
+function foldOff(cs,gi,rowf){   // running containers, then the stopped ones behind one line
+  const on=cs.filter(c=>c.state==='running'||c.state==='paused'),off=cs.filter(c=>!on.includes(c)),o=dkOff[gi];
+  return on.map(rowf).join('')+(off.length?`<div class="sfold" onclick="dkOff[${gi}]=!dkOff[${gi}];renderDockerInv(window._dk)">${o?'▾':'▸'} <b>${off.length} stopped</b>${o?'':' · click to show'}</div>`+(o?off.map(rowf).join(''):''):'');
+}
+function renderDockerOne(k){
+  if(!k){$('#b-dk').textContent='—';$('#dk-sub').textContent='';$('#dk-hint').textContent='';$('#dk-stats').innerHTML='';$('#dk-body').innerHTML='<div class="sec empty">Docker is not running or not installed.</div>';return;}
+  window._dk=k;const T=k.totals||{},t=n=>T[n]||{},run=k.containers.filter(c=>c.state==='running').length;
+  $('#b-dk').textContent=run+'/'+k.containers.length;$('#dk-sub').textContent=`${run} of ${k.containers.length} containers running`;
+  $('#dk-stats').innerHTML=[['Containers',run+' running',k.stopped?k.stopped+' stopped':'none stopped'],
+    ['Images',u(t('Images').size)||'—',k.images.length+' images, '+k.unusedImages+' unused'],
+    ['Volumes',u(t('Local Volumes').size)||'—',k.volumes.length+' volumes, '+k.volumes.filter(v=>!v.used).length+' unattached'],
+    ['Can be freed',u(t('Images').reclaim||'0 B').split(' (')[0],'by removing the '+k.unusedImages+' unused images',k.unusedImages?`<button class="btn sm danger" onclick="doDocker('prune-unused')">Free it now</button>`:'']]
+    .map(([l,v,sub,btn])=>`<div class="card"><div class="lab">${l}</div><div class="val">${v}</div><div class="sub">${esc(sub)}</div>${btn||''}</div>`).join('');
+  if(dkView==='containers'){
+    $('#dk-hint').textContent='Containers grouped by the stack (compose project) they belong to. Click one for logs, health and everything inside it.';
+    const proj=c=>{const x=S.services.find(v=>v.docker===c.name);return x?x.group:'Docker · containers';},stacks=[...new Set(k.containers.map(proj))].sort();
+    window._stacks=stacks;
+    $('#dk-body').innerHTML=stacks.map((g,gi)=>{const cs=k.containers.filter(c=>proj(c)===g),r=cs.filter(c=>c.state==='running').length;
+      return `<div class="rows" style="--g:${GCOL(g)}"><div class="rh"><span class="gchip" style="background:${GCOL(g)}"></span><b>${esc(g.replace('Docker · ',''))}</b><small>${r} of ${cs.length} running</small><span class="sp"></span>
+        ${r?`<button class="btn sm" onclick="stackAct(${gi},'restart')">⟳ Restart all</button><button class="btn sm danger" onclick="stackAct(${gi},'stop')">■ Stop all</button>`:''}${r<cs.length?`<button class="btn sm" onclick="stackAct(${gi},'start')">▶ Start stopped</button>`:''}</div>
+        <div class="rcols"><span style="width:10px"></span><span class="tx">Container</span><span class="cn">Memory</span><span class="cn">CPU</span><span class="cn p">Port</span><span class="cn">Disk</span><span class="acts" style="width:330px"></span></div>`
+      +foldOff(cs,gi,c=>{const sv=S.services.find(x=>x.docker===c.name),id='dk:'+c.name,st=sv?svcState(sv):'idle',a=x=>sv&&(sv.actions||[]).includes(x);
+        const b=(x,cls)=>a(x)?`<button class="btn sm ${cls||''}" onclick="doAct('${id}','${x}')">${ACT[x][0]} ${ACT[x][1].replace(' container','')}</button>`:'';
+        return `<div class="r2 click" onclick="openDrawer('${id}')"><span class="dot" style="background:${SCOL[st]}"></span>
+          <div class="tx"><div class="nm">${esc(sv?sv.name:c.name)}<i>${esc(c.name)}</i></div><div class="sb" title="${esc(c.image)}">${sv&&sv.desc?esc(sv.desc)+' · ':''}image ${esc((c.image||'').split('/').pop())} · ${esc(c.status||c.state)}</div></div>
+          <span class="cn">${sv&&sv.up&&sv.memMB?fmtMB(sv.memMB):''}</span><span class="cn">${sv&&sv.up?(sv.cpuN||0).toFixed(1)+'%':''}</span><span class="cn p">${sv&&sv.ports&&sv.ports.length?sv.ports[0]:''}</span><span class="cn">${u(c.size||'').split(' (')[0]}</span>
+          <div class="acts" style="width:330px;justify-content:flex-end" onclick="event.stopPropagation()">${b('start')}${b('restart')}${b('unpause')}${b('pause')}${b('stop','danger')}${b('remove','danger')}<button class="btn sm" onclick="openDrawer('${id}','logs')">Logs</button>${sv?`<button class="btn sm" title="more actions" onclick="menu(event,'${id}')">⋯</button>`:''}</div></div>`;})+'</div>';}).join('')
+      +(k.stopped?`<button class="btn" onclick="doDocker('prune-containers')">Remove the ${k.stopped} stopped container${k.stopped>1?'s':''}</button>`:'');
+  }else if(dkView==='images'){
+    $('#dk-hint').textContent='Images are the templates containers start from. An unused image only costs disk and can be removed.';
+    $('#dk-body').innerHTML=`<div class="rows" style="--g:var(--border2)"><div class="rh"><b>${k.images.length} images</b><small>${u(t('Images').size)||''} in total · ${k.unusedImages} unused</small><span class="sp"></span>
+        ${k.unusedImages?`<button class="btn sm danger" onclick="doDocker('prune-unused')">Remove ${k.unusedImages} unused</button>`:''}${k.dangling?`<button class="btn sm" onclick="doDocker('prune-images')">Prune ${k.dangling} dangling</button>`:''}<button class="btn sm" onclick="doDocker('prune-cache')">Clear build cache</button></div>`
+      +k.images.map((i,x)=>{const short=i.name.split('/').pop(),reg=i.name.slice(0,i.name.length-short.length-1);
+        return `<div class="r2"><span class="dot" style="background:${i.used?'var(--ok)':'var(--idle)'}"></span>
+          <div class="tx"><div class="nm">${esc(short)}<i>${esc(reg)}</i></div><div class="sb">${i.used?'used by '+i.used+' container'+(i.used>1?'s':''):'not used by any container'} · created ${esc(i.created)} · id ${esc(i.id)} · ${u(i.unique)} not shared with other images</div></div>
+          <div class="nums"><span class="chipn">${u(i.size)}</span></div>
+          <div class="acts">${i.dangling?'':`<button class="btn sm" title="docker pull the newest version" onclick="doDocker('pull',${x})">⇩ Update</button>`}${i.used?'':`<button class="btn sm danger" onclick="doDocker('rmi',${x})">Remove</button>`}</div></div>`;}).join('')+'</div>';
+  }else{
+    $('#dk-hint').textContent='Volumes hold the data containers keep (databases, uploads). An unattached volume belongs to no container; removing it deletes its data for good.';
+    $('#dk-body').innerHTML=k.volumes.length?`<div class="rows" style="--g:var(--border2)"><div class="rh"><b>${k.volumes.length} volumes</b><small>${u(t('Local Volumes').size)||''} in total</small></div>`
+      +k.volumes.map((v,x)=>`<div class="r2"><span class="dot" style="background:${v.used?'var(--ok)':'var(--idle)'}"></span>
+          <div class="tx"><div class="nm" title="${esc(v.name)}">${/^[0-9a-f]{40,}$/.test(v.name)?'Unnamed volume <i>'+esc(v.name.slice(0,12))+'…</i>':esc(v.name)}</div><div class="sb">${v.used?'attached to '+v.used+' container'+(v.used>1?'s':''):'not attached to any container'}</div></div>
+          <div class="nums"><span class="chipn">${u(v.size)}</span></div>
+          <div class="acts">${v.used?'':`<button class="btn sm danger" onclick="doDocker('rmvol',${x})">Remove</button>`}</div></div>`).join('')+'</div>':'<div class="sec empty">No volumes.</div>';
+  }
+}
+function stackAct(gi,act){   // same server call as the group header in Services
+  const g=(window._stacks||[])[gi];if(!g)return;const n=S.services.filter(v=>v.group===g&&(act==='start'?!v.up:v.up)).length;
+  const run=()=>post('/api/group',{group:g,action:act},`${act} ${n} in ${g}`).then(()=>setTimeout(()=>loadInv(true),2500));
+  if(act==='start')run();else askConfirm(`${ACT[act][1]} all ${n} containers in ${g.replace('Docker · ','')}?`,act==='stop'?'Everything in this stack goes down until you start it again.':'Each container restarts; expect a short outage.',run);
+}
+function doDocker(action,x){
+  const k=window._dk||{},img=(k.images||[])[x],vol=(k.volumes||[])[x];
+  const run=async(target)=>{await post('/api/docker',{action,target:target||''},action.replace('-',' ')+(target?' '+target:''));setTimeout(()=>loadInv(true),1500);};
+  if(action==='pull')return run(img.name);
+  const Q={'prune-images':['Prune dangling images?','Deletes untagged image layers no container uses. Tagged images, containers and volumes are not touched.'],
+    'prune-unused':['Remove all unused images?',`Deletes every image that no container (running or stopped) uses: ${k.unusedImages||0} image(s). They would have to be downloaded again to be used.`],
+    'prune-cache':['Prune the build cache?','Deletes cached build layers. The next image build is slower; nothing running is affected.'],
+    'prune-containers':['Remove all stopped containers?',`Deletes ${k.stopped||0} stopped container(s). Images and named volumes stay; one-shot setup containers get recreated by compose when needed.`],
+    rmi:['Remove image?',img?`Deletes ${img.name} (${img.size}). No container uses it.`:''],
+    rmvol:['Remove volume?',vol?`Deletes volume ${vol.name} (${vol.size}) and ALL data in it. No container is attached. This cannot be undone.`:'']}[action];
+  askConfirm(Q[0],Q[1],()=>run(action==='rmi'?img.name:action==='rmvol'?vol.name:''));
 }
 
 /* ---- filter ---- */
@@ -548,51 +1202,109 @@ let openMenu=null;
 function menu(ev,id){
   closeMenu();const s=S.services.find(x=>x.id===id);if(!s)return;
   const m=document.createElement('div');m.className='menu';
-  const acts=s.actions.map(a=>`<button class="${a==='stop'?'danger':''}" onclick="doAct('${id}','${a}')">${a==='restart'?'⟳ Restart':a==='stop'?'■ Stop':'▶ Start'}</button>`).join('');
-  m.innerHTML=acts+'<div class="sep"></div>'+(s.has_logs?`<button onclick="openDrawer('${id}','logs')">▤ Logs</button>`:'')+`<button onclick="openDrawer('${id}')">ⓘ Inspect</button>`;
+  const acts=(s.actions||[]).map(a=>`<button class="${DANGER[a]?'danger':''}" onclick="doAct('${id}','${a}')">${ACT[a][0]} ${ACT[a][1]}</button>`).join('');
+  m.innerHTML=`<div class="mh">${esc(s.name)}</div>`+acts+(acts?'<div class="sep"></div>':'')+`<button onclick="closeMenu();openDrawer('${id}','logs')">▤ Logs</button><button onclick="closeMenu();openDrawer('${id}')">ⓘ Details</button>`
+    +(s.url?`<button onclick="closeMenu();window.open('${s.url}','_blank','noopener')">↗ Open in browser</button>`:'')
+    +((s.docker||s.pid)?`<button onclick="closeMenu();copyText('${s.docker||s.pid}')">⧉ Copy ${s.docker?'container name':'PID'}</button>`:'');
   document.body.appendChild(m);const r=ev.target.getBoundingClientRect();
-  m.style.top=(r.bottom+4)+'px';m.style.left=Math.min(r.left,innerWidth-170)+'px';openMenu=m;
+  const row=ev.target.closest&&ev.target.closest('.srow');if(row)row.classList.add('menu-on');
+  m.style.top=Math.min(r.bottom+4,innerHeight-m.offsetHeight-8)+'px';m.style.left=Math.min(r.left,innerWidth-240)+'px';openMenu=m;
 }
-function closeMenu(){if(openMenu){openMenu.remove();openMenu=null;}}
+function closeMenu(){if(openMenu){openMenu.remove();openMenu=null;}$$('.srow.menu-on').forEach(r=>r.classList.remove('menu-on'));}
 document.addEventListener('click',e=>{if(openMenu&&!openMenu.contains(e.target))closeMenu();});
 
 /* ---- confirm ---- */
 let confirmCb=null;
-function askConfirm(title,msg,cb){$('#c-title').textContent=title;$('#c-msg').textContent=msg;confirmCb=cb;$('#confirm').classList.add('show');}
+function askConfirm(title,msg,cb,opt){$('#c-title').textContent=title;$('#c-msg').textContent=msg;confirmCb=cb;
+  $('#c-force').checked=false;$('#c-forcerow').classList.toggle('show',!!(opt&&opt.force));$('#confirm').classList.add('show');$('#c-ok').focus();}
 $('#c-cancel').onclick=()=>{$('#confirm').classList.remove('show');confirmCb=null;};
-$('#c-ok').onclick=()=>{$('#confirm').classList.remove('show');if(confirmCb)confirmCb();confirmCb=null;};
+$('#c-ok').onclick=()=>{$('#confirm').classList.remove('show');if(confirmCb)confirmCb($('#c-force').checked);confirmCb=null;};
+function openPath(kind,key,how){return post('/api/open',{kind,key,how:how||'folder'},how==='editor'?'open in editor':how==='terminal'?'open terminal':'open folder');}
+function copyText(t){navigator.clipboard&&navigator.clipboard.writeText(String(t)).then(()=>toast('ok','Copied',String(t)),()=>toast('err','Copy blocked by the browser',String(t)));}
 
 /* ---- actions ---- */
+const mates=s=>s.launchd?S.services.filter(x=>x.launchd===s.launchd&&x.id!==s.id).map(x=>x.name):[];
+const WHY={stop:s=>s.kind==='launchd'?'launchd will usually start it again by itself. To keep it down use "Stop and keep stopped".':s.kind==='docker'?'The container stops and stays in the list; start it again from here.':s.kind==='brew'?'Stops the Homebrew service. Start it again from here.':'The process exits. It was started by hand, so nothing here can start it again.',
+  kill:()=>'Kills it immediately without a clean shutdown. Use only when Stop does not work.',
+  restart:s=>s.kind==='launchd'?`Restarts the whole launchd job ${s.launchd}.`+(mates(s).length?` That also restarts: ${mates(s).join(', ')}.`:''):'Short outage while it comes back.',
+  unload:s=>`Unloads the launchd job ${s.launchd} so it stays down, also after a crash or logout.`+(mates(s).length?` That also stops: ${mates(s).join(', ')}.`:'')+' It shows up as stopped here and you can start it again.',
+  remove:s=>`Deletes the stopped container ${s.docker}. Its image and named volumes stay; anything written only inside the container is lost.`,
+  pause:()=>'Freezes the container (no CPU) but keeps its memory. Resume continues where it left off.'};
 function doAct(id,act){
-  closeMenu();const s=S.services.find(x=>x.id===id);
-  const run=async()=>{toast('ok',`${act} ${id}…`,'');
-    try{const r=await fetch('/api/action',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,action:act})});
-      const j=await r.json();toast(j.ok?'ok':'err',(j.ok?'✓ ':'✗ ')+act+' '+id,j.msg||'');}
-    catch(e){toast('err','Error',String(e));}
-    setTimeout(pollStatus,1400);};
-  if(act==='stop')askConfirm('Stop '+ (s?s.name:id)+'?','This stops the service. KeepAlive agents may auto-restart.',run);
+  closeMenu();const s=S.services.find(x=>x.id===id);if(!s)return;
+  const run=()=>post('/api/action',{id,action:act},ACT[act][1].toLowerCase()+' '+s.name);
+  if(DANGER[act]||(act==='restart'&&s.kind==='launchd'&&(mates(s).length||!s.jobRoot)))askConfirm(`${ACT[act][1]} ${s.name}?`,WHY[act](s),run);
   else run();
 }
 
 /* ---- drawer ---- */
-let drawerId=null,drawerTab='details';
+let drawerId=null,drawerTab='details',followT=null,dRange='live';
+function actBtns(s){
+  return (s.actions||[]).map(a=>`<button class="act ${DANGER[a]?'danger':''}" title="${esc((WHY[a]||(()=>''))(s))}" onclick="doAct('${s.id}','${a}')">${ACT[a][0]} ${ACT[a][1]}</button>`).join('')
+    +(s.url?`<a class="act" href="${s.url}" target="_blank" rel="noopener">↗ Open</a>`:'');
+}
+function dchart(lab,series,cur,c,fmt,span){
+  const st=series&&series.length?stat(series):null;
+  return `<div class="dchart"><div class="dl"><span>${lab}</span><span>${span||(series?Math.round(series.length*4/60)+' min':'')}</span></div><div class="dv" style="color:${c}">${cur}</div>
+    <div class="dm">${st?`min ${fmt(st.mn)} · avg ${fmt(st.av)} · max ${fmt(st.mx)}`:'collecting…'}</div>${mini(series,300,46,c)}</div>`;
+}
+function dcharts(s){const h=s.hist||{};return dchart('CPU',h.cpu,(s.cpuN||0).toFixed(1)+'%','var(--accent)',v=>v.toFixed(1)+'%')+dchart('Memory',h.mem,s.memMB?fmtMB(s.memMB):'—','var(--accent2)',fmtMB);}
+function syncDrawer(){   // keep the open drawer live between polls
+  const s=S.services.find(x=>x.id===drawerId);if(!s)return;
+  const st=svcState(s);$('#d-pill').className='pill '+(st==='ok'?'up':st==='err'?'down':'off');$('#d-pill').textContent=SWORD[st];
+  $('#d-acts').innerHTML=actBtns(s);
+  $('#d-facts').innerHTML=[s.up&&s.memMB?fmtMB(s.memMB)+' memory':'',s.up?(s.cpuN||0).toFixed(1)+'% CPU':'',s.port?'port '+s.port:'',s.up&&s.uptime?(s.kind==='docker'?s.uptime.replace(/^Up /,'up '):'up '+up(s.uptime)):'',
+    s.kind==='docker'?'Docker · '+s.group.replace('Docker · ',''):s.kind==='launchd'?'launchd service':s.kind==='systemd'?'systemd service':s.kind==='brew'?'Homebrew service':'started by hand'].filter(Boolean).map(x=>`<span class="chipn">${esc(x)}</span>`).join('');
+  const c=$('#d-charts');if(c&&s.up&&dRange==='live')c.innerHTML=dcharts(s);
+}
 async function openDrawer(id,tab){
-  drawerId=id;drawerTab=tab||'details';
+  closeMenu();drawerId=id;drawerTab=tab||'details';
   const s=S.services.find(x=>x.id===id);
   $('#d-name').textContent=s?s.name:id;
-  $('#d-pill').className='pill '+(s&&s.up?'up':'down');$('#d-pill').textContent=s?(s.up?'UP':'DOWN'):'';
   document.querySelector('.dtabs').style.display='';
   $('#scrim').classList.add('show');$('#drawer').classList.add('show');$('#drawer').setAttribute('aria-hidden','false');
   $$('.dtabs button').forEach(b=>b.classList.toggle('on',b.dataset.dt===drawerTab));
-  drawTab();
+  syncDrawer();drawTab();
+}
+/* model detail reuses the drawer (no tabs) */
+async function openModel(i){
+  const m=(INV.models||[])[i];if(!m)return;
+  drawerId=null;clearInterval(followT);
+  $('#d-name').textContent=m.name;$('#d-pill').className='pill '+(m.loaded?'up':'off');$('#d-pill').textContent=m.loaded?'LOADED':'ON DISK';
+  document.querySelector('.dtabs').style.display='none';
+  $('#d-facts').innerHTML=[m.size,m.runtime,m.loaded?'in memory':'on disk only'].filter(Boolean).map(x=>`<span class="chipn">${esc(x)}</span>`).join('');
+  $('#d-acts').innerHTML=(m.loaded?`<button class="act" onclick="doModel(${i},'stop');closeDrawer()">■ Unload</button>`:`<button class="act" onclick="doModel(${i},'load');closeDrawer()">▶ Load into memory</button>`)
+    +`<button class="act danger" onclick="doModel(${i},'delete')">Delete from disk</button>`+(m.link?`<a class="act" href="${m.link}" target="_blank" rel="noopener">↗ Library page</a>`:'');
+  $('#scrim').classList.add('show');$('#drawer').classList.add('show');$('#drawer').setAttribute('aria-hidden','false');
+  const b=$('#d-body');
+  const base=`<div class="kv">${[kvrow('size on disk',m.size),kvrow('modified',m.modified),kvrow('digest',m.digest),kvrow('runtime',m.runtime),kvrow('processor',m.proc),kvrow('context',m.ctx),kvrow('stays loaded',m.until)].join('')}</div>`;
+  b.innerHTML=dsec('On this machine',base)+'<div class="skel" style="width:70%;margin:8px 0"></div>';
+  const d=await (await fetch('/api/modelinfo?name='+encodeURIComponent(m.name))).json();
+  if($('#d-name').textContent!==m.name)return;
+  b.innerHTML=dsec('On this machine',base)+Object.entries(d.sections||{}).map(([k,rows])=>dsec(esc(k),rows.length&&rows.every(r=>r.length===1)?chips(rows.map(r=>r[0])):`<div class="kv">${rows.map(r=>kvrow(r[0],r[1]||'yes')).join('')}</div>`)).join('');
 }
 let selectedAgent=null;
 function agentDetailHTML(a){
-  const ep=a.url?`<div class="k">endpoint</div><div><a href="${a.url}" target="_blank" rel="noopener">${esc(a.url)}</a></div>`:'';
-  return `<div class="mdhead"><span class="pill ${a.running?'up':(a.installed?'off':'down')}">${a.running?'RUNNING':(a.installed?'installed':'missing')}</span><span class="mdname">${esc(a.name)}</span></div>
-    <div class="kv"><div class="k">status</div><div>${a.running?'running':(a.installed?'installed':'not installed')}</div><div class="k">role</div><div>${esc(a.desc)}</div><div class="k">home</div><div>${esc(a.home)}</div>${ep}</div>`
-    +(a.url?`<div style="margin-top:16px"><a class="act" href="${a.url}" target="_blank" rel="noopener">↗ Open ${esc(a.url.replace('http://127.0.0.1',''))}</a></div>`:'');
+  const f=a.facts||{},T=(INV&&INV.tools)||{},cmd=a.bin?a.bin.split('/').pop():'';
+  const btn=(l,js,cls)=>`<button class="btn sm ${cls||''}" onclick="${js}">${l}</button>`;
+  return `<div class="mdhead"><span class="pill ${a.running?'up':'off'}">${a.running?'RUNNING':'not running'}</span><span class="mdname">${esc(a.name)}</span></div>
+    <div class="dwhat">${esc(a.desc)}</div>
+    <div class="abtns">${a.url?`<a class="btn sm" href="${a.url}" target="_blank" rel="noopener">↗ Open its web page</a>`:''}${a.app?btn('Open the '+esc(a.app)+' app',`agentDo('${a.id}','app')`):''}${a.canLaunch?btn('▶ Start in Terminal',`agentDo('${a.id}','launch')`):''}
+      ${a.home?btn('Open data folder',`openPath('agent','${a.id}')`):''}${a.home&&T.editor?btn('Open in '+esc(T.editor),`openPath('agent','${a.id}','editor')`):''}${a.home&&T.terminal?btn('Terminal here',`openPath('agent','${a.id}','terminal')`):''}
+      ${cmd?btn('Copy command',`copyText('${esc(cmd)}')`):''}${a.running&&a.canStop?btn('■ Stop all '+a.procs+' processes',`stopAgent('${a.id}')`,'danger'):''}</div>
+    ${a.running?`<div class="dcharts"><div class="dchart" style="padding-bottom:9px"><div class="dl"><span>Memory</span></div><div class="dv" style="color:var(--accent2)">${fmtMB(a.memMB)}</div><div class="dm">${a.procs} process${a.procs>1?'es':''}</div></div>
+      <div class="dchart" style="padding-bottom:9px"><div class="dl"><span>CPU</span></div><div class="dv" style="color:var(--accent)">${a.cpu}%</div><div class="dm">summed over its processes</div></div></div>`
+      :`<p class="hint">Installed but not running, so it uses no memory.${cmd?` Start it from here, or type <code class="cmd">${esc(cmd)}</code> in a terminal.`:a.app?' Open the app to start it.':''}</p>`}
+    ${dsec('About',`<div class="kv">${[kvrow('status',a.running?'running':'installed, not running'),kvrow('version',a.version),kvrow('installed with',a.installedVia),kvrow('program',a.bin),kvrow('desktop app',a.app&&'/Applications/'+a.app+'.app'),kvrow('usual port',a.port),
+      a.url?`<div class="k">web page</div><div><a href="${a.url}" target="_blank" rel="noopener">${esc(a.url)}</a></div>`:''].join('')}</div>`)}
+    ${a.home?dsec('Its data'+(f.size?` <small>${esc(f.size)}</small>`:''),`<div class="kv"><div class="k">folder</div><div><a class="path" onclick="openPath('agent','${a.id}')">${esc(a.home)}</a></div>${kvrow('size on disk',f.size)}${kvrow('last changed',f.changed)}${kvrow('items inside',f.count)}</div>
+      ${(f.configs||[]).length?`<div class="deprow" style="margin-top:10px"><span class="k">settings files</span>${f.configs.map(c=>`<span class="chip" style="cursor:pointer" title="open this file" onclick="openPath('agentcfg','${a.id}/${esc(c)}')">${esc(c)} ›</span>`).join('')}</div>`:''}
+      ${(f.items||[]).length?`<div class="deprow" style="margin-top:6px"><span class="k">most recent</span>${f.items.map(x=>`<span class="chip">${esc(x)}</span>`).join('')}</div>`:''}`):''}`
+    +((a.services||[]).length?dsec('Its services <small>'+a.services.length+'</small>',a.services.map(x=>`<div class="depl"><span class="sdot" style="background:${x.up?'var(--ok)':'var(--idle)'}"></span><a onclick="showTab('services');openDrawer('${esc(x.id)}')">${esc(x.name)}</a><span class="why">${x.up?'running':'stopped'}</span>${x.start?`<button class="btn sm" onclick="doAct('${esc(x.id)}','start')">▶ Start</button>`:`<button class="btn sm" onclick="showTab('services');openDrawer('${esc(x.id)}','logs')">Logs</button>`}</div>`).join('')):'')
+    +((a.top||[]).length?dsec('Biggest processes <small>'+a.procs+' in total</small>',`<table class="ptab"><thead><tr><th>PID</th><th>Process</th><th>CPU %</th><th>Memory</th><th></th></tr></thead><tbody>${a.top.map(c=>`<tr><td class="num muted">${c.pid}</td><td class="num">${esc(c.name)}</td><td class="num">${c.cpu.toFixed(1)}</td><td class="num">${fmtMB(c.rssMB)}</td><td><button class="xbtn" title="stop this process" onclick="killProc(${c.pid},'${esc(c.name).replace(/'/g,'')}')">✕</button></td></tr>`).join('')}</tbody></table>`):'');
 }
+function agentDo(id,action){return post('/api/agent',{id,action},action==='app'?'open app':'start in Terminal').then(()=>setTimeout(()=>loadInv(true),2500));}
+function stopAgent(id){const a=INV.agents.find(x=>x.id===id);askConfirm(`Stop ${a.name}?`,`Asks all ${a.procs} processes of ${a.name} to quit (${fmtMB(a.memMB)}). Running sessions and anything unsaved in them are lost.`,async()=>{await post('/api/agent',{id,action:'stop'},'stop '+a.name);setTimeout(()=>loadInv(true),1500);});}
 function selectAgent(id){
   selectedAgent=id;
   const a=(INV&&INV.agents||[]).find(x=>x.id===id),d=$('#agent-detail');
@@ -601,26 +1313,64 @@ function selectAgent(id){
   $$('#agents .srow').forEach(r=>r.classList.toggle('sel',r.dataset.id===id));
   d.innerHTML=agentDetailHTML(a);
 }
-function closeDrawer(){$('#scrim').classList.remove('show');$('#drawer').classList.remove('show');$('#drawer').setAttribute('aria-hidden','true');drawerId=null;}
+function closeDrawer(){clearInterval(followT);$('#scrim').classList.remove('show');$('#drawer').classList.remove('show');$('#drawer').setAttribute('aria-hidden','true');drawerId=null;}
 $('#d-close').onclick=closeDrawer;$('#scrim').onclick=closeDrawer;
 $$('.dtabs button').forEach(b=>b.onclick=()=>{drawerTab=b.dataset.dt;$$('.dtabs button').forEach(x=>x.classList.toggle('on',x===b));drawTab();});
+function kvrow(k,v){return (v==null||v===''||(Array.isArray(v)&&!v.length))?'':`<div class="k">${esc(k)}</div><div>${Array.isArray(v)?esc(v.join(' · ')):esc(v)}</div>`;}
+function chips(a){return (a&&a.length)?a.map(x=>`<span class="chip">${esc(x)}</span>`).join(''):'<span class="muted">none</span>';}
+function dsec(t,body,open){return body&&!/^<div class="kv"><\/div>$/.test(body)?`<details class="dsec" open><summary>${t}</summary><div class="db">${body}</div></details>`:'';}
+function renderDetail(d){
+  if(!d||d.error)return `<div class="empty">${esc((d&&d.error)||'no detail')}</div>`;
+  const s=S.services.find(x=>x.id===d.id)||d;
+  const what=d.what?`<div class="dwhat">${esc(d.what)}</div>`:'';
+  const charts=d.up?`<div style="margin-bottom:8px"><span class="seg" id="dseg"><button data-v="live">Live</button><button data-v="1h">1h</button><button data-v="6h">6h</button><button data-v="24h">24h</button><button data-v="48h">48h</button></span></div><div class="dcharts" id="d-charts">${dcharts(s)}</div>`:'';
+  const depl=(l,arrow)=>(l||[]).map(x=>`<div class="depl"><span class="muted">${arrow}</span><a onclick="openDrawer('${esc(x.id)}')">${esc(x.name)}</a><span class="why">${esc(x.why.replace(/^config /,'set in its config: ').replace('compose depends_on','starts after it (compose)').replace('runs it (child process)','started by it'))}</span></div>`).join('');
+  const mgr=d.kind==='docker'?'Docker'+(d.project?' Compose':''):d.brew?'Homebrew service · '+d.brew:d.launchd?'launchd · '+d.launchd:d.systemd?'systemd · '+d.systemd:'started by hand (no service manager)';
+  const mem=u(d.memUse)||d.treeMem||(d.rssMB!=null?d.rssMB+' MB':'');
+  const over=`<div class="kv">${[kvrow('status',(d.state||(d.up?'running':'stopped'))+(d.health?' · '+d.health:'')),kvrow('uptime',up(d.uptime)),kvrow('managed by',mgr),kvrow('image',d.image),kvrow('image id',d.imageId),kvrow('created',d.created&&d.created+' ago'),kvrow('command',d.command),kvrow('stack',d.project&&(d.project+(d.service?' / '+d.service:''))),kvrow('if it stops',({no:'stays stopped','always':'Docker always restarts it','unless-stopped':'Docker restarts it unless you stopped it','on-failure':'Docker restarts it if it crashed'})[d.restartPolicy]||d.restartPolicy),kvrow('restarts',d.restarts),kvrow('exit code',d.up?null:(d.exitCode===0?'0':d.exitCode)),kvrow('stopped',d.finished&&d.finished+' ago'),kvrow('killed for memory',d.oom?'yes (OOM)':null),kvrow('same launchd job',d.jobMates),kvrow('defined in',!d.up&&d.kind!=='docker'?d.where:null)].join('')}</div>`;
+  const res=`<div class="kv">${[kvrow('CPU',d.treeCpu||d.cpu),kvrow('Memory',mem+(d.memPct?' · '+d.memPct:'')),kvrow('Memory limit',d.memLimit),kvrow('CPU limit',d.cpuLimit),kvrow('Net I/O',u(d.netIO)),kvrow('Disk I/O',u(d.blockIO)),kvrow('Processes',d.pidsInside||d.procs),kvrow('PID',d.pid&&(d.pid+(d.ppid?' · parent '+d.ppid:''))),kvrow('User',d.user),kvrow('Open files',d.openFiles)].join('')}</div>`;
+  const net=`<div class="kv">${[(d.url?`<div class="k">web page</div><div><a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.url)}</a></div>`:s.http==='api'?`<div class="k">web page</div><div class="muted">none: port ${s.port} is an API for other programs, there is nothing to open in a browser</div>`:''),kvrow('ports',d.ports),kvrow('networks',d.networks),(d.cwd?`<div class="k">working folder</div><div><a class="path" title="open this folder" onclick="openPath('cwd','${esc(d.id)}')">${esc(d.cwd)}</a></div>`:''),kvrow('workdir',d.workdir),(d.logFile?`<div class="k">log file</div><div><a class="path" title="show this file in its folder" onclick="openPath('log','${esc(d.id)}')">${esc(d.logFile)}</a></div>`:'')].join('')}</div>`;
+  const deps=((d.dependsOn&&d.dependsOn.length)||(d.usedBy&&d.usedBy.length))?depl(d.dependsOn,'uses →')+depl(d.usedBy,'used by ←'):'<span class="muted" style="font-size:12.5px">No link seen in the last 24h. Links come from live connections and container configuration.</span>';
+  const inside=(d.inside&&d.inside.length)?`<table class="ptab"><thead><tr><th>PID</th><th>CPU %</th><th>Memory</th><th>Command</th></tr></thead><tbody>${d.inside.map(c=>`<tr><td class="num muted">${esc(c.pid)}</td><td class="num">${esc(c.cpu)}</td><td class="num">${fmtMB(c.rssMB)}</td><td class="num" style="word-break:break-all">${esc(c.cmd)}</td></tr>`).join('')}</tbody></table>`:'';
+  const health=(d.healthCmd||(d.healthLog&&d.healthLog.length))?`<div class="kv">${kvrow('check',d.healthCmd)}${kvrow('result',d.health)}</div>${(d.healthLog||[]).slice(-1).map(h=>h?`<div class="hl">${esc(h)}</div>`:'').join('')}`:'';
+  const kids=(d.children&&d.children.length)?`<table class="ptab"><thead><tr><th>PID</th><th>Process</th><th>CPU %</th><th>Memory</th><th></th></tr></thead><tbody>${d.children.map(c=>`<tr><td class="num muted">${c.pid}</td><td class="num">${esc(c.name)}</td><td class="num">${c.cpu.toFixed(1)}</td><td class="num">${fmtMB(c.rssMB)}</td><td><button class="xbtn" title="Stop this process" onclick="killChild(${c.pid},'${esc(c.name)}')">✕</button></td></tr>`).join('')}</tbody></table>`:'';
+  const mounts=(d.mounts&&d.mounts.length)?`<div class="kv">${d.mounts.map(m=>`<div class="k">vol</div><div>${esc(m)}</div>`).join('')}</div>`:'';
+  const env=(d.env&&d.env.length)?`<div class="env">${d.env.map(e=>{const i=e.indexOf('=');return `<div class="er"><span class="ek">${esc(e.slice(0,i))}</span><span class="ev">${esc(e.slice(i+1))}</span></div>`}).join('')}</div>`:'';
+  const cnt=n=>` <small>${n}</small>`;
+  return what+charts+dsec('Connections'+cnt(((d.dependsOn||[]).length+(d.usedBy||[]).length)||'none'),deps)+dsec('About',over)+dsec('Resources',res,false)+dsec('Network and files',net,false)+(health?dsec('Health check'+cnt(d.health||''),health,false):'')
+    +(inside?dsec('Processes inside'+cnt(d.inside.length),inside,false):'')+(kids?dsec('Child processes'+cnt(d.children.length),kids,false):'')+dsec('Storage'+cnt((d.mounts||[]).length),mounts,false)
+    +(env?dsec('Environment'+cnt(d.env.length+' shown'+(d.envHidden?', '+d.envHidden+' secret hidden':'')),env,false):'');
+}
+function killChild(pid,nm){askConfirm(`Stop ${nm} (pid ${pid})?`,'Asks this child process to quit. The parent may respawn it.',force=>post('/api/proc',{pid,force},'stop '+nm).then(()=>setTimeout(drawTab,1500)),{force:true});}
 async function drawTab(){
-  const b=$('#d-body'),id=drawerId,s=S.services.find(x=>x.id===id);
+  const b=$('#d-body'),id=drawerId;clearInterval(followT);
+  if(!id)return;
   if(drawerTab==='details'){
-    b.innerHTML='<div class="skel" style="width:60%;margin:6px 0"></div><div class="skel" style="width:80%;margin:6px 0"></div>';
+    b.innerHTML='<div class="skel" style="width:55%;margin:8px 0"></div><div class="skel" style="width:85%;margin:8px 0"></div><div class="skel" style="width:70%;margin:8px 0"></div>';
     const d=await (await fetch('/api/inspect?id='+encodeURIComponent(id))).json();
-    const rows=Object.entries(d).filter(([k])=>!['id','env'].includes(k)).map(([k,v])=>`<div class="k">${esc(k)}</div><div>${esc(Array.isArray(v)?v.join(', '):v)}</div>`).join('');
-    b.innerHTML=`<div class="kv">${rows}</div>`+(d.env?`<h2 style="margin-top:18px">Environment <span class="ct">${d.env.length}</span></h2><div class="env">${d.env.map(e=>{const i=e.indexOf('=');return `<div class="er"><span class="ek">${esc(e.slice(0,i))}</span><span class="ev">${esc(e.slice(i+1))}</span></div>`}).join('')}</div>`:'');
+    if(drawerId===id&&drawerTab==='details'){b.innerHTML=renderDetail(d);dRange='live';
+      seg('dseg',dRange,async v=>{dRange=v;const s=S.services.find(x=>x.id===id),c=$('#d-charts');if(!s||!c)return;
+        if(v==='live'){c.innerHTML=dcharts(s);return;}
+        const h=await (await fetch('/api/history?range='+v+'&id='+encodeURIComponent(id))).json();
+        if(dRange===v&&$('#d-charts'))$('#d-charts').innerHTML=h.ts.length>1?dchart('CPU · '+v,h.cpu,(s.cpuN||0).toFixed(1)+'%','var(--accent)',x=>x.toFixed(1)+'%',hhmm(h.ts[0])+' → now')+dchart('Memory · '+v,h.mem,s.memMB?fmtMB(s.memMB):'—','var(--accent2)',fmtMB,hhmm(h.ts[0])+' → now'):'<div class="empty" style="grid-column:1/3">No saved history for this service in that range yet (one point per minute).</div>';});}
   }else if(drawerTab==='logs'){
-    b.innerHTML=`<div class="logbar"><input id="lf" placeholder="filter lines…"><button class="refresh" onclick="drawTab()">⟳</button></div><div class="logbox" id="lb">loading…</div>`;
-    const d=await (await fetch('/api/logs?id='+encodeURIComponent(id)+'&n=300')).json();
-    const render=()=>{const f=($('#lf').value||'').toLowerCase();
-      $('#lb').innerHTML=(d.lines||[]).filter(l=>!f||l.toLowerCase().includes(f)).map(l=>{const c=/error|exception|fatal/i.test(l)?'err':/warn/i.test(l)?'warn':'';return `<div class="logline ${c}">${esc(l)}</div>`}).join('')||'<div class="empty">no lines</div>';
-      $('#lb').scrollTop=$('#lb').scrollHeight;};
-    render();$('#lf').oninput=render;
+    b.innerHTML=`<div class="logbar"><input id="lf" placeholder="filter lines…"><select id="ln" class="refresh" title="lines"><option>200</option><option>500</option><option>1000</option></select>
+      <button class="refresh" id="lfollow" title="refresh every 3s">▶ Follow</button><button class="refresh" id="lcopy" title="copy visible lines">⧉</button><button class="refresh" id="lre" title="reload">⟳</button></div>
+      <div class="muted num" id="lsrc" style="font-size:11px;margin-bottom:6px"></div><div class="logbox" id="lb" style="height:calc(100% - 70px)">loading…</div>`;
+    let lines=[];
+    const render=()=>{const f=($('#lf').value||'').toLowerCase(),lb=$('#lb');if(!lb)return;const stick=lb.scrollTop+lb.clientHeight>=lb.scrollHeight-30;
+      const vis=lines.filter(l=>!f||l.toLowerCase().includes(f));
+      lb.innerHTML=vis.map(l=>{const c=/error|exception|fatal|panic/i.test(l)?'err':/warn/i.test(l)?'warn':'';return `<div class="logline ${c}">${esc(l)}</div>`}).join('')||'<div class="empty">no lines</div>';
+      if(stick)lb.scrollTop=lb.scrollHeight;return vis;};
+    const load=async()=>{const d=await (await fetch('/api/logs?id='+encodeURIComponent(id)+'&n='+$('#ln').value)).json();if(drawerId!==id||!$('#lb'))return;
+      lines=d.lines||[];$('#lsrc').textContent=(d.source?'source: '+d.source+' · ':'')+lines.length+' lines';render();};
+    await load();if($('#lb'))$('#lb').scrollTop=$('#lb').scrollHeight;
+    $('#lf').oninput=render;$('#ln').onchange=load;$('#lre').onclick=load;$('#lcopy').onclick=()=>copyText((render()||[]).join('\n'));
+    $('#lfollow').onclick=()=>{const on=$('#lfollow').classList.toggle('on');$('#lfollow').textContent=on?'■ Following':'▶ Follow';clearInterval(followT);if(on)followT=setInterval(()=>{if(!$('#lb'))return clearInterval(followT);load();},3000);};
   }else{
-    const acts=(s?s.actions:[]);
-    b.innerHTML=acts.length?acts.map(a=>`<button class="act ${a==='stop'?'danger':''}" style="margin:0 8px 8px 0" onclick="doAct('${id}','${a}')">${a==='restart'?'⟳ Restart':a==='stop'?'■ Stop':'▶ Start'}</button>`).join('')+(s&&s.url?`<a class="act" style="display:inline-block;margin:0 8px 8px 0" href="${s.url}" target="_blank" rel="noopener">↗ Open</a>`:''):'<div class="empty">No control actions for this service (status only).</div>';
+    const ev=(S.events||[]).filter(e=>e.id===id),al=(S.alerts||[]).filter(a=>a.id===id);
+    b.innerHTML=(al.length?`<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">${al.map(a=>`<div class="alert ${a.level}" style="cursor:default"><b>●</b>${esc(a.msg)}</div>`).join('')}</div>`:'')
+      +(ev.map(e=>evrow({...e,id:null})).join('')||'<div class="empty">No events for this service since the dashboard started.<br>Starts, stops, crashes and your actions are recorded here.</div>');
   }
 }
 
@@ -629,11 +1379,15 @@ let pItems=[],pSel=0;
 function buildPalette(){
   const it=[];
   S.services.forEach(s=>{it.push({ic:'⬡',t:s.name,sub:s.up?'service · up':'service · down',go:()=>{showTab('services');openDrawer(s.id);}});
-    (s.actions||[]).forEach(a=>it.push({ic:a==='stop'?'■':a==='start'?'▶':'⟳',t:`${a} ${s.name}`,sub:'action',go:()=>doAct(s.id,a)}));});
-  (INV?.models||[]).forEach(m=>it.push({ic:'◆',t:m.name,sub:'model · '+m.size,go:()=>{showTab('models');}}));
+    it.push({ic:'▤',t:`Logs: ${s.name}`,sub:'logs',go:()=>{showTab('services');openDrawer(s.id,'logs');}});
+    (s.actions||[]).forEach(a=>it.push({ic:ACT[a][0],t:`${ACT[a][1]} ${s.name}`,sub:'action',go:()=>doAct(s.id,a)}));});
+  (INV?.models||[]).forEach((m,i)=>{it.push({ic:'◆',t:m.name,sub:'model · '+m.size,go:()=>{showTab('models');if(m.ollama)openModel(i);}});
+    if(m.ollama)it.push({ic:m.loaded?'■':'▶',t:(m.loaded?'Unload ':'Load ')+m.name,sub:'model action',go:()=>doModel(i,m.loaded?'stop':'load')});});
+  (MET?.apps||[]).filter(a=>a.mine).forEach((a,i)=>it.push({ic:'✕',t:'Quit '+a.name,sub:'app · '+fmtMB(a.memMB),go:()=>quitApp(MET.apps.indexOf(a))}));
   (INV?.agents||[]).forEach(a=>it.push({ic:'🤖',t:a.name,sub:'agent',go:()=>{showTab('agents');}}));
-  [['overview','▦ Overview'],['services','⬡ Services'],['agents','🤖 Agents'],['models','◆ Models'],['repos','⎇ Repos']].forEach(([k,n])=>it.push({ic:'→',t:'Go: '+n,sub:'tab',go:()=>showTab(k)}));
+  [['overview','▦ Overview'],['services','⬡ Services'],['agents','🤖 Agents'],['models','◆ Models'],['usage','$ Usage and cost'],['docker','🐳 Docker'],['repos','⎇ Repos'],['activity','◔ Activity']].forEach(([k,n])=>it.push({ic:'→',t:'Go: '+n,sub:'tab',go:()=>showTab(k)}));
   it.push({ic:'◐',t:'Toggle theme',sub:'view',go:()=>$('#theme').click()});
+  it.push({ic:'⇩',t:'Export snapshot (JSON)',sub:'file',go:exportSnap});
   return it;
 }
 function openPalette(){pItems=buildPalette();pSel=0;$('#pinput').value='';$('#palette').classList.add('show');$('#pinput').focus();renderPalette();}
@@ -656,29 +1410,183 @@ document.addEventListener('keydown',e=>{
     else if(e.key==='ArrowUp'){e.preventDefault();pSel=Math.max(0,pSel-1);renderPalette();}
     else if(e.key==='Enter'){const f=window._pf||[];if(f[pSel]){f[pSel].go();closePalette();}}
     return;}
-  const tag=(e.target.tagName||'').toLowerCase();if(tag==='input')return;
+  const tag=(e.target.tagName||'').toLowerCase();if(tag==='input'||tag==='select'||e.metaKey||e.ctrlKey||e.altKey)return;
+  if($('#confirm').classList.contains('show')){if(e.key==='Escape')$('#c-cancel').click();return;}
   if(e.key==='Escape'){closeDrawer();closeMenu();}
+  else if(e.key>='1'&&e.key<='8'){showTab(TABS[+e.key-1]);}
   else if(e.key==='/'){e.preventDefault();$('#q').focus();}
   else if(e.key===' '){e.preventDefault();togglePause();}
-  else if(e.key==='?'){toast('ok','Shortcuts','⌘K palette · / filter · space pause · esc close · click a card for detail');}
+  else if(e.key==='?'){toast('ok','Shortcuts','⌘K palette · 1-8 tabs · / filter · space pause · esc close · click any row for detail');}
 });
 
 /* ---- model control ---- */
-async function doModel(name){
-  try{const r=await fetch('/api/model',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,action:'stop'})});
-    const j=await r.json();toast(j.ok?'ok':'err',(j.ok?'✓ unloaded ':'✗ ')+name,j.msg||'');}
-  catch(e){toast('err','Error',String(e));}
-  setTimeout(loadInv,1300);setTimeout(pollMetrics,1300);
+function doModel(i,action){const m=(INV.models||[])[i];if(m)doModelName(m.name,action,m.size);}
+function doModelName(name,action,size){
+  const run=async()=>{await post('/api/model',{name,action},({stop:'unload ',load:'load ',delete:'delete '})[action]+name);
+    if(action==='delete')closeDrawer();setTimeout(()=>loadInv(true),action==='load'?6000:1300);};
+  if(action==='delete')askConfirm(`Delete ${name}?`,`Removes the model${size?' ('+size+')':''} from disk. To use it again you have to download it again.`,run);else run();
 }
+/* ---- usage and cost ---- */
+const money=c=>c==null?'—':c>=1000?'$'+Math.round(c).toLocaleString():c>=10?'$'+c.toFixed(1):c>=0.01?'$'+c.toFixed(2):c>0?'<$0.01':'$0';
+const tok=n=>n>=1e9?(n/1e9).toFixed(2)+'B':n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?Math.round(n/1e3)+'k':String(n||0);
+const allTok=t=>t.inp+t.out+t.cw+t.cr;
+const mshort=m=>m.replace(/^claude-/,'').replace(/-\d{8}$/,'');
+const ulen=(a,b)=>{const s=(Date.parse(b)-Date.parse(a))/1000;return isFinite(s)&&s>0?dur(s):'';};
+let usRange=ls('usrange')||'7d',US=null,usSort='cost',usQ='',usT=null;
+seg('usseg',usRange,v=>{usRange=v;lset('usrange',v);US=null;$('#us-tiles').innerHTML='<div class="skel" style="width:60%;height:60px"></div>';loadUsage();});
+async function loadUsage(){
+  try{US=await (await fetch('/api/usage?range='+usRange,{cache:'no-store'})).json();renderUsage();}catch(e){}
+  clearTimeout(usT);if(!$('#tab-usage').hidden)usT=setTimeout(loadUsage,US&&US.scan&&US.scan.running?4000:60000);
+}
+function renderUsage(){
+  const d=US;if(!d)return;const T=d.totals,days=d.days,nd=Math.max(1,days.length),label={today:'today',"7d":'the last 7 days',"30d":'the last 30 days',"90d":'the last 90 days',all:'all time'}[d.range];
+  $('#b-us').textContent=money(T.cost);$('#us-sub').textContent=`${label} · ${d.sessionCount.toLocaleString()} sessions`;
+  $('#us-scan').innerHTML=d.scan.running?`<div class="alert warn" style="cursor:default;margin-bottom:14px"><b>▲</b>Reading your session history for the first time: ${d.scan.done.toLocaleString()} of ${d.scan.total.toLocaleString()} files. Numbers below grow until it finishes; after that only changed files are re-read.</div>`:'';
+  const prompt=T.inp+T.cw+T.cr,hit=prompt?T.cr/prompt*100:0;
+  $('#us-tiles').innerHTML=[['Cost',money(T.cost),d.range==='today'?'so far today':'about '+money(T.cost/nd)+' per active day'],
+    ['Tokens',tok(allTok(T)),tok(T.inp+T.cw+T.cr)+' sent · '+tok(T.out)+' written back'],
+    ['Sessions',d.sessionCount.toLocaleString(),T.msgs.toLocaleString()+' requests to a model'],
+    ['Average session',money(d.sessionCount?T.cost/d.sessionCount:0),d.sessions[0]?'most expensive: '+money(d.sessions[0].cost):''],
+    ['Read from cache',hit.toFixed(0)+'%','of what was sent was already cached, so it cost a fraction'],
+    ['Thinking',tok(T.think),'tokens the model spent reasoning (billed as output)'+(T.web?' · '+T.web+' web searches':'')]]
+    .map(([l,v,sub])=>`<div class="card"><div class="lab">${l}</div><div class="val">${v}</div><div class="sub">${esc(sub)}</div></div>`).join('');
+  const mx=Math.max(...days.map(x=>x.cost),0.0001),show=days.slice(-45);
+  $('#us-day-leg').textContent=days.length?`${days.length} active day${days.length>1?'s':''}${days.length>45?' · last 45 shown':''} · busiest ${money(mx)}`:'';
+  $('#us-days').innerHTML=show.length?`<div class="ubars">${show.map(x=>`<div class="ubar" title="${x.day}: ${money(x.cost)} · ${tok(allTok(x))} tokens · ${x.msgs} requests"><b>${show.length<=16?money(x.cost):''}</b><i style="height:${Math.max(1,x.cost/mx*100)}%"></i><span>${show.length<=31?x.day.slice(5):''}</span></div>`).join('')}</div>`:'<div class="empty">No usage in this period.</div>';
+  const P=d.parts,pt=P.inp+P.out+P.cw+P.cr||1;
+  $('#us-parts').innerHTML=[['New input','what you and tools sent that was not cached',T.inp,P.inp,'var(--accent)'],['Written to cache','stored so later requests can reuse it',T.cw,P.cw,'var(--warn)'],
+    ['Read from cache','the conversation so far, re-read cheaply',T.cr,P.cr,'var(--ok)'],['Output','what the model wrote, including its thinking',T.out,P.out,'var(--accent2)']]
+    .map(([l,sub,n,c,col])=>`<div class="upart"><div>${l}<small>${sub}</small></div><div class="bb"><i style="width:${(c/pt*100).toFixed(1)}%;background:${col}"></i></div><div class="n">${tok(n)}</div><div class="n"><b>${money(c)}</b><small>${(c/pt*100).toFixed(0)}%</small></div></div>`).join('')
+    +(T.unpriced?`<p class="hint" style="margin:10px 0 0">${tok(T.unpriced)} tokens came from models with no price set (shown as $0). Add them to pricing.json to count them.</p>`:'');
+  // every table: name column takes what is left, number columns have fixed widths, so the cost is always on screen
+  const utab=(rows,first,name,compact,click)=>{
+    const cols=compact?[['Requests',76,r=>r.msgs.toLocaleString()],['Sent',72,r=>tok(r.inp+r.cw+r.cr)],['Output',66,r=>tok(r.out)]]
+      :[['Requests',76,r=>r.msgs.toLocaleString()],['Input',60,r=>tok(r.inp)],['Cache write',84,r=>tok(r.cw)],['Cache read',84,r=>tok(r.cr)],['Output',66,r=>tok(r.out)]];
+    return `<colgroup><col>${cols.map(c=>`<col style="width:${c[1]}px">`).join('')}<col style="width:86px"></colgroup>
+      <thead><tr><th>${first}</th>${cols.map(c=>`<th class="n">${c[0]}</th>`).join('')}<th class="n">Cost</th></tr></thead><tbody>`+
+      (rows.map((r,i)=>`<tr class="click" title="show these sessions" onclick="${click(i)}"><td>${name(r)}<div class="shr" style="display:block;margin:5px 0 0;width:${Math.max(2,r.cost/(T.cost||1)*100)}%"></div></td>${cols.map(c=>`<td class="n">${c[2](r)}</td>`).join('')}
+        <td class="c">${r.unpriced&&!r.cost?'<span class="muted" style="font-weight:500">no price</span>':money(r.cost)}</td></tr>`).join('')||`<tr><td colspan="${cols.length+2}" class="empty">nothing in this period</td></tr>`)+'</tbody>';};
+  const one=(b,sub)=>`<div class="u1"><b>${b}</b></div>${sub?`<div class="u2">${sub}</div>`:''}`;
+  $('#us-models').innerHTML=utab(d.models,'Model',r=>one(esc(mshort(r.model))),false,i=>`usFilter('model',US.models[${i}].model)`);
+  $('#us-tools').innerHTML=utab(d.tools,'Agent',r=>one(esc(r.tool)),false,i=>`usFilter('tool',US.tools[${i}].tool)`);
+  $('#us-projects').innerHTML=utab(d.projects,'Folder',r=>one(esc(r.name),`<a class="path" title="open this folder" onclick="event.stopPropagation();openPath('usagedir',US.projects[${d.projects.indexOf(r)}].cwd)">${esc(r.cwd)}</a>`),true,i=>`usFilter('cwd',US.projects[${i}].cwd)`);
+  $('#us-prices').innerHTML='<thead><tr><th>Model</th><th class="n">Input</th><th class="n">Cache write (5 min)</th><th class="n">Cache write (1 hour)</th><th class="n">Cache read</th><th class="n">Output</th></tr></thead><tbody>'+
+    Object.entries(d.prices).map(([m,p])=>`<tr><td><b>${esc(mshort(m))}</b></td><td class="n">$${p.input}</td><td class="n">$${p.cacheWrite5m}</td><td class="n">$${p.cacheWrite1h}</td><td class="n">$${p.cacheRead}</td><td class="n">$${p.output}</td></tr>`).join('')+'</tbody>';
+  $('#us-xp').textContent=d.extraPrices?`${d.extraPrices.toLocaleString()} more models priced from the public community list (OpenAI, Google and others).`:'Claude models are priced out of the box. This downloads a public community price list from GitHub so other vendors\' models get a cost too. Nothing about you is sent.';
+  renderUsageSessions();
+}
+async function fetchPrices(){const r=await post('/api/prices',{action:'update'},'download price list');if(r.ok){US=null;loadUsage();}}
+let usF=null;
+function usFilter(k,v){usF=k?{k,v}:null;renderUsageSessions();if(k)$('#us-sessions').scrollIntoView({behavior:'smooth',block:'start'});}
+function renderUsageSessions(){
+  const d=US;if(!d)return;const q=usQ.toLowerCase();
+  const F=usF,list=d.sessions.filter(x=>(!F||(F.k==='cwd'?x.cwd===F.v:F.k==='tool'?x.tool===F.v:x.models.some(m=>m[0]===F.v)))&&(!q||(x.title+' '+x.cwd+' '+x.tool+' '+x.models.map(m=>m[0]).join(' ')).toLowerCase().includes(q)))
+    .sort(usSort==='recent'?(a,b)=>(b.last>a.last?1:-1):usSort==='tokens'?(a,b)=>allTok(b)-allTok(a):(a,b)=>b.cost-a.cost);
+  const sb=(k,l)=>`<button class="btn sm ${usSort===k?'on':''}" onclick="usSort='${k}';renderUsageSessions()">${l}</button>`;
+  $('#us-sessions').innerHTML=`<div class="rows"><div class="rh"><b>Sessions</b><small>${list.length.toLocaleString()}${d.sessionCount>d.sessions.length&&!F?' of the '+d.sessions.length.toLocaleString()+' most expensive (of '+d.sessionCount.toLocaleString()+')':''} · click one for the full breakdown</small>
+      ${F?`<span class="chipn" style="font-family:var(--sans)">${F.k==='cwd'?'folder':F.k==='tool'?'agent':'model'}: <b>${esc(F.k==='model'?mshort(F.v):F.v)}</b></span><button class="btn sm" onclick="usFilter()">✕ Show all</button>`:''}<span class="sp"></span>
+      <input class="uin" id="us-q" placeholder="find by title, folder, model…" value="${esc(usQ)}"><span class="fbar"><span class="muted" style="font-size:12px">Sort</span>${sb('cost','Cost')}${sb('recent','Most recent')}${sb('tokens','Tokens')}</span></div>
+    <div class="ugrid h"><span>Session</span><span>Agent</span><span>Last active</span><span class="n">Requests</span><span class="n">Sent · written back</span><span>Models</span><span class="n">Cost</span></div>`
+    +(list.slice(0,150).map(x=>`<div class="ugrid row" onclick="openUsageSession('${esc(x.id)}')"><div style="min-width:0"><div class="nm">${esc(x.title||x.project)}</div><div class="one">${esc(x.cwd||'')}${x.branch?' · ⎇ '+esc(x.branch):''}${x.subs?' · '+x.subs+' sub-agent'+(x.subs>1?'s':'')+' ('+money(x.subCost)+')':''}</div></div>
+      <div style="min-width:0"><div style="font-size:13px">${esc(x.tool)}</div><div class="one">${esc(x.entry||'')}</div></div>
+      <div style="min-width:0"><div style="font-size:13px">${x.last?hhmm(Date.parse(x.last)/1000):''}</div><div class="one">${x.first&&x.last?'over '+(ulen(x.first,x.last)||'a moment'):''}</div></div>
+      <span class="n">${x.msgs.toLocaleString()}</span><span class="n">${tok(x.inp+x.cw+x.cr)} · ${tok(x.out)}</span>
+      <div class="rchips">${x.models.slice(0,3).map(m=>`<span class="chipn" title="${money(m[1])}">${esc(mshort(m[0]))}</span>`).join('')}</div><span class="cost">${money(x.cost)}</span></div>`).join('')||'<div class="empty">No sessions match.</div>')+'</div>';
+  const inp=$('#us-q');if(inp){inp.oninput=()=>{usQ=inp.value;renderUsageSessions();const n=$('#us-q');n.focus();n.setSelectionRange(n.value.length,n.value.length);};}
+}
+async function openUsageSession(id){
+  drawerId=null;clearInterval(followT);
+  const x=(US.sessions||[]).find(v=>v.id===id)||{};
+  $('#d-name').textContent=x.title||x.project||id;$('#d-pill').className='pill off';$('#d-pill').textContent=x.tool||'session';
+  document.querySelector('.dtabs').style.display='none';$('#d-acts').innerHTML='';$('#d-facts').innerHTML='';
+  $('#scrim').classList.add('show');$('#drawer').classList.add('show');$('#drawer').setAttribute('aria-hidden','false');
+  const b=$('#d-body');b.innerHTML='<div class="skel" style="width:60%;margin:8px 0"></div><div class="skel" style="width:85%;margin:8px 0"></div>';
+  const d=await (await fetch('/api/usage/session?id='+encodeURIComponent(id))).json();
+  if(d.error){b.innerHTML=`<div class="empty">${esc(d.error)}</div>`;return;}
+  const tot=d.models.reduce((a,m)=>({cost:a.cost+m.cost,msgs:a.msgs+m.msgs,sent:a.sent+m.inp+m.cw5+m.cw1+m.cr,out:a.out+m.out}),{cost:0,msgs:0,sent:0,out:0});
+  $('#d-facts').innerHTML=[money(tot.cost),tot.msgs.toLocaleString()+' requests',tok(tot.sent)+' sent',tok(tot.out)+' written back',d.first&&d.last?'over '+(ulen(d.first,d.last)||'a moment'):''].filter(Boolean).map(v=>`<span class="chipn">${esc(v)}</span>`).join('');
+  const th=h=>`<thead><tr>${h.map((c,i)=>`<th ${i?'class="n"':''}>${c}</th>`).join('')}</tr></thead>`;
+  const mrow=m=>`<td class="n">${m.msgs.toLocaleString()}</td><td class="n">${tok(m.inp)}</td><td class="n">${tok(m.cw5)}</td><td class="n">${tok(m.cw1)}</td><td class="n">${tok(m.cr)}</td><td class="n">${tok(m.out)}</td><td class="n">${tok(m.think)}</td><td class="c">${money(m.cost)}</td>`;
+  const hx=Math.max(...d.hours.map(h=>h.cost),0.0001),hs=d.hours.slice(-72);
+  b.innerHTML=dsec('About',`<div class="kv">${[kvrow('agent',d.tool+(d.entry?' · '+d.entry:'')),kvrow('started',d.first&&hhmm(Date.parse(d.first)/1000)),kvrow('last active',d.last&&hhmm(Date.parse(d.last)/1000)),kvrow('folder',d.cwd),kvrow('branch',d.branch),kvrow('session id',d.id),kvrow('log file',d.log)].join('')}</div>`)
+    +dsec('By model',`<div style="overflow:auto"><table class="utab">${th(['Model','Requests','Input','Cache write 5 min','Cache write 1 hour','Cache read','Output','of which thinking','Cost'])}<tbody>${d.models.map(m=>`<tr><td><b>${esc(mshort(m.model))}</b>${d.priced[m.model.split(' (')[0]]===false?' <span class="muted">no price</span>':''}</td>${mrow(m)}</tr>`).join('')}</tbody></table></div>`)
+    +dsec('Cost over time <small>'+d.hours.length+' active hour'+(d.hours.length===1?'':'s')+(d.hours.length>72?' · last 72 shown':'')+'</small>',`<div class="ubars" style="height:130px">${hs.map(h=>`<div class="ubar" title="${h.hour}:00 · ${money(h.cost)} · ${h.msgs} requests · ${tok(h.inp+h.cw5+h.cw1+h.cr+h.out)} tokens"><b>${hs.length<=12?money(h.cost):''}</b><i style="height:${Math.max(1,h.cost/hx*100)}%"></i><span>${hs.length<=24?h.hour.slice(11)+'h':''}</span></div>`).join('')}</div>`)
+    +(d.subs.length?dsec('Sub-agents it started <small>'+d.subs.length+' · '+money(d.subs.reduce((a,v)=>a+v.cost,0))+'</small>',`<div style="overflow:auto;max-height:340px"><table class="utab">${th(['Sub-agent','Requests','Input','Cache write 5 min','Cache write 1 hour','Cache read','Output','of which thinking','Cost'])}<tbody>${d.subs.map(m=>`<tr><td class="num">${esc(m.agent.replace('agent-','').slice(0,10))}</td>${mrow(m)}</tr>`).join('')}</tbody></table></div>`):'');
+}
+
+/* ---- right now: the open 5-hour window, live sessions, budgets ---- */
+let NOW=null,liveAll=false;
+async function pollNow(){
+  if(paused||($('#tab-usage').hidden&&$('#tab-overview').hidden))return;
+  try{NOW=await (await fetch('/api/usage/now',{cache:'no-store'})).json();renderNow();}catch(e){}
+}
+setInterval(pollNow,10000);
+const clock=t=>new Date(t*1000).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+const lvlp=p=>p>=100?'err':p>=80?'warn':'';
+function liveRows(list){
+  return list.map(x=>{const pc=x.ctxMax?Math.min(100,x.ctx/x.ctxMax*100):0,col=pc>=85?'var(--err)':pc>=65?'var(--warn)':'var(--accent)';
+    return `<div class="lgrid" onclick="openUsageSession('${esc(x.id)}')" title="open the full breakdown of this session">
+      <span class="sdot" style="background:${x.state==='working'?'var(--ok)':x.state==='stalled'?'var(--err)':'var(--warn)'}"></span>
+      <div style="min-width:0"><div class="nm">${esc(x.title)}</div><div class="one">${esc(x.cwd)}${x.subs?' · '+x.subs+' sub-agent'+(x.subs>1?'s':''):''}</div></div>
+      <div style="min-width:0"><div class="lstate ${x.state}">${x.state==='working'?'Working':x.state==='stalled'?'Stalled':'Waiting for you'}</div><div class="one">${esc(x.what)}</div></div>
+      <div style="min-width:0"><div style="font-size:13px">${esc(mshort(x.model||''))}</div><div class="one">${esc(x.entry||'')}</div></div>
+      <div title="how full its context window is: the more it holds, the more every request costs"><div class="gb"><i style="width:${pc.toFixed(0)}%;background:${col}"></i></div><div class="one">${tok(x.ctx)} of ${tok(x.ctxMax)} context (${pc.toFixed(0)}%)</div></div>
+      <div class="n"><b>${money(x.costToday)}</b><div class="one">${x.reqToday.toLocaleString()} requests</div></div>
+      <div class="n">${x.idle<60?'just now':dur(x.idle)+' ago'}</div></div>`;}).join('');
+}
+function renderNow(){
+  const d=NOW;if(!d)return;const b=d.block,S=d.stats,B=d.budgets;
+  const real=d.live.filter(x=>!x.oneShot),shot=d.live.filter(x=>x.oneShot),nw=real.filter(x=>x.state==='working').length,nq=real.filter(x=>x.state==='waiting').length;
+  const head=`<div class="lgrid h"><span></span><span>Session</span><span>What it is doing</span><span>Model</span><span>Context window</span><span class="n">Today</span><span class="n">Active</span></div>`;
+  const liveBox=(lst,full)=>`<div class="rows"><div class="rh"><b>Agent sessions right now</b><small>${nw} working · ${nq} waiting for you${shot.length?' · '+shot.length+' short automated runs '+(liveAll&&full?'shown':'hidden'):''} · active in the last 30 minutes</small><span class="sp"></span>
+      ${full&&shot.length?`<button class="btn sm" onclick="liveAll=!liveAll;renderNow()">${liveAll?'Hide':'Show'} automated runs</button>`:''}${full?'':`<a class="btn sm" href="#" onclick="showTab('usage');return false">Usage and cost</a>`}</div>
+      ${lst.length?head+liveRows(lst):'<div class="empty">No agent session has been active in the last 30 minutes.</div>'}</div>`;
+  $('#ov-live').innerHTML=real.length?liveBox(real.slice(0,6),false):'';
+  if($('#tab-usage').hidden)return;
+  $('#us-live').innerHTML=liveBox(liveAll?d.live:real,true);
+  const vsMax=b&&S.max?b.cost/S.max*100:0;
+  const win=b?`<div class="nbig">${money(b.cost)}</div>
+      <div class="nline">Window <b>${clock(b.start)} → ${clock(b.end)}</b> · resets in <b>${dur(b.left)}</b></div>
+      <div class="pbar"><i style="width:${(b.elapsed/(b.elapsed+b.left)*100).toFixed(0)}%"></i></div>
+      <div class="nline">Burning <b>${money(b.burn)} an hour</b> · ${tok(b.tokPerMin)} tokens a minute · ${b.msgs.toLocaleString()} requests</div>
+      <div class="nline">At this pace: <b>${money(b.projected)}</b> by ${clock(b.end)}</div>
+      <div class="pbar ${lvlp(vsMax)}"><i style="width:${Math.min(100,vsMax).toFixed(0)}%"></i></div>
+      <div class="nline">${vsMax.toFixed(0)}% of your busiest window (${money(S.max)}) · a typical one is ${money(S.typical)}</div>`
+    :`<div class="nbig">$0</div><div class="nline">No window is open: nothing was sent to Claude in the last 5 hours. The next request opens one.</div>`;
+  const dw=d.week.prev?((d.week.cost-d.week.prev)/d.week.prev*100):0;
+  const brow=(k,l,spent)=>{const lim=B[k],pc=lim?spent/lim*100:0;return `<div class="brow2"><div>${l} <small>${money(spent)}${lim?' of '+money(lim)+' ('+pc.toFixed(0)+'%)':' · no budget'}</small>${lim?`<div class="pbar ${lvlp(pc)}" style="margin:5px 0 0"><i style="width:${Math.min(100,pc).toFixed(0)}%"></i></div>`:''}</div>
+      <input data-b="${k}" inputmode="decimal" placeholder="$ none" value="${lim||''}" title="budget in dollars; empty = none"></div>`;};
+  if(!$('#us-now').contains(document.activeElement))   // do not redraw while a budget is being typed
+  $('#us-now').innerHTML=`<div class="sec"><h2>This 5-hour window</h2>${win}
+      <p class="hint" style="margin:10px 0 0">Claude subscriptions meter usage in 5-hour windows. The actual limit is not written to the logs, so this compares against your own history (${S.n} windows in 30 days).</p></div>
+    <div class="sec"><h2>Last 7 days</h2><div class="nbig">${money(d.week.cost)}</div>
+      <div class="nline">${d.week.prev?`<b>${dw>=0?'▲':'▼'} ${Math.abs(dw).toFixed(0)}%</b> against the 7 days before (${money(d.week.prev)})`:'no earlier week to compare'}</div>
+      <div class="nline">Today so far: <b>${money(d.today)}</b></div>
+      ${d.topSession?`<div class="nline">Most expensive session today: <a href="#" onclick="openUsageSession('${esc(d.topSession.id)}');return false">${esc(d.topSession.title)}</a> · <b>${money(d.topSession.cost)}</b></div>`:''}
+      <div class="nline">9 in 10 of your windows stay under <b>${money(S.p90)}</b></div></div>
+    <div class="sec"><h2>Budgets <span class="ct">warns at 80%, alerts at 100%</span></h2>
+      ${brow('day','Today',d.today)}${brow('week','Last 7 days',d.week.cost)}${brow('block','This 5-hour window',b?b.cost:0)}${brow('session','Any one session today',d.topSession?d.topSession.cost:0)}
+      <div style="margin-top:10px;display:flex;gap:8px;align-items:center"><button class="btn sm" onclick="saveBudgets()">Save budgets</button><span class="muted" style="font-size:12px">dollars at list price · shown in the header and Activity when crossed</span></div></div>`;
+  $('#us-blk-sum').textContent=`${S.n} in the last 30 days · typical ${money(S.typical)} · busiest ${money(S.max)}`;
+  $('#us-blocks').innerHTML='<colgroup><col><col style="width:90px"><col style="width:90px"><col style="width:90px"><col style="width:90px"></colgroup><thead><tr><th>Window</th><th class="n">Requests</th><th class="n">Tokens</th><th class="n">Models</th><th class="n">Cost</th></tr></thead><tbody>'+
+    d.blocks.map(x=>`<tr><td><div class="u1"><b>${hhmm(x.start)} → ${clock(x.end)}</b>${b&&x.start===b.start?' <span class="chipn ok">open now</span>':''}</div><div class="shr" style="display:block;margin:5px 0 0;width:${Math.max(2,x.cost/(S.max||x.cost||1)*100)}%"></div></td>
+      <td class="n">${x.msgs.toLocaleString()}</td><td class="n">${tok(x.tok)}</td><td class="n">${x.models.length}</td><td class="c">${money(x.cost)}</td></tr>`).join('')+'</tbody>';
+}
+async function saveBudgets(){
+  const body={};$$('#us-now input[data-b]').forEach(i=>body[i.dataset.b]=i.value.replace(/[^0-9.]/g,'')||0);
+  document.activeElement&&document.activeElement.blur();
+  await post('/api/budget',body,'save budgets');NOW=null;await pollNow();
+}
+
 /* ---- toasts ---- */
 function toast(k,t,m){const e=document.createElement('div');e.className='toast '+k;e.innerHTML=`<div class="t">${esc(t)}</div>`+(m?`<div class="m">${esc(m)}</div>`:'');$('#toasts').appendChild(e);setTimeout(()=>e.remove(),k==='err'?9000:4500);}
 
 /* ---- polling ---- */
 async function pollStatus(){if(paused)return;try{renderServices(await (await fetch('/api/status',{cache:'no-store'})).json());}catch(e){$('#hcount').textContent='offline';$('#hcount').style.color='var(--err)';$('#pulse').style.background='var(--err)';}}
 async function pollMetrics(){if(paused)return;try{renderMetrics(await (await fetch('/api/metrics',{cache:'no-store'})).json());}catch(e){}}
-async function loadInv(){try{renderInv(await (await fetch('/api/inventory',{cache:'no-store'})).json());}catch(e){}}
+async function loadInv(force){try{renderInv(await (await fetch('/api/inventory'+(force===true?'?force':''),{cache:'no-store'})).json());}catch(e){}}
 pollStatus();pollMetrics();loadInv();
-setInterval(pollStatus,5000);setInterval(pollMetrics,2000);setInterval(loadInv,60000);
+setInterval(pollStatus,4000);setInterval(pollMetrics,2000);setInterval(loadInv,60000);
 </script>
 </body>
 </html>
